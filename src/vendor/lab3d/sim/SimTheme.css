@@ -1,0 +1,276 @@
+/*
+ * Giao diện kính tối của khung 3D (SimHost) và khung Scene3D nhúng của Hóa 11, Công nghệ, Vật lí (.scene-workspace[data-embedded]) – khôi phục kiểu trước commit 44c53b0 theo mẫu mau_1.PNG / mau_2.PNG:
+ * thanh mã + tên bài và thanh điều khiển hai hàng, mã bài màu cam, nhãn loại có nền; thanh bước tối, caption kính luôn hiện, chữ giữa;
+ * bảng tham số (lil-gui), chip, HUD cùng nền kính tối. Chỉ đổi giá trị token trong hai khung này – CSS của từng phần vẫn dùng token chung.
+ * Nạp từ SimHost, SimToolbar, SimTitle, LabProcedure; tiền tố khung làm quy tắc thắng CSS gốc của từng phần.
+ */
+:is(.simhost, .scene-workspace[data-embedded]) {
+  --glass: rgba(16, 22, 33, 0.66);
+  --glass-strong: rgba(12, 18, 28, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --lab-accent: #f3b04a;
+
+  --ui-accent: #f3b04a;
+  --ui-accent-hover: #f6c06e;
+  --ui-accent-text: #f3b04a;
+  --ui-accent-soft: rgba(243, 176, 74, 0.2);
+  --ui-on-accent: #1a1f2a;
+
+  --ui-text: #eef2f8;
+  --ui-text-2: #9fb0c8;
+  --ui-text-3: #64748b;
+  --ui-surface: var(--glass);
+  --ui-surface-solid: rgba(26, 34, 50, 0.92);
+  --ui-surface-2: rgba(26, 34, 50, 0.78);
+  --ui-fill: rgba(255, 255, 255, 0.08);
+  --ui-fill-hover: rgba(255, 255, 255, 0.18);
+  --ui-fill-active: rgba(255, 255, 255, 0.24);
+  --ui-line: rgba(255, 255, 255, 0.1);
+  --ui-blur: blur(10px);
+  --ui-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  --ui-shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.25);
+  --ui-focus: 0 0 0 2px #0d121b, 0 0 0 4px var(--ui-accent);
+
+  --ui-ok: #4ade80;
+  --ui-ok-soft: rgba(74, 222, 128, 0.16);
+  --ui-warn: #fbbf24;
+  --ui-warn-icon: #fbbf24;
+  --ui-warn-soft: rgba(251, 191, 36, 0.16);
+  --ui-danger: #f87171;
+  --ui-danger-soft: rgba(248, 113, 113, 0.16);
+}
+
+/* Bảng tối (.ui-dark) – kể cả khi thu gọn thành chip (chip.css ép chip sáng): cùng kính tối, nhấn cam. */
+:is(.simhost, .scene-workspace[data-embedded]) .ui-dark,
+:is(.simhost, .scene-workspace[data-embedded]) .ui-collapsible.is-collapsed.ui-dark {
+  --ui-surface: var(--glass);
+  --ui-surface-solid: rgba(26, 34, 50, 0.92);
+  --ui-text: #eef2f8;
+  --ui-text-2: #9fb0c8;
+  --ui-accent-text: #f3b04a;
+  --ui-accent-soft: rgba(243, 176, 74, 0.2);
+}
+
+/* Thanh tiêu đề / điều khiển dùng --glass của chính nó (LabIdentity.css đặt kính đặc hơn cho Công nghệ, Vật lí trên nền sáng). */
+:is(.simhost, .scene-workspace[data-embedded]) :is(.simbar, .scene-identity, .scene-identity-inline) {
+  --ui-surface: var(--glass);
+}
+
+/* Khối kính chung: viền mảnh, bo 12 px (không bo tròn kiểu viên thuốc). */
+:is(.simhost, .scene-workspace[data-embedded]) :is(.simbar__title, .simbar__controls, dl.hud, .hud--box.is-open, .ui-panel, .simov__caption) {
+  border: 1px solid var(--glass-border);
+}
+
+/* ---- mau_1: [mã · loại · tên] hàng trên, [chạy/dừng · đặt lại · tốc độ · Vĩ mô/Vi mô · loa] hàng dưới ---- */
+:is(.simhost, .scene-workspace[data-embedded]) .simbar {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__title,
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__controls {
+  height: auto;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__title {
+  max-width: 100%;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__id {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  color: var(--lab-accent);
+}
+/* Luôn hiện nhãn loại (SimToolbar.css ẩn nó khi khung < 800 px). */
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--simbar-badge, #e2622a);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__name {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__btn {
+  width: 32px;
+  height: 30px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--ui-fill);
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__btn:hover {
+  background: var(--ui-fill-hover);
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__btn.is-on {
+  color: var(--ui-on-accent);
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__speed {
+  gap: 6px;
+  height: auto;
+  padding: 0 4px;
+  font-size: 12px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__speed:hover {
+  background: none;
+}
+/* Thanh tốc độ luôn hiện (mẫu cũ), núm cam; số "1×" đứng sau thanh. */
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__speed span {
+  order: 1;
+  min-width: 34px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__speed input,
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__speed:hover input,
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__speed:focus-within input {
+  width: 80px;
+  margin: 0;
+  opacity: 1;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__seg {
+  margin: 0;
+  border-radius: 8px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__seg button {
+  height: auto;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__seg button.is-on {
+  background: #eef2f8;
+  color: #1a1f2a;
+  box-shadow: none;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__sound .simbar__btn {
+  color: #94a3b8;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simbar__sound .simbar__btn.is-sound {
+  color: #eef2f8;
+}
+
+/* ---- mau_2: thanh bước tối "Bước x/y · tên" + Tự động / ↶ / ↺, caption kính luôn hiện bên dưới ---- */
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc {
+  gap: 8px;
+  height: auto;
+  padding: 5px 6px 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--glass-strong);
+  color: #e8f1ff;
+  font: 500 12.5px / 1.3 var(--ui-font);
+}
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc b {
+  margin-right: 0;
+  color: var(--lab-accent);
+}
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc.is-done b {
+  color: var(--ui-ok);
+}
+/* Caption luôn hiện → bỏ nút "i" (mở caption) và vạch ngăn đi kèm. */
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc :is(.ix-proc-info, .ix-proc-sep) {
+  display: none;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc button {
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc .ix-proc-demo {
+  padding: 0 10px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc .ix-proc-demo.on {
+  background: var(--lab-accent);
+  color: #06121f;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .ix-proc button:disabled {
+  opacity: 0.4;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simov__caption,
+.simhost:has(.ix-proc:not([style*='display: none'])) .simov__caption:not(.is-open),
+.lab-procedure-root:has(.ix-proc) .simov__caption:not(.is-open) {
+  display: block;
+  bottom: 14px;
+  max-width: min(760px, 86%);
+  padding: 9px 16px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  text-align: center;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simov__text {
+  white-space: normal;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .simov__more {
+  display: none;
+}
+
+/* ---- Bảng tham số (lil-gui): kính tối, chữ nhỏ, số và tiêu đề thư mục màu cam ---- */
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui.lil-gui,
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui .lil-gui {
+  --background-color: transparent;
+  --text-color: #e6ebf3;
+  --title-text-color: #f3f6fb;
+  --widget-color: rgba(255, 255, 255, 0.09);
+  --hover-color: rgba(255, 255, 255, 0.16);
+  --focus-color: rgba(255, 255, 255, 0.22);
+  --number-color: var(--lab-accent);
+  --string-color: #7dd3fc;
+  --font-size: 11px;
+  --input-font-size: 11px;
+  --widget-height: 19px;
+  --spacing: 3px;
+  --padding: 4px;
+  --name-width: 48%;
+  --folder-indent: 6px;
+  --widget-border-radius: 4px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui.lil-gui {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  background: rgba(14, 20, 30, 0.6);
+  transition: background-color 0.2s;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui.lil-gui:hover {
+  background: rgba(14, 20, 30, 0.8);
+}
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui.lil-root > .lil-title {
+  padding-left: 10px;
+  background: rgba(26, 34, 50, 0.78);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui.lil-root.lil-closed {
+  border-radius: 999px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui .lil-gui .lil-title {
+  height: auto;
+  padding: 0 var(--padding);
+  color: var(--lab-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui .lil-controller.lil-number input {
+  color: var(--number-color);
+}
+:is(.simhost, .scene-workspace[data-embedded]) .sim-gui .lil-controller .lil-slider .lil-fill {
+  background: rgba(243, 176, 74, 0.45);
+}
+
+/* ---- HUD số đo: kính tối, nhãn xám xanh, số đậm ---- */
+:is(.simhost, .scene-workspace[data-embedded]) .hud {
+  font-size: 12.5px;
+}
+:is(.simhost, .scene-workspace[data-embedded]) .hud__row dd {
+  font-weight: 700;
+}

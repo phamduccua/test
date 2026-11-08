@@ -1,0 +1,31 @@
+/* Bảng kính hiển vi ở góc dưới khung (createScopeDock): hộp trong suốt xếp các vòng / thanh `ix-scrub` (place: 'inline'). */
+.ix-dock {
+  position: absolute;
+  z-index: var(--ui-z-panel);
+  display: none;
+  gap: 6px;
+  pointer-events: none;
+}
+.ix-dock--column {
+  flex-direction: column;
+}
+.ix-dock--row {
+  flex-direction: row;
+}
+.ix-dock__row {
+  display: flex;
+  gap: 6px;
+}
+.ix-dock .ix-scrub {
+  pointer-events: auto;
+}
+/* Vòng của kit createScopeControls (ốc to / ốc nhỏ / mâm): nhãn và số đọc rộng cố định – vòng không nhảy khi chữ đổi. */
+.ix-dock--scope .ix-scrub {
+  padding: 5px 10px;
+}
+.ix-dock--scope .ix-scrub .lbl {
+  min-width: 84px;
+}
+.ix-dock--scope .ix-scrub .val {
+  min-width: 104px;
+}

@@ -1,0 +1,109 @@
+/* Màn chào trong khung 3D: phủ cảnh bằng lớp mờ, thẻ giữa khung; biến mất bằng mờ dần khi bấm "Bắt đầu". */
+.simintro {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: radial-gradient(ellipse at 50% 45%, rgba(8, 12, 22, 0.45), rgba(8, 12, 22, 0.82));
+  backdrop-filter: blur(7px) saturate(0.9);
+  -webkit-backdrop-filter: blur(7px) saturate(0.9);
+  transition: backdrop-filter 0.6s, background 0.6s;
+}
+.simintro.is-ready {
+  background: radial-gradient(ellipse at 50% 45%, rgba(8, 12, 22, 0.25), rgba(8, 12, 22, 0.7));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.simintro__card {
+  max-width: min(560px, 100%);
+  text-align: center;
+  color: #f1f5f9;
+  animation: simintro-in 0.5s ease both;
+}
+@keyframes simintro-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+.simintro__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.simintro__meta code {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--lab-accent, #f3b04a);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.simintro__badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 700;
+}
+.simintro__title {
+  margin: 12px 0 0;
+  font-size: clamp(22px, 3.2vw, 34px);
+  font-weight: 800;
+  line-height: 1.2;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+}
+.simintro__goal {
+  margin: 12px auto 0;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #cbd5e1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.simintro__goal b { color: #fff; }
+.simintro__start {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  margin-top: 22px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--lab-accent, #f3b04a);
+  color: #111827;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(243, 176, 74, 0.5);
+  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+}
+.simintro.is-ready .simintro__start { animation: simintro-pulse 2.2s ease-in-out infinite; }
+@keyframes simintro-pulse {
+  50% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 10px rgba(243, 176, 74, 0); }
+}
+.simintro__start:hover:not(:disabled) { transform: translateY(-2px); }
+.simintro__start:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.simintro__start:disabled { cursor: progress; opacity: 0.85; background: rgba(255, 255, 255, 0.14); color: #e2e8f0; }
+.simintro__spin {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: simintro-spin 0.8s linear infinite;
+}
+@keyframes simintro-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .simintro__card, .simintro.is-ready .simintro__start, .simintro__spin { animation: none; }
+}
+
+/* Thanh tiến độ tải (LoadMeter) – dùng ở màn chào và lớp phủ tải của SimOverlay. */
+.simload { width: min(320px, 80vw); margin: 16px auto 0; color: #cbd5e1; font-size: 12px; }
+.simload__bar { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.simload__bar span { display: block; height: 100%; border-radius: inherit; background: var(--lab-accent, #f3b04a); transition: width 0.5s ease; }
+.simload__text { display: flex; justify-content: space-between; margin-top: 6px; }
+.simload__text b { color: #fff; }

@@ -1,0 +1,52 @@
+/* Chip cảnh báo / lưu ý: nền kính sáng như mọi chip, chỉ icon mang màu ngữ nghĩa (vàng cam = an toàn). */
+.simwarn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ui-space-1);
+  max-width: min(340px, 100%);
+  min-height: var(--ui-control);
+  padding: 0 var(--ui-space-3);
+  border: 0;
+  border-radius: var(--ui-radius-pill);
+  background: var(--ui-surface);
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
+  box-shadow: var(--ui-shadow-sm);
+  color: var(--ui-text);
+  font: 400 var(--ui-fs-sm) / 1.45 var(--ui-font);
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.simwarn:hover {
+  background: var(--ui-surface-solid);
+}
+.simwarn:focus-visible {
+  outline: none;
+  box-shadow: var(--ui-focus);
+}
+.simwarn.is-open {
+  padding: 0 var(--ui-space-3) var(--ui-space-3);
+  border-radius: var(--ui-radius);
+}
+.simwarn__head {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  height: var(--ui-control);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.simwarn__icon {
+  color: var(--ui-warn-icon);
+}
+.simwarn__caret {
+  color: var(--ui-text-3);
+}
+.simwarn__text {
+  color: var(--ui-text);
+}
+.simwarn--info .simwarn__icon {
+  color: var(--ui-text-2);
+}

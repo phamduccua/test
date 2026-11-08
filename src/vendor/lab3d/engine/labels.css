@@ -1,0 +1,73 @@
+/* Nhãn 3D (CSS2D): viên thuốc sáng nhỏ, chữ đậm vừa; màu nội dung (opts.color) chỉ là chấm nhỏ. Không blur (nhãn di chuyển mỗi frame). */
+.labels-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--ui-z-labels, 0);
+  pointer-events: none;
+  overflow: hidden;
+}
+.lab-label {
+  padding: 3px 8px;
+  border-radius: var(--ui-radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  /* Nền nhãn luôn sáng → chữ luôn tối; không theo --ui-text (khung kính tối SimTheme đặt --ui-text sáng → chữ trắng trên nền trắng). */
+  color: #1d1d1f;
+  font: 500 var(--ui-fs-xs) / 1.3 var(--ui-font);
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: opacity var(--ui-dur) var(--ui-ease);
+}
+.lab-label--dot::before,
+.lab-label.geo-label[style*='--label-color']::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 6px 1px 0;
+  border-radius: 50%;
+  background: var(--label-color);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+  vertical-align: middle;
+}
+.lab-label--small {
+  padding: 1px 6px;
+  font-size: 10px;
+}
+.lab-label--title {
+  max-width: 320px;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-radius: var(--ui-radius-sm);
+  font-size: var(--ui-fs-md);
+  line-height: 1.4;
+  white-space: normal;
+  text-align: left;
+}
+/* Chế độ gọn (mặc định): nhãn thường chỉ hiện khi con trỏ tới gần / vật đang liên quan (engine/labelFocus.ts). */
+.labels-layer.is-quiet .lab-label--auto:not(.is-near):not(.is-focus) {
+  opacity: 0;
+}
+
+/* Đường nối nhãn → vật (labelLayout.ts): nằm ngay dưới lớp nhãn, mảnh, viền tối nhẹ để thấy trên nền sáng lẫn tối. */
+.labels-leaders {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--ui-z-labels, 0);
+  pointer-events: none;
+  overflow: hidden;
+}
+.labels-leaders line {
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.55));
+}
+.labels-leaders circle {
+  fill: #fff;
+  stroke: rgba(15, 23, 42, 0.55);
+  stroke-width: 1;
+}
+/* Nhãn có vật chắn phía trước: mờ hẳn (vẫn hiện khi con trỏ tới gần hoặc vật đang liên quan tới bước). */
+.lab-label.is-occluded:not(.is-near):not(.is-focus) {
+  opacity: 0.18;
+}

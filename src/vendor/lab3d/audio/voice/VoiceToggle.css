@@ -1,0 +1,13 @@
+/* "Đọc hướng dẫn" toggle: same quiet look as the speaker button (grey when off, text colour when on). */
+.simbar__btn.simbar__voice {
+  color: var(--ui-text-2);
+}
+.simbar__btn.simbar__voice.is-voice {
+  color: var(--ui-text);
+}
+/* No Vietnamese voice in this browser: dimmed, tooltip explains. */
+.simbar__btn.simbar__voice[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: default;
+  background: transparent;
+}

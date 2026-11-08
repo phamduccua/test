@@ -1,0 +1,106 @@
+/*
+ * Token giao diện lớp phủ mô phỏng 3D (toolbar, chip, bảng, nhãn…) – MỌI CSS của kit và sim dùng biến này, không hard-code màu.
+ * Màu PTIT (đo từ nguồn chính thức, 25/10/2026):
+ *   #DE221A – đỏ logo, https://ptit.edu.vn/wp-content/uploads/2024/05/logo-ptit-1.svg (fill chủ đạo, 10/17 mảng)
+ *   #BC2626 – đỏ chủ đạo trang https://ptit.edu.vn (Elementor --e-global-color-primary; cũng có trong logo)
+ * Còn lại là thang xám trung tính. Một màu nhấn duy nhất (đỏ) cho hành động chính, trạng thái đang chọn và bước hiện tại.
+ * Màu chất / hiện tượng / dữ liệu trong cảnh 3D là NỘI DUNG, không lấy từ đây.
+ */
+:root {
+  /* Thương hiệu */
+  --ui-red: #de221a;
+  --ui-red-strong: #bc2626;
+  --ui-white: #fff;
+
+  /* Nhấn: nền nút chính dùng --ui-accent (chữ trắng 4,8:1); CHỮ đỏ trên nền sáng dùng --ui-accent-text (≥ 4,8:1 trên mặt kính). */
+  --ui-accent: var(--ui-red);
+  --ui-accent-hover: var(--ui-red-strong);
+  --ui-accent-text: var(--ui-red-strong);
+  --ui-accent-soft: rgba(222, 34, 26, 0.1);
+  --ui-on-accent: #fff;
+
+  /* Xám trung tính (chữ trên --ui-surface kể cả trên cảnh tối nhất: text 13,6:1, text-2 5,1:1, accent-text 4,9:1, ok 5,3:1, warn 5,5:1; text-3 chỉ cho icon phụ / trạng thái tắt) */
+  --ui-text: #1d1d1f;
+  --ui-text-2: #5f5f64;
+  --ui-text-3: #8e8e93;
+  --ui-surface: rgba(255, 255, 255, 0.9);
+  --ui-surface-solid: #fff;
+  --ui-surface-2: #f5f5f7;
+  --ui-fill: rgba(60, 60, 67, 0.07);
+  --ui-fill-hover: rgba(60, 60, 67, 0.13);
+  --ui-fill-active: rgba(60, 60, 67, 0.2);
+  --ui-line: rgba(60, 60, 67, 0.14);
+  --ui-blur: saturate(180%) blur(18px);
+  --ui-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 6px 20px rgba(0, 0, 0, 0.12);
+  --ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --ui-focus: 0 0 0 2px var(--ui-white), 0 0 0 4px var(--ui-accent);
+
+  /* Ngữ nghĩa – chỉ đúng / sai / cảnh báo an toàn, dạng nhạt và nhỏ */
+  --ui-ok: #176b2c;
+  --ui-ok-soft: rgba(52, 199, 89, 0.14);
+  --ui-warn: #864e00;
+  --ui-warn-icon: #d97706;
+  --ui-warn-soft: rgba(255, 159, 10, 0.14);
+  --ui-danger: var(--ui-red-strong);
+  --ui-danger-soft: var(--ui-accent-soft);
+
+  /* Hình khối + lưới 8 px */
+  --ui-radius: 12px;
+  --ui-radius-sm: 8px;
+  --ui-radius-xs: 6px;
+  --ui-radius-pill: 999px;
+  --ui-space-1: 4px;
+  --ui-space-2: 8px;
+  --ui-space-3: 12px;
+  --ui-space-4: 16px;
+  --ui-space-5: 24px;
+  /* Lề tới mép khung, cao nút/thanh */
+  --ui-edge: 16px;
+  --ui-control: 32px;
+  --ui-bar: 40px;
+
+  /* Chữ: Roboto qua --font-sans của dự án (src/index.css); ít bậc cỡ */
+  --ui-font: var(--font-sans, Roboto, Arial, sans-serif);
+  --ui-fs-xs: 11px;
+  --ui-fs-sm: 12px;
+  --ui-fs-md: 13px;
+  --ui-fs-lg: 15px;
+
+  /* Xếp lớp trong .simhost */
+  --ui-z-labels: 0;
+  --ui-z-overlay: 1;
+  --ui-z-panel: 3;
+  --ui-z-chrome: 4;
+  --ui-z-gui: 5;
+  --ui-z-toast: 6;
+
+  /* Icon dùng làm mask trong CSS (tiêu đề lil-gui) */
+  --ui-icon-sliders: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M4 7h9.5M18.5 7H20M4 17h3.5M12.5 17H20'/%3E%3Ccircle cx='16' cy='7' r='2.3'/%3E%3Ccircle cx='10' cy='17' r='2.3'/%3E%3C/svg%3E");
+
+  --ui-dur: 160ms;
+  --ui-ease: cubic-bezier(0.2, 0.6, 0.35, 1);
+}
+
+/* Bảng tối (khi nội dung bên trong – canvas đồ thị cũ – vẽ cho nền tối): cùng tên biến, đổi giá trị. */
+.ui-dark {
+  --ui-text: #f5f5f7;
+  --ui-text-2: #c7c7cc;
+  --ui-text-3: #8e8e93;
+  --ui-surface: rgba(28, 28, 30, 0.86);
+  --ui-surface-solid: #1c1c1e;
+  --ui-surface-2: #2c2c2e;
+  --ui-fill: rgba(255, 255, 255, 0.08);
+  --ui-fill-hover: rgba(255, 255, 255, 0.14);
+  --ui-fill-active: rgba(255, 255, 255, 0.2);
+  --ui-line: rgba(255, 255, 255, 0.14);
+  --ui-accent-text: #ff6961;
+  --ui-accent-soft: rgba(255, 105, 97, 0.16);
+  /* Ngữ nghĩa trên nền tối (màu hệ thống tối kiểu Apple; chữ ≥ 6:1 trên --ui-surface tối) */
+  --ui-ok: #30d158;
+  --ui-ok-soft: rgba(48, 209, 88, 0.16);
+  --ui-warn: #ff9f0a;
+  --ui-warn-icon: #ff9f0a;
+  --ui-warn-soft: rgba(255, 159, 10, 0.16);
+  --ui-danger: #ff6961;
+  --ui-danger-soft: rgba(255, 105, 97, 0.16);
+}

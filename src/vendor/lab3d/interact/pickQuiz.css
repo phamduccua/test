@@ -1,0 +1,26 @@
+/* Khung hỏi nhanh cạnh chỗ bấm (createPickQuiz): bảng kính sáng chuẩn (.ui-panel), nút lựa chọn nền xám nhạt. */
+.ix-quiz {
+  position: absolute;
+  z-index: var(--ui-z-gui);
+  display: none;
+  pointer-events: auto;
+}
+.ix-quiz .ui-btn {
+  min-height: 26px;
+  margin: 2px;
+  padding: 0 var(--ui-space-2);
+  background: var(--ui-fill);
+}
+.ix-quiz .ui-btn:hover {
+  background: var(--ui-fill-hover);
+}
+.ix-quiz .ok {
+  color: var(--ui-ok);
+}
+.ix-quiz .warn {
+  color: var(--ui-warn);
+}
+.ix-quiz .sub {
+  margin-top: var(--ui-space-1);
+  color: var(--ui-text-2);
+}

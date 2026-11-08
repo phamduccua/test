@@ -1,0 +1,117 @@
+/* Thẻ kết quả dùng chung (createResultCard): bảng xám đậm theo token khi mở, chip sáng có tên khi thu gọn. */
+.rcard {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--ui-radius);
+  background: var(--ui-surface);
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
+  box-shadow: var(--ui-shadow);
+  color: var(--ui-text);
+  font: 400 var(--ui-fs-sm) / 1.45 var(--ui-font);
+  pointer-events: auto;
+}
+.rcard__head {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  min-height: var(--ui-control);
+  padding: 4px var(--ui-space-3);
+  color: var(--ui-text);
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+.rcard__head:focus-visible {
+  box-shadow: inset var(--ui-focus);
+}
+.rcard__icon {
+  color: var(--ui-text-2);
+}
+.rcard__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rcard__body {
+  padding: 0 var(--ui-space-3) var(--ui-space-3);
+  overflow: auto;
+}
+.rcard.is-collapsed {
+  --ui-surface: rgba(255, 255, 255, 0.9);
+  --ui-text: #1d1d1f;
+  --ui-text-2: #5f5f64;
+  max-width: min(320px, calc(100% - 2 * var(--ui-edge)));
+  border-radius: var(--ui-radius-pill);
+  box-shadow: var(--ui-shadow-sm);
+}
+.rcard.is-collapsed .rcard__head {
+  padding: 0 var(--ui-space-3) 0 10px;
+  font-size: var(--ui-fs-sm);
+}
+.rcard.is-collapsed .rcard__body {
+  display: none;
+}
+/* Nội dung hay gặp trong thẻ (bảng số liệu, mục <details>, chú thích nhỏ): sim không cần CSS màu riêng – dùng token,
+   cùng giá trị ở nền tối (.ui-dark) lẫn sáng. Sim chỉ thêm luật bố cục riêng, giới hạn dưới lớp của thẻ. */
+.rcard__body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ui-fs-xs);
+}
+.rcard__body th,
+.rcard__body td {
+  padding: 2px 4px;
+  text-align: center;
+  border-bottom: 1px solid var(--ui-line);
+}
+.rcard__body th {
+  color: var(--ui-text-2);
+  font-weight: 500;
+}
+.rcard__body p {
+  margin: var(--ui-space-1) 0;
+}
+.rcard__body details {
+  margin-top: var(--ui-space-2);
+}
+.rcard__body summary {
+  color: var(--ui-text-2);
+  font-weight: 500;
+  cursor: pointer;
+}
+.rcard__body summary:hover {
+  color: var(--ui-text);
+}
+.rcard__body small {
+  color: var(--ui-text-2);
+}
+/* Lớp tiện ích hay dùng trong thẻ: canh trái ô bảng, chữ phụ, dòng chú thích cuối, không xuống dòng. */
+.rcard__body .l {
+  text-align: left;
+}
+.rcard__body .sub {
+  color: var(--ui-text-2);
+}
+.rcard__body .foot {
+  margin-top: var(--ui-space-1);
+  color: var(--ui-text-2);
+  font-size: var(--ui-fs-xs);
+}
+.rcard__body .nw {
+  white-space: nowrap;
+}
+/* Ngữ nghĩa nhỏ (đúng / lưu ý / sai) – màu theo nền của thẻ. */
+.rcard__body .ok {
+  color: var(--ui-ok);
+}
+.rcard__body .warn {
+  color: var(--ui-warn);
+}
+.rcard__body .bad {
+  color: var(--ui-danger);
+}

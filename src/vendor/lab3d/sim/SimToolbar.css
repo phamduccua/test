@@ -1,0 +1,166 @@
+/*
+ * Thanh công cụ của khung 3D (token: kit/lab3d/ui/tokens.css). Hai viên thuốc LUÔN cùng một hàng: khung hẹp (vd. 764 px khi
+ * trang 1366 × 768) thì tên sim co lại, cắt bằng "…" (tên đủ ở title); chỉ khung rất hẹp (< 480 px, điện thoại) mới xuống dòng.
+ */
+.simbar {
+  max-width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--ui-space-2);
+  pointer-events: none;
+  font-family: var(--ui-font);
+}
+.simbar > * {
+  pointer-events: auto;
+}
+.simbar__title,
+.simbar__controls {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: var(--ui-bar);
+  border-radius: var(--ui-radius-pill);
+  background: var(--ui-surface);
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
+  box-shadow: var(--ui-shadow-sm);
+  color: var(--ui-text);
+}
+.simbar__title {
+  flex: 0 1 auto;
+  gap: var(--ui-space-2);
+  max-width: min(440px, 100%);
+  padding: 0 var(--ui-space-4);
+}
+.simbar__controls {
+  flex: none;
+  gap: 2px;
+  padding: 0 var(--ui-space-1);
+}
+.simbar__id {
+  flex: none;
+  font-size: var(--ui-fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.simbar__badge {
+  flex: none;
+  color: var(--ui-text-2);
+  font-size: var(--ui-fs-xs);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.simbar__name {
+  flex: 1 1 auto;
+  min-width: 40px;
+  overflow: hidden;
+  color: var(--ui-text);
+  font-size: var(--ui-fs-md);
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.simbar__name:empty {
+  display: none;
+}
+.simbar__btn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--ui-control);
+  height: var(--ui-control);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ui-radius-pill);
+  background: transparent;
+  color: var(--ui-text);
+  cursor: pointer;
+  transition: background var(--ui-dur) var(--ui-ease);
+}
+.simbar__btn:hover {
+  background: var(--ui-fill-hover);
+}
+.simbar__btn:focus-visible,
+.simbar__seg button:focus-visible {
+  outline: none;
+  box-shadow: var(--ui-focus);
+}
+.simbar__btn.is-on {
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+}
+/* Tốc độ: chip "1×", thanh trượt mở khi rê chuột / focus (chạm). */
+.simbar__speed {
+  display: flex;
+  align-items: center;
+  height: var(--ui-control);
+  padding: 0 var(--ui-space-2);
+  border-radius: var(--ui-radius-pill);
+  color: var(--ui-text);
+  font-size: var(--ui-fs-sm);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.simbar__speed:hover {
+  background: var(--ui-fill);
+}
+.simbar__speed span {
+  min-width: 30px;
+  text-align: center;
+}
+.simbar__speed input {
+  width: 0;
+  margin: 0;
+  opacity: 0;
+  accent-color: var(--ui-accent);
+  transition: width var(--ui-dur) var(--ui-ease), opacity var(--ui-dur) var(--ui-ease), margin var(--ui-dur);
+}
+.simbar__speed:hover input,
+.simbar__speed:focus-within input {
+  width: 72px;
+  margin: 0 var(--ui-space-1) 0 var(--ui-space-1);
+  opacity: 1;
+}
+/* Vĩ mô / Vi mô: điều khiển phân đoạn, mục đang chọn nền trắng nổi. */
+.simbar__seg {
+  display: flex;
+  margin: 0 2px;
+  padding: 2px;
+  border-radius: var(--ui-radius-pill);
+  background: var(--ui-fill);
+}
+.simbar__seg button {
+  height: 28px;
+  padding: 0 var(--ui-space-3);
+  border: 0;
+  border-radius: var(--ui-radius-pill);
+  background: none;
+  color: var(--ui-text-2);
+  font: 500 var(--ui-fs-sm) / 1 var(--ui-font);
+  cursor: pointer;
+}
+.simbar__seg button.is-on {
+  background: var(--ui-surface-solid);
+  color: var(--ui-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+/* Khung hẹp (container .simhost): bỏ nhãn loại, thu nút phân đoạn; rất hẹp thì cho xuống dòng như cũ. */
+@container simhost (max-width: 800px) {
+  .simbar__badge {
+    display: none;
+  }
+  .simbar__title {
+    padding: 0 var(--ui-space-3);
+  }
+  .simbar__seg button {
+    padding: 0 var(--ui-space-2);
+  }
+}
+@container simhost (max-width: 480px) {
+  .simbar {
+    flex-wrap: wrap;
+  }
+}

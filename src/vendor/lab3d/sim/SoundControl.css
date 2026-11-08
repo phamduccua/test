@@ -1,0 +1,25 @@
+.simbar__sound {
+  display: flex;
+  align-items: center;
+  border-radius: var(--ui-radius-pill);
+}
+.simbar__sound .simbar__btn {
+  color: var(--ui-text-2);
+}
+.simbar__sound .simbar__btn.is-sound {
+  color: var(--ui-text);
+}
+/* Thanh âm lượng mở ra khi rê chuột / focus (chạm trên màn cảm ứng). */
+.simbar__vol {
+  width: 0;
+  opacity: 0;
+  margin: 0;
+  accent-color: var(--ui-accent);
+  transition: width var(--ui-dur) var(--ui-ease), opacity var(--ui-dur) var(--ui-ease), margin var(--ui-dur);
+}
+.simbar__sound:hover .simbar__vol,
+.simbar__sound:focus-within .simbar__vol {
+  width: 72px;
+  opacity: 1;
+  margin: 0 var(--ui-space-2) 0 2px;
+}

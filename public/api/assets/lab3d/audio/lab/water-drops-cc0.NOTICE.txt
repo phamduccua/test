@@ -1,0 +1,6 @@
+Drops of water #4
+Author: Joseph SARDIN
+Source: https://bigsoundbank.com/drops-of-water-4-s1387.html
+License: CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/)
+Downloaded: 2026-10-25
+Processing: first 2.5 seconds, fade out 60 ms, MP3 128 kbps and Opus/WebM 64 kbps.

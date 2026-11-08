@@ -1,0 +1,14 @@
+.lab-label.orb-axis-label {
+  padding: 0 4px;
+  background: none;
+  box-shadow: none;
+  color: var(--label-color, #e2e8f0);
+  font: italic 500 19px var(--ui-font);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.9), 0 0 12px rgba(0, 0, 0, 0.6);
+}
+.lab-label.orb-axis-label--small {
+  font-size: 14px;
+}
+.lab-label.orb-name-label {
+  font-size: var(--ui-fs-sm);
+}

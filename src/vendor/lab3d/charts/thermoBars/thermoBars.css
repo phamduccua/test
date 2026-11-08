@@ -1,0 +1,41 @@
+.lab-label.tbars-tick {
+  padding: 0 4px;
+  background: none;
+  box-shadow: none;
+  color: #c7d0dc;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  font-size: 10px;
+  font-weight: 500;
+  transform: translateX(-50%);
+}
+.lab-label.tbars-name {
+  padding: 1px 8px;
+  font-size: var(--ui-fs-xs);
+}
+.lab-label.tbars-name.is-active {
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+}
+.lab-label.tbars-val {
+  padding: 0 5px;
+  font-size: 10px;
+  font-weight: 500;
+}
+.lab-label.tbars-val--tm {
+  color: var(--ui-text-2);
+  transform: translateX(10%);
+  opacity: 0.9;
+}
+.lab-label.tbars-val.is-ghost {
+  font-style: italic;
+  opacity: 0.8;
+}
+.lab-label.tbars-needle {
+  padding: 1px 8px;
+  font-size: var(--ui-fs-xs);
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+}
+.lab-label.tbars-title {
+  font-size: var(--ui-fs-xs);
+}

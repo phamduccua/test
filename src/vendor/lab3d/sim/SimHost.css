@@ -1,0 +1,82 @@
+/* Khung 3D: chữ Roboto (--font-sans của dự án qua --ui-font), lớp phủ theo token kit/lab3d/ui/tokens.css. */
+.simhost {
+  /* Kéo thả trong cảnh không bôi đen chữ của HUD/thẻ. */
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: var(--ui-font);
+  /* Biến cũ (bảng tối của các sim chưa chuyển token) – giữ nguyên giá trị để không vỡ. */
+  --glass: rgba(16, 22, 33, 0.66);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  /* Một màu nhấn duy nhất cho mọi môn (thay màu riêng của môn đặt qua SimulationFrame). */
+  --lab-accent: var(--ui-accent);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* Cho thanh công cụ (và lớp phủ) co theo bề rộng khung, không theo cửa sổ. */
+  container: simhost / inline-size;
+  color: var(--ui-text);
+  background: #0d121b;
+}
+.simhost__viewport {
+  position: absolute;
+  inset: 0;
+  /* Ngữ cảnh xếp lớp riêng: canvas, nhãn CSS2D (z-index tới hàng trăm) và ctx.overlay luôn nằm DƯỚI toolbar/lil-gui. */
+  z-index: 0;
+  isolation: isolate;
+  touch-action: none;
+}
+.sim-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: var(--ui-z-overlay);
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Cột trái: thanh công cụ → chip số đo → chip cảnh báo (xếp dọc, không chồng nhau). */
+.simhost__left {
+  position: absolute;
+  top: var(--ui-edge);
+  left: var(--ui-edge);
+  right: 200px;
+  bottom: 72px;
+  z-index: var(--ui-z-chrome);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ui-space-2);
+  pointer-events: none;
+}
+.engine-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* HUD đặt chỗ khác (ctx.setHudPlacement) – mặc định nằm trong .simhost__left. */
+.simhost__hud {
+  position: absolute;
+  z-index: var(--ui-z-chrome);
+  max-width: min(360px, 45%);
+  pointer-events: none;
+}
+.simhost__hud--bottom-left {
+  left: var(--ui-edge);
+  bottom: 72px;
+}
+.simhost__hud--bottom-right {
+  right: var(--ui-edge);
+  bottom: 72px;
+}
+.simhost__hud--top-right {
+  top: 60px;
+  right: var(--ui-edge);
+}
+
+/* Trưng bày (trang chủ): chỉ còn cảnh; giao diện vẫn trong DOM (nút Tự động được bấm bằng mã) nhưng ẩn và không nhận chuột. */
+.simhost--showcase,
+.simhost--showcase * {
+  pointer-events: none !important;
+}
+.simhost--showcase :is(.simhost__left, .simhost__gui, .simhost__hud, .sim-overlay, .simov__center, .simov__caption, .labels-layer, .labels-leaders) {
+  visibility: hidden !important;
+}

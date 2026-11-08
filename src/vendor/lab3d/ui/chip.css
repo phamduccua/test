@@ -1,0 +1,188 @@
+/* Phần tử cơ bản của lớp phủ (token: tokens.css): icon, chip thu gọn, bảng nổi, nút. Sim dùng lại thay vì tự vẽ. */
+.ui-icon {
+  flex: none;
+  display: block;
+}
+
+/* Ẩn khỏi mắt nhưng vẫn đọc được (trình đọc màn hình, innerText). */
+.ui-sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Chip: một dòng, có nhãn, bấm để mở thứ đang thu gọn (bảng Tham số, số đo, cảnh báo, kết quả…). */
+.ui-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  max-width: 100%;
+  height: var(--ui-control);
+  padding: 0 var(--ui-space-3);
+  border: 0;
+  border-radius: var(--ui-radius-pill);
+  background: var(--ui-surface);
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
+  box-shadow: var(--ui-shadow-sm);
+  color: var(--ui-text);
+  font: 500 var(--ui-fs-sm) / 1 var(--ui-font);
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background var(--ui-dur) var(--ui-ease);
+}
+.ui-chip:hover {
+  background: var(--ui-surface-solid);
+}
+.ui-chip:focus-visible {
+  outline: none;
+  box-shadow: var(--ui-focus);
+}
+.ui-chip > .ui-icon {
+  color: var(--ui-text-2);
+}
+.ui-chip__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ui-chip__meta {
+  color: var(--ui-text-2);
+  font-variant-numeric: tabular-nums;
+}
+.ui-chip__meta:empty {
+  display: none;
+}
+
+/* Bảng nổi chuẩn (thẻ kết quả, chú giải…): nền kính sáng, bo 12, bóng mềm, chữ 12–13 px. */
+.ui-panel {
+  padding: var(--ui-space-3) var(--ui-space-4);
+  border-radius: var(--ui-radius);
+  background: var(--ui-surface);
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
+  box-shadow: var(--ui-shadow);
+  color: var(--ui-text);
+  font: 400 var(--ui-fs-sm) / 1.45 var(--ui-font);
+}
+.ui-panel__title {
+  margin: 0 0 var(--ui-space-2);
+  font-size: var(--ui-fs-md);
+  font-weight: 500;
+}
+
+/* collapsible(): thu gọn → chỉ còn chip (bảng mất khung riêng); mở → chip thành nút ⌃ nhỏ ở góc phải trên. */
+.ui-collapsible {
+  position: relative;
+}
+.ui-collapsible.is-collapsed {
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  overflow: visible !important;
+}
+/* Bảng tối khi thu gọn: chip vẫn sáng như mọi chip khác. */
+.ui-collapsible.is-collapsed.ui-dark {
+  --ui-surface: rgba(255, 255, 255, 0.9);
+  --ui-surface-solid: #fff;
+  --ui-text: #1d1d1f;
+  --ui-text-2: #5f5f64;
+}
+.ui-collapsible.is-collapsed > :not(.ui-collapse__chip) {
+  display: none !important;
+}
+.ui-collapse__chip > .ui-icon:last-child,
+.ui-collapsible:not(.is-collapsed) > .ui-collapse__chip > :not(.ui-icon:last-child) {
+  display: none;
+}
+.ui-collapsible:not(.is-collapsed) > .ui-collapse__chip {
+  position: absolute;
+  top: var(--ui-space-1);
+  right: var(--ui-space-1);
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  justify-content: center;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.ui-collapsible:not(.is-collapsed) > .ui-collapse__chip > .ui-icon:last-child {
+  display: block;
+}
+.ui-collapsible:not(.is-collapsed) > .ui-collapse__chip:hover {
+  background: var(--ui-fill);
+}
+
+/* Nút icon tròn và nút chữ trong thanh / bảng của kit. */
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: none;
+  min-width: var(--ui-control);
+  height: var(--ui-control);
+  padding: 0 var(--ui-space-2);
+  border: 0;
+  border-radius: var(--ui-radius-pill);
+  background: transparent;
+  color: var(--ui-text);
+  font: 500 var(--ui-fs-sm) / 1 var(--ui-font);
+  cursor: pointer;
+  transition: background var(--ui-dur) var(--ui-ease), color var(--ui-dur) var(--ui-ease);
+}
+.ui-btn:hover {
+  background: var(--ui-fill-hover);
+}
+.ui-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ui-focus);
+}
+.ui-btn:disabled {
+  color: var(--ui-text-3);
+  background: transparent;
+  cursor: default;
+}
+.ui-btn--primary,
+.ui-btn.on {
+  padding: 0 var(--ui-space-3);
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+}
+.ui-btn--primary:hover,
+.ui-btn.on:hover {
+  background: var(--ui-accent-hover);
+}
+/* Ô màu chú giải trong bảng / thẻ: màu DỮ LIỆU đặt inline (style="background:…"), hình dáng ở đây. */
+.ui-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 50%;
+  vertical-align: -1px;
+}
+.ui-swatch--line {
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
+  vertical-align: 3px;
+}
+.ui-swatch--square {
+  border-radius: 3px;
+}

@@ -1,0 +1,25 @@
+/* Nhãn khung đồ thị 3D (charts/axes): vạch số chữ nhỏ không khung, tên trục dạng nhãn thường (token). */
+.lab-label.ax-tick {
+  padding: 0 2px;
+  background: none;
+  box-shadow: none;
+  color: #c7d0dc;
+  font: 500 var(--ui-fs-xs) / 1 var(--ui-font);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.lab-label.ax-tick--y {
+  transform-origin: right center;
+  text-align: right;
+}
+.lab-label.ax-title {
+  padding: 2px 8px;
+  font: italic 500 var(--ui-fs-sm) / 1.2 var(--ui-font);
+}
+.lab-label.ax-title--v {
+  padding: 8px 2px;
+}
+.ax-title--v span {
+  display: inline-block;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}

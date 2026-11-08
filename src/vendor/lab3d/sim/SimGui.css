@@ -1,0 +1,159 @@
+/*
+ * lil-gui (ctx.gui) theo token: thu gọn mặc định thành chip "Tham số" ở góc phải trên; mở → bảng kính sáng, cuộn khi dài.
+ * Luôn thu gọn khi vào bài; khi mở chiếm tối đa 25 % bề ngang khung (tối thiểu 200 px trên khung hẹp).
+ */
+.simhost__gui {
+  position: absolute;
+  top: var(--ui-edge);
+  right: var(--ui-edge);
+  z-index: var(--ui-z-gui);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-height: calc(100% - 2 * var(--ui-edge) - 56px);
+  max-width: max(200px, 25%);
+}
+.simhost__gui .sim-gui.lil-root:not(.lil-closed) {
+  max-width: 100%;
+}
+.simhost__gui:empty {
+  display: none;
+}
+/* Biến lil-gui đặt cho gốc VÀ mọi thư mục con (lil-gui khai báo lại mặc định tối ở từng .lil-gui). */
+.sim-gui.lil-gui,
+.sim-gui .lil-gui {
+  --background-color: transparent;
+  --title-background-color: transparent;
+  --text-color: var(--ui-text);
+  --title-text-color: var(--ui-text);
+  --widget-color: var(--ui-fill);
+  --hover-color: var(--ui-fill-hover);
+  --focus-color: var(--ui-fill-active);
+  --number-color: var(--ui-accent);
+  --string-color: var(--ui-text-2);
+  --font-family: var(--ui-font);
+  --font-size: var(--ui-fs-sm);
+  --input-font-size: var(--ui-fs-sm);
+  --widget-height: 24px;
+  --spacing: 6px;
+  --padding: 12px;
+  --name-width: 46%;
+  --folder-indent: 0px;
+  --widget-border-radius: var(--ui-radius-xs);
+  --slider-knob-width: 3px;
+  --scrollbar-width: 4px;
+}
+.sim-gui.lil-gui {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 100%;
+  border-radius: var(--ui-radius);
+  overflow: hidden;
+  background: var(--ui-surface);
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
+  box-shadow: var(--ui-shadow);
+  color: var(--ui-text);
+}
+/* Tiêu đề gốc: icon thanh trượt + "Tham số" (thay ▸/▾). */
+.sim-gui.lil-root > .lil-title {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  height: var(--ui-bar);
+  padding: 0 var(--ui-space-4) 0 var(--ui-space-3);
+  font-weight: 500;
+  font-size: var(--ui-fs-sm);
+  border-bottom: 1px solid var(--ui-line);
+}
+.sim-gui.lil-root > .lil-title::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background: var(--ui-text-2);
+  -webkit-mask: var(--ui-icon-sliders) center / 16px no-repeat;
+  mask: var(--ui-icon-sliders) center / 16px no-repeat;
+}
+.sim-gui.lil-root.lil-closed {
+  width: auto !important;
+  border-radius: var(--ui-radius-pill);
+  box-shadow: var(--ui-shadow-sm);
+}
+.sim-gui.lil-root.lil-closed > .lil-title {
+  height: var(--ui-control);
+  border-bottom: 0;
+}
+.sim-gui.lil-root > .lil-children {
+  min-height: 0;
+  padding: var(--ui-space-1) 0 var(--ui-space-2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* Thư mục: tiêu đề chữ xám nhỏ, không màu riêng; giữa các thư mục một đường mảnh. */
+.sim-gui .lil-gui .lil-title {
+  height: 30px;
+  padding: 0 var(--padding);
+  color: var(--ui-text-2);
+  font-size: var(--ui-fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.sim-gui.lil-root > .lil-children > .lil-gui > .lil-title {
+  border-color: var(--ui-line);
+}
+.sim-gui .lil-gui .lil-gui > .lil-children {
+  border-left: 0;
+}
+.sim-gui .lil-gui + .lil-controller {
+  border-top-color: var(--ui-line);
+}
+.sim-gui .lil-controller > .lil-name {
+  color: var(--ui-text-2);
+}
+.sim-gui .lil-controller.lil-number input {
+  color: var(--ui-text);
+  text-align: right;
+  padding-right: 6px;
+}
+.sim-gui .lil-controller .lil-slider .lil-fill {
+  background: var(--ui-accent-soft);
+}
+.sim-gui .lil-controller.lil-function button {
+  font-weight: 500;
+}
+.sim-gui input[type='checkbox'] {
+  background: var(--ui-fill-hover);
+}
+.sim-gui input[type='checkbox']:checked {
+  background: var(--ui-accent);
+  color: var(--ui-on-accent);
+}
+.sim-gui.lil-root > .lil-title:focus-visible {
+  outline: none;
+  box-shadow: inset var(--ui-focus);
+}
+
+/* Điện thoại (kế hoạch nâng cấp P2-4): bảng Tham số khi mở trượt lên từ dưới (bottom sheet), rộng gần hết khung, cao tối đa nửa khung;
+   khi thu gọn vẫn là chip ở góc phải trên – không đè thanh bước ở dưới. */
+@media (max-width: 640px) {
+  .simhost__gui:has(.sim-gui.lil-root:not(.lil-closed)) {
+    top: auto;
+    left: var(--ui-edge);
+    right: var(--ui-edge);
+    bottom: var(--ui-edge);
+    max-width: none;
+    max-height: 55%;
+    align-items: stretch;
+    animation: simgui-sheet 0.25s ease-out;
+  }
+  .simhost__gui .sim-gui.lil-root:not(.lil-closed) {
+    width: 100% !important;
+    border-radius: 16px 16px 12px 12px;
+  }
+}
+@keyframes simgui-sheet {
+  from { transform: translateY(40%); opacity: 0; }
+}

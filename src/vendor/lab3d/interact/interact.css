@@ -1,0 +1,170 @@
+/* Kit tương tác (kit/lab3d/interact) theo token (kit/lab3d/ui/tokens.css): tooltip, thông báo nhanh, thanh bước, thanh tua, mũi tên gợi ý. */
+.ix-tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: var(--ui-z-panel);
+  padding: 5px 10px;
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-surface-solid);
+  color: var(--ui-text);
+  font: 500 var(--ui-fs-sm) / 1.35 var(--ui-font);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(14px, 16px);
+  transition: opacity 0.12s;
+  box-shadow: var(--ui-shadow-sm);
+}
+.ix-tip.on { opacity: 1; }
+/* Thông báo nhanh: viên thuốc sáng, chỉ chấm màu nói đúng/sai (đỏ = sai, xanh = xong bước, xám = thông tin). */
+.ix-toast {
+  position: absolute;
+  z-index: var(--ui-z-toast);
+  width: max-content;
+  max-width: min(380px, 80%);
+  padding: 8px 14px 8px 12px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-surface-solid);
+  box-shadow: var(--ui-shadow);
+  color: var(--ui-text);
+  font: 500 var(--ui-fs-md) / 1.4 var(--ui-font);
+  text-align: left;
+  transform: translate(-50%, 0);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s, transform 0.18s;
+}
+.ix-toast::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 8px 1px 0;
+  border-radius: 50%;
+  background: var(--ui-danger);
+  vertical-align: middle;
+}
+.ix-toast.ok::before { background: var(--ui-ok); }
+.ix-toast.info::before { background: var(--ui-text-3); }
+.ix-toast.on { opacity: 1; transform: translate(-50%, -4px); }
+/* Thanh bước: một dòng, nền kính sáng; số bước màu nhấn (bước hiện tại), nút Tự động nền nhấn khi đang chạy. */
+.ix-proc {
+  position: absolute;
+  left: 50%;
+  z-index: var(--ui-z-panel);
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  max-width: min(640px, calc(100% - 2 * var(--ui-edge)));
+  height: var(--ui-bar);
+  padding: 0 var(--ui-space-1) 0 var(--ui-space-4);
+  white-space: nowrap;
+  border-radius: var(--ui-radius-pill);
+  background: var(--ui-surface);
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
+  box-shadow: var(--ui-shadow);
+  color: var(--ui-text);
+  font: 400 var(--ui-fs-md) / 1 var(--ui-font);
+  pointer-events: auto;
+}
+.ix-proc b {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  margin-right: var(--ui-space-2);
+  color: var(--ui-accent-text);
+  font-size: var(--ui-fs-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ix-proc.is-done b { color: var(--ui-ok); }
+.ix-proc .t { min-width: 0; margin-right: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ix-proc .ix-proc-sep { flex: none; width: 1px; height: 20px; margin: 0 var(--ui-space-1); background: var(--ui-line); }
+.ix-proc button { min-height: 0; }
+.ix-proc .ix-proc-info { color: var(--ui-text-2); }
+.ix-proc .ix-proc-info.is-on { background: var(--ui-fill-hover); color: var(--ui-text); }
+.ix-proc .ix-proc-undo, .ix-proc .ix-proc-restart { color: var(--ui-text-2); }
+.ix-proc .ix-proc-demo { padding: 0 var(--ui-space-3) 0 10px; background: var(--ui-fill); }
+.ix-proc .ix-proc-demo:hover { background: var(--ui-fill-hover); }
+.ix-proc .ix-proc-demo.on { background: var(--ui-accent); color: var(--ui-on-accent); }
+.ix-proc button:disabled { color: var(--ui-text-3); background: transparent; }
+/* Thanh tua / núm xoay: thẻ sáng, vạch xám, phần đã chạy màu nhấn. */
+.ix-scrub {
+  position: absolute;
+  z-index: var(--ui-z-panel);
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-2) var(--ui-space-4);
+  border-radius: var(--ui-radius);
+  background: var(--ui-surface);
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
+  box-shadow: var(--ui-shadow-sm);
+  color: var(--ui-text);
+  font: 400 var(--ui-fs-sm) / 1.2 var(--ui-font);
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+}
+/* place: 'inline' – nằm trong hộp của sim / kit (createScopeDock), không tự đặt chỗ. */
+.ix-scrub.ix-scrub--inline { position: static; }
+.ix-scrub .lbl { white-space: nowrap; color: var(--ui-text-2); }
+.ix-scrub .val { min-width: 64px; text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ix-scrub .track { position: relative; flex: 1; height: 22px; cursor: grab; }
+.ix-scrub .track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 9px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ui-fill-hover);
+}
+.ix-scrub .fill { position: absolute; left: 0; top: 9px; height: 4px; border-radius: 2px; background: var(--ui-accent); }
+.ix-scrub .thumb {
+  position: absolute;
+  top: 3px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 0.5px rgba(0, 0, 0, 0.08);
+}
+/* Vùng bắt rộng hơn thanh (ngón tay, bút): bấm hơi lệch trên/dưới vẫn trúng. */
+.ix-scrub .track::after { content: ''; position: absolute; inset: -10px -9px; }
+.ix-scrub.dial .track::after { inset: -9px; border-radius: 50%; }
+.ix-scrub.dial .track { flex: none; width: 52px; height: 52px; }
+.ix-scrub.dial .track::before { inset: 0; top: 0; height: auto; border-radius: 50%; border: 4px solid var(--ui-fill-hover); background: none; }
+.ix-scrub.dial .thumb { top: 0; left: 50%; margin: 0 0 0 -7px; width: 14px; height: 14px; transform-origin: 7px 26px; }
+.ix-scrub.off { opacity: 0.45; pointer-events: none; }
+.ix-scrub .track:active, .ix-scrub.drag .track { cursor: grabbing; }
+/* Mũi tên gợi ý chỉ vào phần tử HTML (hint.ts): tam giác màu nhấn chỉ xuống, đỉnh ở mép trên phần tử. */
+.ix-hint-html {
+  position: absolute;
+  left: -9px;
+  top: -14px;
+  z-index: var(--ui-z-toast);
+  width: 0;
+  height: 0;
+  border: 9px solid transparent;
+  border-top: 13px solid var(--ui-accent);
+  border-bottom: 0;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+.ix-hint-html.on { opacity: 1; }
+
+/* Điện thoại (P2-4): nút của thanh bước đủ to cho ngón cái. */
+@media (max-width: 640px) {
+  .ix-proc button { min-height: 44px; min-width: 44px; }
+}
