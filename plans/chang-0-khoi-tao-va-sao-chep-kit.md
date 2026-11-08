@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-08).** Kết quả và các lệch kế hoạch ghi trong `plans/NHAT-KY.md` mục Chặng 0. Phần dưới giữ để tham khảo.
+
 # Chặng 0 — Khởi tạo dự án + sao chép kit + host chạy được
 
 Đọc trước: `plans/00-tong-quan.md`.

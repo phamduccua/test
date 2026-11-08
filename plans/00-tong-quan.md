@@ -42,7 +42,9 @@ File này là **mục lục + quy ước dùng chung**. Mỗi chặng một file
 **1 đơn vị = 1 dm.** `mm()`, `cm()`, `fromML`, `toML` trong `vendor/lab3d/lab/units.ts`. Phòng 96 × 84 dm, trần 30, mặt bàn 9, mắt 16,5. Gốc ở tâm sàn, Y lên. Tường Z = −42 giảng dạy (cửa vào), Z = +42 cửa sổ, X = −48 an toàn, X = +48 kho.
 
 ### 4.2 Kit là thư viện
-- Không sửa file trong `src/vendor/lab3d` ngoài 3 chỗ ở chặng 0 (assets.ts, xóa file React, xóa thư mục không dùng). Cần hành vi khác → viết bọc ngoài trong `src/lab`.
+- **Không sửa tay** file trong `src/vendor/lab3d`. Mọi bản vá nằm trong `scripts/sync-kit.sh` (assets.ts, index.ts, 3 dòng re-export) để chạy lại không mất. Cần hành vi khác → viết bọc ngoài trong `src/lab`.
+- `react` được alias tới `src/vendor/react-shim.ts` (vite + tsconfig paths): vài file kit và zustand chỉ cần `useSyncExternalStore`. `src/data/contentApi.ts` là adapter `apiAssetUrl` cho `audio/voice/clips.ts`. Không thêm React thật.
+- Khung chạy: `src/app/host.ts` (`createHost(root)` → `run(module)`, `reset()`, `view()`), thay SimHost React của kit. Cảnh thử kit: `src/app/devScene.ts`.
 - Kit dùng `labText('t_…')` đọc `src/content/lab3d.json`; khi `src/lab` cần chữ của kit thì gọi `labText`, còn chữ của mình **viết thẳng tiếng Việt trong mã hoặc JSON riêng** (không có ràng buộc khóa SHA-1 ở repo này).
 - Mọi vật thể, material, texture, listener tạo trong sim → `ctx.track(...)`.
 
