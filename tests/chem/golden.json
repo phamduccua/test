@@ -1,0 +1,1302 @@
+[
+ {
+  "id": "A01 trung hòa",
+  "a": "HCl 1M 20ml",
+  "op": "mix",
+  "b": "NaOH 1M 20ml",
+  "expect": {
+   "happened": true,
+   "eq": "HCl + NaOH -> NaCl + H2O",
+   "dT": 1
+  }
+ },
+ {
+  "id": "A02 phenolphtalein hóa hồng",
+  "a": "HCl 0.1M 10ml +phenolphthalein",
+  "op": "mix",
+  "b": "NaOH 0.2M 10ml",
+  "expect": {
+   "happened": true,
+   "indicator": "pink",
+   "phen": [
+    "color_change"
+   ]
+  }
+ },
+ {
+  "id": "A03 hai axit",
+  "a": "HCl 1M 10ml",
+  "op": "mix",
+  "b": "H2SO4 1M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "SAME_CLASS_ACIDS"
+  }
+ },
+ {
+  "id": "A04 hai bazơ",
+  "a": "NaOH 1M 10ml",
+  "op": "mix",
+  "b": "KOH 1M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "SAME_CLASS_BASES"
+  }
+ },
+ {
+  "id": "A05 axit + muối tan",
+  "a": "HCl 1M 10ml",
+  "op": "mix",
+  "b": "Na2SO4 1M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "PRODUCTS_ALL_SOLUBLE"
+  }
+ },
+ {
+  "id": "A06 HCl + Na2CO3",
+  "a": "HCl 1M 20ml",
+  "op": "mix",
+  "b": "Na2CO3 0.5M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:CO2"
+   ],
+   "eq": "2HCl + Na2CO3 -> 2NaCl + CO2(g) + H2O"
+  }
+ },
+ {
+  "id": "A07 HCl + AgNO3",
+  "a": "HCl 1M 10ml",
+  "op": "mix",
+  "b": "AgNO3 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:AgCl"
+   ]
+  }
+ },
+ {
+  "id": "A08 BaCl2 + Na2SO4",
+  "a": "BaCl2 0.1M 10ml",
+  "op": "mix",
+  "b": "Na2SO4 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:BaSO4"
+   ],
+   "eq": "BaCl2 + Na2SO4 -> BaSO4(s) + 2NaCl"
+  }
+ },
+ {
+  "id": "A09 hai muối tan",
+  "a": "NaCl 1M 10ml",
+  "op": "mix",
+  "b": "KNO3 1M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "PRODUCTS_ALL_SOLUBLE"
+  }
+ },
+ {
+  "id": "A10 CuSO4 + NaOH",
+  "a": "CuSO4 0.5M 10ml",
+  "op": "mix",
+  "b": "NaOH 1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:Cu(OH)2"
+   ]
+  }
+ },
+ {
+  "id": "A11 FeCl3 + NaOH",
+  "a": "FeCl3 0.1M 10ml",
+  "op": "mix",
+  "b": "NaOH 1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:Fe(OH)3"
+   ]
+  }
+ },
+ {
+  "id": "A12 H2SO4 + BaCl2",
+  "a": "H2SO4 1M 10ml",
+  "op": "mix",
+  "b": "BaCl2 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:BaSO4"
+   ]
+  }
+ },
+ {
+  "id": "A13 HCl + CuO",
+  "a": "HCl 1M 20ml",
+  "op": "mix",
+  "b": "CuO 0.5g",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "dissolve:CuO"
+   ],
+   "products": [
+    "CuCl2"
+   ],
+   "colorFrom": "CuCl2"
+  }
+ },
+ {
+  "id": "A14 HCl + Cu(OH)2",
+  "a": "HCl 1M 20ml",
+  "op": "mix",
+  "b": "Cu(OH)2 0.5g",
+  "expect": {
+   "happened": true,
+   "products": [
+    "CuCl2"
+   ],
+   "colorFrom": "CuCl2"
+  }
+ },
+ {
+  "id": "A15 H2SO4 + Na2SO3",
+  "a": "H2SO4 1M 10ml",
+  "op": "mix",
+  "b": "Na2SO3 0.5M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:SO2"
+   ]
+  }
+ },
+ {
+  "id": "A16 HCl + đá vôi",
+  "a": "HCl 1M 20ml",
+  "op": "mix",
+  "b": "CaCO3 1g",
+  "expect": {
+   "happened": true,
+   "kinetic": true,
+   "phen": [
+    "gas:CO2"
+   ]
+  }
+ },
+ {
+  "id": "A17 NaOH + NH4Cl đun",
+  "a": "NaOH 1M 10ml",
+  "op": "mix",
+  "b": "NH4Cl 1M 10ml",
+  "cond": {
+   "heated": true,
+   "temperatureC": 80
+  },
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:NH3"
+   ]
+  }
+ },
+ {
+  "id": "A18 NaOH + NH4Cl không đun",
+  "a": "NaOH 1M 10ml",
+  "op": "mix",
+  "b": "NH4Cl 1M 10ml",
+  "expect": {
+   "happened": true,
+   "noPhen": [
+    "gas:NH3"
+   ],
+   "products": [
+    "NH3"
+   ]
+  }
+ },
+ {
+  "id": "A19 sục CO2 vào nước vôi",
+  "a": "Ca(OH)2 0.02M 50ml",
+  "op": "mix",
+  "b": "CO2 0.0005mol",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:CaCO3"
+   ]
+  }
+ },
+ {
+  "id": "A20 quỳ + HCl",
+  "a": "HCl 0.1M 10ml +litmus",
+  "op": "describe",
+  "expect": {
+   "indicator": "red"
+  }
+ },
+ {
+  "id": "A21 quỳ + NaOH",
+  "a": "NaOH 0.1M 10ml +litmus",
+  "op": "describe",
+  "expect": {
+   "indicator": "blue"
+  }
+ },
+ {
+  "id": "A22 quỳ + NaCl",
+  "a": "NaCl 0.1M 10ml +litmus",
+  "op": "describe",
+  "expect": {
+   "indicator": "purple"
+  }
+ },
+ {
+  "id": "A23 CH3COOH + NaOH",
+  "a": "CH3COOH 1M 10ml",
+  "op": "mix",
+  "b": "NaOH 1M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "CH3COONa"
+   ]
+  }
+ },
+ {
+  "id": "A24 CH3COOH + Na2CO3",
+  "a": "CH3COOH 1M 20ml",
+  "op": "mix",
+  "b": "Na2CO3 0.5M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:CO2"
+   ]
+  }
+ },
+ {
+  "id": "A25 pha loãng",
+  "a": "HCl 1M 10ml",
+  "op": "mix",
+  "b": "water 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "DILUTION_ONLY",
+   "concAfter": {
+    "HCl": 0.5
+   }
+  }
+ },
+ {
+  "id": "A26 Pb(NO3)2 + KI",
+  "a": "Pb(NO3)2 0.1M 10ml",
+  "op": "mix",
+  "b": "KI 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:PbI2"
+   ]
+  }
+ },
+ {
+  "id": "A27 Na2S + CuSO4",
+  "a": "Na2S 0.1M 10ml",
+  "op": "mix",
+  "b": "CuSO4 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:CuS"
+   ]
+  }
+ },
+ {
+  "id": "A28 NaHCO3 + HCl",
+  "a": "NaHCO3 0.5M 10ml",
+  "op": "mix",
+  "b": "HCl 1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:CO2"
+   ]
+  }
+ },
+ {
+  "id": "A29 axit mạnh đẩy axit yếu",
+  "a": "CH3COONa 0.1M 10ml",
+  "op": "mix",
+  "b": "HCl 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "CH3COOH"
+   ]
+  }
+ },
+ {
+  "id": "A30 axit yếu không đẩy axit mạnh",
+  "a": "CH3COOH 1M 10ml",
+  "op": "mix",
+  "b": "NaCl 1M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "PRODUCTS_ALL_SOLUBLE"
+  }
+ },
+ {
+  "id": "A31 quỳ + Na2CO3 (muối thủy phân)",
+  "a": "Na2CO3 0.1M 10ml +litmus",
+  "op": "describe",
+  "expect": {
+   "indicator": "blue"
+  }
+ },
+ {
+  "id": "A32 màu CuSO4",
+  "a": "CuSO4 0.5M 10ml",
+  "op": "describe",
+  "expect": {
+   "colorFrom": "CuSO4"
+  }
+ },
+ {
+  "id": "A33 KOH + FeSO4",
+  "a": "KOH 1M 10ml",
+  "op": "mix",
+  "b": "FeSO4 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:Fe(OH)2"
+   ]
+  }
+ },
+ {
+  "id": "A34 cùng ion",
+  "a": "HCl 1M 10ml",
+  "op": "mix",
+  "b": "NaCl 1M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "NO_NEW_ION_PAIR"
+  }
+ },
+ {
+  "id": "A35 Ba(OH)2 + H2SO4",
+  "a": "Ba(OH)2 0.1M 10ml",
+  "op": "mix",
+  "b": "H2SO4 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:BaSO4"
+   ]
+  }
+ },
+ {
+  "id": "A36 NaOH + Al2(SO4)3",
+  "a": "Al2(SO4)3 0.1M 10ml",
+  "op": "mix",
+  "b": "NaOH 1M 5ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:Al(OH)3"
+   ]
+  }
+ },
+ {
+  "id": "A37 NH3 + HCl",
+  "a": "HCl 1M 10ml",
+  "op": "mix",
+  "b": "NH3 1M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "NH4Cl"
+   ]
+  }
+ },
+ {
+  "id": "A38 methyl da cam + HCl",
+  "a": "HCl 0.1M 10ml +methyl_orange",
+  "op": "describe",
+  "expect": {
+   "indicator": "red"
+  }
+ },
+ {
+  "id": "B01 Zn + HCl",
+  "a": "Zn 1g",
+  "op": "mix",
+  "b": "HCl 1M 50ml",
+  "expect": {
+   "happened": true,
+   "kinetic": true,
+   "phen": [
+    "gas:H2"
+   ],
+   "eq": "Zn + 2HCl -> ZnCl2 + H2(g)"
+  }
+ },
+ {
+  "id": "B02 Cu + HCl",
+  "a": "Cu 1g",
+  "op": "mix",
+  "b": "HCl 1M 20ml",
+  "expect": {
+   "happened": false,
+   "reason": "METAL_BELOW_H"
+  }
+ },
+ {
+  "id": "B03 Cu + H2SO4 loãng",
+  "a": "Cu 1g",
+  "op": "mix",
+  "b": "H2SO4 1M 20ml",
+  "expect": {
+   "happened": false,
+   "reason": "METAL_BELOW_H"
+  }
+ },
+ {
+  "id": "B04 Cu + H2SO4 đặc nguội",
+  "a": "Cu 1g",
+  "op": "mix",
+  "b": "H2SO4 18M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "NEEDS_HEAT",
+   "would": true
+  }
+ },
+ {
+  "id": "B05 Cu + H2SO4 đặc nóng",
+  "a": "Cu 1g",
+  "op": "mix",
+  "b": "H2SO4 18M 10ml",
+  "cond": {
+   "heated": true,
+   "temperatureC": 150
+  },
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:SO2"
+   ],
+   "products": [
+    "CuSO4"
+   ],
+   "safety": [
+    "TOXIC_GAS_OUTSIDE_HOOD"
+   ],
+   "eq": "Cu + 2H2SO4 -> CuSO4 + SO2(g) + 2H2O"
+  }
+ },
+ {
+  "id": "B06 Cu + HNO3 loãng",
+  "a": "Cu 1g",
+  "op": "mix",
+  "b": "HNO3 1M 20ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:NO"
+   ],
+   "eq": "3Cu + 8HNO3 -> 3Cu(NO3)2 + 2NO(g) + 4H2O"
+  }
+ },
+ {
+  "id": "B07 Cu + HNO3 đặc",
+  "a": "Cu 0.5g",
+  "op": "mix",
+  "b": "HNO3 15M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:NO2"
+   ],
+   "eq": "Cu + 4HNO3 -> Cu(NO3)2 + 2NO2(g) + 2H2O"
+  }
+ },
+ {
+  "id": "B08 Al + HNO3 đặc nguội",
+  "a": "Al 0.3g",
+  "op": "mix",
+  "b": "HNO3 15M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "PASSIVATED"
+  }
+ },
+ {
+  "id": "B09 Fe + H2SO4 đặc nguội",
+  "a": "Fe 1g",
+  "op": "mix",
+  "b": "H2SO4 18M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "PASSIVATED"
+  }
+ },
+ {
+  "id": "B10 Fe + CuSO4",
+  "a": "CuSO4 0.5M 20ml",
+  "op": "mix",
+  "b": "Fe 1g",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "metal_coating:Cu"
+   ],
+   "products": [
+    "FeSO4"
+   ]
+  }
+ },
+ {
+  "id": "B11 Cu + FeSO4",
+  "a": "Cu 1g",
+  "op": "mix",
+  "b": "FeSO4 0.5M 20ml",
+  "expect": {
+   "happened": false,
+   "reason": "METAL_LESS_ACTIVE"
+  }
+ },
+ {
+  "id": "B12 Cu + AgNO3",
+  "a": "AgNO3 0.1M 20ml",
+  "op": "mix",
+  "b": "Cu 0.5g",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "metal_coating:Ag"
+   ],
+   "products": [
+    "Cu(NO3)2"
+   ]
+  }
+ },
+ {
+  "id": "B13 Ag + CuSO4",
+  "a": "Ag 1g",
+  "op": "mix",
+  "b": "CuSO4 0.5M 20ml",
+  "expect": {
+   "happened": false,
+   "reason": "METAL_LESS_ACTIVE"
+  }
+ },
+ {
+  "id": "B14 Mg + HCl",
+  "a": "Mg 0.1g",
+  "op": "mix",
+  "b": "HCl 1M 20ml",
+  "expect": {
+   "happened": true,
+   "kinetic": true,
+   "phen": [
+    "gas:H2"
+   ]
+  }
+ },
+ {
+  "id": "B15 Na + nước",
+  "a": "water 50ml",
+  "op": "mix",
+  "b": "Na 0.2g",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:H2"
+   ],
+   "products": [
+    "NaOH"
+   ],
+   "safety": [
+    "ALKALI_METAL_WATER"
+   ]
+  }
+ },
+ {
+  "id": "B16 Na + CuSO4",
+  "a": "CuSO4 0.5M 50ml",
+  "op": "mix",
+  "b": "Na 0.2g",
+  "expect": {
+   "happened": true,
+   "equations": 2,
+   "phen": [
+    "precipitate:Cu(OH)2"
+   ]
+  }
+ },
+ {
+  "id": "B17 Au + HCl",
+  "a": "Au 1g",
+  "op": "mix",
+  "b": "HCl 1M 20ml",
+  "expect": {
+   "happened": false,
+   "reason": "INERT"
+  }
+ },
+ {
+  "id": "B18 Zn + ZnSO4",
+  "a": "Zn 1g",
+  "op": "mix",
+  "b": "ZnSO4 0.5M 20ml",
+  "expect": {
+   "happened": false,
+   "reason": "NO_NEW_ION_PAIR"
+  }
+ },
+ {
+  "id": "B19 vôi sống + nước",
+  "a": "water 20ml",
+  "op": "mix",
+  "b": "CaO 1g",
+  "expect": {
+   "happened": true,
+   "products": [
+    "Ca(OH)2"
+   ],
+   "dT": 1
+  }
+ },
+ {
+  "id": "B20 Fe2O3 + HCl",
+  "a": "HCl 1M 20ml",
+  "op": "mix",
+  "b": "Fe2O3 0.5g",
+  "expect": {
+   "happened": true,
+   "products": [
+    "FeCl3"
+   ],
+   "colorFrom": "FeCl3"
+  }
+ },
+ {
+  "id": "B21 Al + NaOH",
+  "a": "NaOH 1M 20ml",
+  "op": "mix",
+  "b": "Al 0.3g",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:H2"
+   ],
+   "products": [
+    "NaAlO2"
+   ]
+  }
+ },
+ {
+  "id": "B22 Fe + HCl ra FeCl2",
+  "a": "Fe 1g",
+  "op": "mix",
+  "b": "HCl 1M 20ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "FeCl2"
+   ],
+   "eq": "Fe + 2HCl -> FeCl2 + H2(g)"
+  }
+ },
+ {
+  "id": "B23 Fe + HNO3 loãng ra Fe(III)",
+  "a": "Fe 0.5g",
+  "op": "mix",
+  "b": "HNO3 1M 50ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "Fe(NO3)3"
+   ],
+   "phen": [
+    "gas:NO"
+   ]
+  }
+ },
+ {
+  "id": "B24 Ag + HNO3 đặc",
+  "a": "Ag 0.5g",
+  "op": "mix",
+  "b": "HNO3 15M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "AgNO3"
+   ],
+   "phen": [
+    "gas:NO2"
+   ]
+  }
+ },
+ {
+  "id": "B25 Pt + HCl",
+  "a": "Pt 1g",
+  "op": "mix",
+  "b": "HCl 1M 20ml",
+  "expect": {
+   "happened": false,
+   "reason": "INERT"
+  }
+ },
+ {
+  "id": "B26 Zn + CuSO4 tỏa nhiệt",
+  "a": "CuSO4 0.5M 20ml",
+  "op": "mix",
+  "b": "Zn 1g",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "metal_coating:Cu"
+   ],
+   "dT": 1
+  }
+ },
+ {
+  "id": "B27 Fe + AgNO3",
+  "a": "AgNO3 0.1M 20ml",
+  "op": "mix",
+  "b": "Fe 1g",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "metal_coating:Ag"
+   ],
+   "products": [
+    "Fe(NO3)2"
+   ]
+  }
+ },
+ {
+  "id": "C01 nước clo + NaBr",
+  "a": "NaBr 0.1M 10ml",
+  "op": "mix",
+  "b": "Cl2 0.05M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "Br2"
+   ],
+   "colorFrom": "Br2",
+   "phen": [
+    "color_change"
+   ]
+  }
+ },
+ {
+  "id": "C02 nước clo + KI, hồ tinh bột",
+  "a": "KI 0.1M 10ml +starch",
+  "op": "mix",
+  "b": "Cl2 0.05M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "I2"
+   ],
+   "indicator": "blue-violet"
+  }
+ },
+ {
+  "id": "C03 nước brom + KI",
+  "a": "KI 0.1M 10ml",
+  "op": "mix",
+  "b": "Br2 0.02M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "I2"
+   ]
+  }
+ },
+ {
+  "id": "C04 nước brom + NaCl",
+  "a": "NaCl 0.1M 10ml",
+  "op": "mix",
+  "b": "Br2 0.02M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "WEAKER_OXIDIZER"
+  }
+ },
+ {
+  "id": "C05 iot + NaBr",
+  "a": "NaBr 0.1M 10ml",
+  "op": "mix",
+  "b": "I2 0.01M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "WEAKER_OXIDIZER"
+  }
+ },
+ {
+  "id": "C06 AgNO3 + NaCl",
+  "a": "NaCl 0.1M 10ml",
+  "op": "mix",
+  "b": "AgNO3 0.1M 5ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:AgCl"
+   ]
+  }
+ },
+ {
+  "id": "C07 AgNO3 + NaBr",
+  "a": "NaBr 0.1M 10ml",
+  "op": "mix",
+  "b": "AgNO3 0.1M 5ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:AgBr"
+   ]
+  }
+ },
+ {
+  "id": "C08 AgNO3 + KI",
+  "a": "KI 0.1M 10ml",
+  "op": "mix",
+  "b": "AgNO3 0.1M 5ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "precipitate:AgI"
+   ]
+  }
+ },
+ {
+  "id": "C09 AgNO3 + NaF",
+  "a": "NaF 0.1M 10ml",
+  "op": "mix",
+  "b": "AgNO3 0.1M 5ml",
+  "expect": {
+   "happened": false,
+   "reason": "PRODUCTS_ALL_SOLUBLE"
+  }
+ },
+ {
+  "id": "C10 nước clo + NaOH (nước Javel)",
+  "a": "NaOH 1M 10ml",
+  "op": "mix",
+  "b": "Cl2 0.05M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "NaClO"
+   ]
+  }
+ },
+ {
+  "id": "C11 nước clo + FeCl2",
+  "a": "FeCl2 0.1M 10ml",
+  "op": "mix",
+  "b": "Cl2 0.05M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "FeCl3"
+   ],
+   "colorFrom": "FeCl3"
+  }
+ },
+ {
+  "id": "C12 KMnO4 + FeSO4 + H2SO4",
+  "a": "FeSO4 0.1M 10ml",
+  "op": "mix",
+  "b": "H2SO4 1M 5ml",
+  "then": "KMnO4 0.02M 5ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "MnSO4",
+    "Fe2(SO4)3"
+   ],
+   "phen": [
+    "decolorize"
+   ]
+  }
+ },
+ {
+  "id": "C13 KMnO4 + FeSO4 không axit",
+  "a": "FeSO4 0.1M 10ml",
+  "op": "mix",
+  "b": "KMnO4 0.02M 5ml",
+  "expect": {
+   "happened": false,
+   "reason": "POTENTIAL_UNFAVORABLE",
+   "would": true
+  }
+ },
+ {
+  "id": "C14 KMnO4 + HCl đặc",
+  "a": "KMnO4 0.5g",
+  "op": "mix",
+  "b": "HCl 12M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:Cl2"
+   ],
+   "safety": [
+    "TOXIC_GAS_OUTSIDE_HOOD"
+   ]
+  }
+ },
+ {
+  "id": "C15 KMnO4 + HCl loãng",
+  "a": "KMnO4 0.5g",
+  "op": "mix",
+  "b": "HCl 1M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "NEEDS_CONCENTRATED",
+   "would": true
+  }
+ },
+ {
+  "id": "C16 KMnO4 + HCl đặc trong tủ hút",
+  "a": "KMnO4 0.5g",
+  "op": "mix",
+  "b": "HCl 12M 10ml",
+  "cond": {
+   "inFumeHood": true
+  },
+  "expect": {
+   "happened": true,
+   "noSafety": [
+    "TOXIC_GAS_OUTSIDE_HOOD"
+   ]
+  }
+ },
+ {
+  "id": "C17 FeCl3 + Cu",
+  "a": "FeCl3 0.1M 20ml",
+  "op": "mix",
+  "b": "Cu 0.05g",
+  "expect": {
+   "happened": true,
+   "products": [
+    "CuCl2",
+    "FeCl2"
+   ],
+   "phen": [
+    "dissolve:Cu"
+   ]
+  }
+ },
+ {
+  "id": "C18 FeCl3 + KI",
+  "a": "FeCl3 0.1M 10ml",
+  "op": "mix",
+  "b": "KI 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "I2"
+   ]
+  }
+ },
+ {
+  "id": "C19 FeCl3 + KSCN",
+  "a": "FeCl3 0.05M 10ml",
+  "op": "mix",
+  "b": "KSCN 0.1M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "Fe(SCN)3"
+   ],
+   "colorFrom": "Fe(SCN)3"
+  }
+ },
+ {
+  "id": "C20 H2O2 + KI + H2SO4",
+  "a": "KI 0.1M 10ml +starch",
+  "op": "mix",
+  "b": "H2SO4 1M 5ml",
+  "then": "H2O2 0.9M 2ml",
+  "expect": {
+   "happened": true,
+   "indicator": "blue-violet"
+  }
+ },
+ {
+  "id": "C21 H2O2 + MnO2",
+  "a": "H2O2 0.9M 10ml",
+  "op": "mix",
+  "b": "MnO2 0.2g",
+  "expect": {
+   "happened": true,
+   "kinetic": true,
+   "phen": [
+    "gas:O2"
+   ]
+  }
+ },
+ {
+  "id": "C22 H2O2 để yên",
+  "a": "H2O2 0.9M 10ml",
+  "op": "mix",
+  "b": "water 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "DILUTION_ONLY"
+  }
+ },
+ {
+  "id": "C23 nhiệt phân KClO3 có MnO2",
+  "a": "KClO3 1g",
+  "op": "heat",
+  "b": "MnO2 0.2g",
+  "t": 400,
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:O2"
+   ],
+   "products": [
+    "KCl"
+   ]
+  }
+ },
+ {
+  "id": "C24 KClO3 không xúc tác",
+  "a": "KClO3 1g",
+  "op": "heat",
+  "t": 400,
+  "expect": {
+   "happened": false,
+   "reason": "NEEDS_CATALYST",
+   "would": true
+  }
+ },
+ {
+  "id": "C25 đá vôi đèn cồn",
+  "a": "CaCO3 1g",
+  "op": "heat",
+  "t": 500,
+  "expect": {
+   "happened": false,
+   "reason": "NEEDS_HEAT",
+   "would": true
+  }
+ },
+ {
+  "id": "C26 nung đá vôi",
+  "a": "CaCO3 1g",
+  "op": "heat",
+  "t": 900,
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:CO2"
+   ],
+   "products": [
+    "CaO"
+   ]
+  }
+ },
+ {
+  "id": "C27 nhiệt phân Cu(OH)2",
+  "a": "Cu(OH)2 1g",
+  "op": "heat",
+  "t": 100,
+  "expect": {
+   "happened": true,
+   "products": [
+    "CuO"
+   ]
+  }
+ },
+ {
+  "id": "C28 SO2 làm mất màu nước brom",
+  "a": "Br2 0.02M 10ml",
+  "op": "mix",
+  "b": "SO2 0.001mol",
+  "expect": {
+   "happened": true,
+   "products": [
+    "H2SO4",
+    "HBr"
+   ],
+   "phen": [
+    "decolorize"
+   ]
+  }
+ },
+ {
+  "id": "C29 K2Cr2O7 + FeSO4 + H2SO4",
+  "a": "FeSO4 0.1M 10ml",
+  "op": "mix",
+  "b": "H2SO4 1M 5ml",
+  "then": "K2Cr2O7 0.05M 2ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "Cr2(SO4)3"
+   ]
+  }
+ },
+ {
+  "id": "C30 NaCl rắn + H2SO4 đặc đun",
+  "a": "NaCl 1g",
+  "op": "mix",
+  "b": "H2SO4 18M 10ml",
+  "cond": {
+   "heated": true,
+   "temperatureC": 150
+  },
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:HCl"
+   ]
+  }
+ },
+ {
+  "id": "C31 NaCl rắn + H2SO4 đặc nguội",
+  "a": "NaCl 1g",
+  "op": "mix",
+  "b": "H2SO4 18M 10ml",
+  "expect": {
+   "happened": false,
+   "reason": "NEEDS_HEAT"
+  }
+ },
+ {
+  "id": "C32 nước clo + quỳ tím",
+  "a": "water 10ml +litmus",
+  "op": "mix",
+  "b": "Cl2 0.05M 10ml",
+  "expect": {
+   "happened": true,
+   "phen": [
+    "decolorize"
+   ],
+   "eq": "Cl2 + H2O <=> HCl + HClO",
+   "indicator": "bleached"
+  }
+ },
+ {
+  "id": "C33 nhiệt phân NaHCO3",
+  "a": "NaHCO3 1g",
+  "op": "heat",
+  "t": 150,
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:CO2"
+   ]
+  }
+ },
+ {
+  "id": "C34 nhiệt phân KMnO4",
+  "a": "KMnO4 1g",
+  "op": "heat",
+  "t": 300,
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:O2"
+   ]
+  }
+ },
+ {
+  "id": "C35 nhiệt phân NH4Cl",
+  "a": "NH4Cl 1g",
+  "op": "heat",
+  "t": 400,
+  "expect": {
+   "happened": true,
+   "phen": [
+    "gas:NH3"
+   ]
+  }
+ },
+ {
+  "id": "C36 nước clo + HBr",
+  "a": "HBr 1M 10ml",
+  "op": "mix",
+  "b": "Cl2 0.05M 10ml",
+  "expect": {
+   "happened": true,
+   "products": [
+    "Br2",
+    "HCl"
+   ]
+  }
+ },
+ {
+  "id": "D01 NaOH tan tỏa nhiệt",
+  "a": "water 50ml",
+  "op": "mix",
+  "b": "NaOH 2g",
+  "expect": {
+   "happened": false,
+   "reason": "DILUTION_ONLY",
+   "dT": 1
+  }
+ },
+ {
+  "id": "D02 NH4Cl tan thu nhiệt",
+  "a": "water 50ml",
+  "op": "mix",
+  "b": "NH4Cl 2g",
+  "expect": {
+   "happened": false,
+   "dT": -1
+  }
+ },
+ {
+  "id": "D03 hai chất rắn khô",
+  "a": "Zn 1g",
+  "op": "mix",
+  "b": "S 1g",
+  "expect": {
+   "happened": false,
+   "reason": "SOLIDS_NO_CONTACT",
+   "safety": []
+  }
+ },
+ {
+  "id": "D04 đổ nước vào axit đặc",
+  "a": "H2SO4 18M 10ml",
+  "op": "mix",
+  "b": "water 20ml",
+  "expect": {
+   "happened": false,
+   "safety": [
+    "WATER_INTO_CONC_ACID"
+   ]
+  }
+ },
+ {
+  "id": "D05 KMnO4 rắn + S",
+  "a": "KMnO4 1g",
+  "op": "mix",
+  "b": "S 1g",
+  "expect": {
+   "safety": [
+    "OXIDIZER_WITH_FLAMMABLE"
+   ]
+  }
+ }
+]

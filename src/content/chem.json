@@ -1,0 +1,2864 @@
+{
+ "cations": {
+  "H+": {
+   "vi": "hiđro",
+   "en": "hydrogen"
+  },
+  "Li+": {
+   "vi": "liti",
+   "en": "lithium",
+   "element": "Li",
+   "strongBase": true
+  },
+  "Na+": {
+   "vi": "natri",
+   "en": "sodium",
+   "element": "Na",
+   "strongBase": true
+  },
+  "K+": {
+   "vi": "kali",
+   "en": "potassium",
+   "element": "K",
+   "strongBase": true
+  },
+  "NH4+": {
+   "vi": "amoni",
+   "en": "ammonium",
+   "hydrolysisPKa": 9.25
+  },
+  "Ag+": {
+   "vi": "bạc",
+   "en": "silver",
+   "element": "Ag",
+   "hydrolysisPKa": 11.7
+  },
+  "Mg2+": {
+   "vi": "magie",
+   "en": "magnesium",
+   "element": "Mg",
+   "hydrolysisPKa": 11.4
+  },
+  "Ca2+": {
+   "vi": "canxi",
+   "en": "calcium",
+   "element": "Ca",
+   "strongBase": true
+  },
+  "Ba2+": {
+   "vi": "bari",
+   "en": "barium",
+   "element": "Ba",
+   "strongBase": true
+  },
+  "Zn2+": {
+   "vi": "kẽm",
+   "en": "zinc",
+   "element": "Zn",
+   "hydrolysisPKa": 9.0
+  },
+  "Fe2+": {
+   "vi": "sắt(II)",
+   "en": "iron(II)",
+   "element": "Fe",
+   "hydrolysisPKa": 9.5
+  },
+  "Fe3+": {
+   "vi": "sắt(III)",
+   "en": "iron(III)",
+   "element": "Fe",
+   "hydrolysisPKa": 2.2
+  },
+  "Cu2+": {
+   "vi": "đồng(II)",
+   "en": "copper(II)",
+   "element": "Cu",
+   "hydrolysisPKa": 7.5
+  },
+  "Al3+": {
+   "vi": "nhôm",
+   "en": "aluminium",
+   "element": "Al",
+   "hydrolysisPKa": 5.0
+  },
+  "Pb2+": {
+   "vi": "chì(II)",
+   "en": "lead(II)",
+   "element": "Pb",
+   "hydrolysisPKa": 7.7
+  },
+  "Mn2+": {
+   "vi": "mangan(II)",
+   "en": "manganese(II)",
+   "element": "Mn",
+   "hydrolysisPKa": 10.6
+  },
+  "Ni2+": {
+   "vi": "niken",
+   "en": "nickel",
+   "element": "Ni",
+   "hydrolysisPKa": 9.9
+  },
+  "Sn2+": {
+   "vi": "thiếc(II)",
+   "en": "tin(II)",
+   "element": "Sn",
+   "hydrolysisPKa": 3.4
+  },
+  "Cr3+": {
+   "vi": "crom(III)",
+   "en": "chromium(III)",
+   "element": "Cr",
+   "hydrolysisPKa": 4.0
+  }
+ },
+ "anions": {
+  "OH-": {
+   "vi": "hiđroxit",
+   "en": "hydroxide"
+  },
+  "O^2-": {
+   "vi": "oxit",
+   "en": "oxide"
+  },
+  "F-": {
+   "vi": "florua",
+   "en": "fluoride",
+   "acidVi": "axit flohiđric",
+   "acidEn": "hydrofluoric acid",
+   "pKa": 3.17,
+   "hydrolysisPKa": 3.17,
+   "halogen": "F"
+  },
+  "Cl-": {
+   "vi": "clorua",
+   "en": "chloride",
+   "acidVi": "axit clohiđric",
+   "acidEn": "hydrochloric acid",
+   "pKa": -7,
+   "halogen": "Cl"
+  },
+  "Br-": {
+   "vi": "bromua",
+   "en": "bromide",
+   "acidVi": "axit bromhiđric",
+   "acidEn": "hydrobromic acid",
+   "pKa": -9,
+   "halogen": "Br"
+  },
+  "I-": {
+   "vi": "iotua",
+   "en": "iodide",
+   "acidVi": "axit iothiđric",
+   "acidEn": "hydroiodic acid",
+   "pKa": -10,
+   "halogen": "I"
+  },
+  "NO3-": {
+   "vi": "nitrat",
+   "en": "nitrate",
+   "acidVi": "axit nitric",
+   "acidEn": "nitric acid",
+   "pKa": -1.4
+  },
+  "SO4^2-": {
+   "vi": "sunfat",
+   "en": "sulfate",
+   "acidVi": "axit sunfuric",
+   "acidEn": "sulfuric acid",
+   "pKa": -3
+  },
+  "SO3^2-": {
+   "vi": "sunfit",
+   "en": "sulfite",
+   "acidVi": "axit sunfurơ",
+   "acidEn": "sulfurous acid",
+   "pKa": 1.8,
+   "hydrolysisPKa": 7.2
+  },
+  "CO3^2-": {
+   "vi": "cacbonat",
+   "en": "carbonate",
+   "acidVi": "axit cacbonic",
+   "acidEn": "carbonic acid",
+   "pKa": 6.35,
+   "hydrolysisPKa": 10.33
+  },
+  "HCO3-": {
+   "vi": "hiđrocacbonat",
+   "en": "hydrogencarbonate",
+   "acidVi": "axit cacbonic",
+   "acidEn": "carbonic acid",
+   "pKa": 6.35,
+   "hydrolysisPKa": 7.6
+  },
+  "S^2-": {
+   "vi": "sunfua",
+   "en": "sulfide",
+   "acidVi": "axit sunfuhiđric",
+   "acidEn": "hydrosulfuric acid",
+   "pKa": 7.0,
+   "hydrolysisPKa": 12.9
+  },
+  "PO4^3-": {
+   "vi": "photphat",
+   "en": "phosphate",
+   "acidVi": "axit photphoric",
+   "acidEn": "phosphoric acid",
+   "pKa": 2.15,
+   "hydrolysisPKa": 12.3
+  },
+  "CH3COO-": {
+   "vi": "axetat",
+   "en": "acetate",
+   "acidVi": "axit axetic",
+   "acidEn": "acetic acid",
+   "pKa": 4.76,
+   "hydrolysisPKa": 4.76
+  },
+  "S2O3^2-": {
+   "vi": "thiosunfat",
+   "en": "thiosulfate",
+   "pKa": 0.6
+  },
+  "SCN-": {
+   "vi": "thioxianat",
+   "en": "thiocyanate",
+   "pKa": -1.3
+  },
+  "MnO4-": {
+   "vi": "pemanganat",
+   "en": "permanganate",
+   "pKa": -2.2
+  },
+  "MnO4^2-": {
+   "vi": "manganat",
+   "en": "manganate"
+  },
+  "Cr2O7^2-": {
+   "vi": "đicromat",
+   "en": "dichromate"
+  },
+  "CrO4^2-": {
+   "vi": "cromat",
+   "en": "chromate"
+  },
+  "ClO3-": {
+   "vi": "clorat",
+   "en": "chlorate",
+   "pKa": -1
+  },
+  "ClO-": {
+   "vi": "hipoclorit",
+   "en": "hypochlorite",
+   "acidVi": "axit hipoclorơ",
+   "acidEn": "hypochlorous acid",
+   "pKa": 7.5,
+   "hydrolysisPKa": 7.5
+  },
+  "AlO2-": {
+   "vi": "aluminat",
+   "en": "aluminate"
+  }
+ },
+ "solubility": {
+  "OH-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "D",
+   "Ag+": "D",
+   "Mg2+": "I",
+   "Ca2+": "L",
+   "Ba2+": "S",
+   "Zn2+": "I",
+   "Fe2+": "I",
+   "Fe3+": "I",
+   "Cu2+": "I",
+   "Al3+": "I",
+   "Pb2+": "I",
+   "Mn2+": "I",
+   "Ni2+": "I",
+   "Sn2+": "I",
+   "Cr3+": "I"
+  },
+  "O^2-": {
+   "H+": "S",
+   "Li+": "I",
+   "Na+": "I",
+   "K+": "I",
+   "NH4+": "I",
+   "Ag+": "I",
+   "Mg2+": "I",
+   "Ca2+": "I",
+   "Ba2+": "I",
+   "Zn2+": "I",
+   "Fe2+": "I",
+   "Fe3+": "I",
+   "Cu2+": "I",
+   "Al3+": "I",
+   "Pb2+": "I",
+   "Mn2+": "I",
+   "Ni2+": "I",
+   "Sn2+": "I",
+   "Cr3+": "I"
+  },
+  "F-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "S",
+   "Mg2+": "I",
+   "Ca2+": "I",
+   "Ba2+": "I",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "L",
+   "Pb2+": "I",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "Cl-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "L",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "Br-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "L",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "I-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "I",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "NO3-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "S",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "S",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "SO4^2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "L",
+   "Mg2+": "S",
+   "Ca2+": "L",
+   "Ba2+": "I",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "I",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "SO3^2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "I",
+   "Ca2+": "I",
+   "Ba2+": "I",
+   "Zn2+": "I",
+   "Fe2+": "I",
+   "Fe3+": "I",
+   "Cu2+": "I",
+   "Al3+": "I",
+   "Pb2+": "I",
+   "Mn2+": "I",
+   "Ni2+": "I",
+   "Sn2+": "I",
+   "Cr3+": "I"
+  },
+  "CO3^2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "I",
+   "Ca2+": "I",
+   "Ba2+": "I",
+   "Zn2+": "I",
+   "Fe2+": "I",
+   "Fe3+": "I",
+   "Cu2+": "I",
+   "Al3+": "I",
+   "Pb2+": "I",
+   "Mn2+": "I",
+   "Ni2+": "I",
+   "Sn2+": "I",
+   "Cr3+": "I"
+  },
+  "HCO3-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "I",
+   "Fe2+": "I",
+   "Fe3+": "I",
+   "Cu2+": "I",
+   "Al3+": "I",
+   "Pb2+": "I",
+   "Mn2+": "I",
+   "Ni2+": "I",
+   "Sn2+": "I",
+   "Cr3+": "I"
+  },
+  "S^2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "I",
+   "Fe2+": "I",
+   "Fe3+": "I",
+   "Cu2+": "I",
+   "Al3+": "I",
+   "Pb2+": "I",
+   "Mn2+": "I",
+   "Ni2+": "I",
+   "Sn2+": "I",
+   "Cr3+": "I"
+  },
+  "PO4^3-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "I",
+   "Ca2+": "I",
+   "Ba2+": "I",
+   "Zn2+": "I",
+   "Fe2+": "I",
+   "Fe3+": "I",
+   "Cu2+": "I",
+   "Al3+": "I",
+   "Pb2+": "I",
+   "Mn2+": "I",
+   "Ni2+": "I",
+   "Sn2+": "I",
+   "Cr3+": "I"
+  },
+  "CH3COO-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "S",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "S",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "S2O3^2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "I",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "SCN-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "S",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "MnO4-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "S",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "S",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "MnO4^2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "S",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "S",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "Cr2O7^2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "S",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "S",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "CrO4^2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "I",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "I",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "ClO3-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "S",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "S",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "ClO-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "S",
+   "Mg2+": "S",
+   "Ca2+": "S",
+   "Ba2+": "S",
+   "Zn2+": "S",
+   "Fe2+": "S",
+   "Fe3+": "S",
+   "Cu2+": "S",
+   "Al3+": "S",
+   "Pb2+": "S",
+   "Mn2+": "S",
+   "Ni2+": "S",
+   "Sn2+": "S",
+   "Cr3+": "S"
+  },
+  "AlO2-": {
+   "H+": "S",
+   "Li+": "S",
+   "Na+": "S",
+   "K+": "S",
+   "NH4+": "S",
+   "Ag+": "I",
+   "Mg2+": "I",
+   "Ca2+": "I",
+   "Ba2+": "I",
+   "Zn2+": "I",
+   "Fe2+": "I",
+   "Fe3+": "I",
+   "Cu2+": "I",
+   "Al3+": "I",
+   "Pb2+": "I",
+   "Mn2+": "I",
+   "Ni2+": "I",
+   "Sn2+": "I",
+   "Cr3+": "I"
+  }
+ },
+ "unstable": {
+  "H+|OH-": [
+   {
+    "id": "H2O",
+    "phase": "l"
+   }
+  ],
+  "H+|CO3^2-": [
+   {
+    "id": "CO2",
+    "phase": "g"
+   },
+   {
+    "id": "H2O",
+    "phase": "l"
+   }
+  ],
+  "H+|HCO3-": [
+   {
+    "id": "CO2",
+    "phase": "g"
+   },
+   {
+    "id": "H2O",
+    "phase": "l"
+   }
+  ],
+  "H+|SO3^2-": [
+   {
+    "id": "SO2",
+    "phase": "g"
+   },
+   {
+    "id": "H2O",
+    "phase": "l"
+   }
+  ],
+  "NH4+|OH-": [
+   {
+    "id": "NH3",
+    "phase": "aq"
+   },
+   {
+    "id": "H2O",
+    "phase": "l"
+   }
+  ],
+  "Ag+|OH-": [
+   {
+    "id": "Ag2O",
+    "phase": "s"
+   },
+   {
+    "id": "H2O",
+    "phase": "l"
+   }
+  ],
+  "H+|O^2-": [
+   {
+    "id": "H2O",
+    "phase": "l"
+   }
+  ],
+  "H+|S2O3^2-": [
+   {
+    "id": "S",
+    "phase": "s"
+   },
+   {
+    "id": "SO2",
+    "phase": "g"
+   },
+   {
+    "id": "H2O",
+    "phase": "l"
+   }
+  ]
+ },
+ "weakElectrolytes": [
+  "H2O",
+  "CH3COOH",
+  "HF",
+  "H2S",
+  "HClO",
+  "H3PO4",
+  "NH3",
+  "Fe(SCN)3"
+ ],
+ "slightlySolubleLimitM": 0.02,
+ "precipitateColors": {
+  "AgCl": [
+   "#f4f4f0",
+   "trắng"
+  ],
+  "AgBr": [
+   "#f1e3a8",
+   "vàng nhạt"
+  ],
+  "AgI": [
+   "#e8d44d",
+   "vàng"
+  ],
+  "Ag2SO4": [
+   "#f4f4f0",
+   "trắng"
+  ],
+  "BaSO4": [
+   "#fafafa",
+   "trắng"
+  ],
+  "PbSO4": [
+   "#fafafa",
+   "trắng"
+  ],
+  "CaSO4": [
+   "#fafafa",
+   "trắng"
+  ],
+  "PbCl2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "PbBr2": [
+   "#f6f3e8",
+   "trắng"
+  ],
+  "PbI2": [
+   "#f5d000",
+   "vàng tươi"
+  ],
+  "Cu(OH)2": [
+   "#3a7bd5",
+   "xanh lam"
+  ],
+  "Fe(OH)3": [
+   "#8b3a1e",
+   "nâu đỏ"
+  ],
+  "Fe(OH)2": [
+   "#d8e4d0",
+   "trắng xanh"
+  ],
+  "Mg(OH)2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Al(OH)3": [
+   "#f2f4f2",
+   "trắng keo"
+  ],
+  "Zn(OH)2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Ca(OH)2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Ni(OH)2": [
+   "#6fbf73",
+   "xanh lục"
+  ],
+  "Mn(OH)2": [
+   "#efe6dc",
+   "trắng"
+  ],
+  "Pb(OH)2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Sn(OH)2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Cr(OH)3": [
+   "#4f7a4f",
+   "xanh xám"
+  ],
+  "CaCO3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "BaCO3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "MgCO3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "ZnCO3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Ag2CO3": [
+   "#f2e8b0",
+   "vàng nhạt"
+  ],
+  "CuCO3": [
+   "#5fa3a0",
+   "xanh lục"
+  ],
+  "FeCO3": [
+   "#d9d2c0",
+   "trắng xám"
+  ],
+  "PbCO3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "CuS": [
+   "#1a1a1a",
+   "đen"
+  ],
+  "PbS": [
+   "#1a1a1a",
+   "đen"
+  ],
+  "FeS": [
+   "#1a1a1a",
+   "đen"
+  ],
+  "Ag2S": [
+   "#1a1a1a",
+   "đen"
+  ],
+  "ZnS": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Ag2O": [
+   "#4a3426",
+   "nâu đen"
+  ],
+  "BaSO3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "CaSO3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Ca3(PO4)2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Ag3PO4": [
+   "#e6d65a",
+   "vàng"
+  ],
+  "BaCrO4": [
+   "#f2d01c",
+   "vàng"
+  ],
+  "PbCrO4": [
+   "#f2c200",
+   "vàng"
+  ],
+  "Ag2CrO4": [
+   "#8b1a1a",
+   "đỏ gạch"
+  ],
+  "CaF2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "MgF2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "BaF2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "PbF2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "S": [
+   "#efe3a0",
+   "vàng nhạt"
+  ],
+  "Cu": [
+   "#b5542a",
+   "đỏ"
+  ],
+  "Ag": [
+   "#c8c8c8",
+   "xám bạc"
+  ],
+  "CuO": [
+   "#1c1c1c",
+   "đen"
+  ],
+  "MnO2": [
+   "#2b2b2b",
+   "đen"
+  ],
+  "Fe2O3": [
+   "#8b2f1e",
+   "đỏ nâu"
+  ],
+  "Fe": [
+   "#5a5a5a",
+   "xám"
+  ],
+  "Zn": [
+   "#9aa3a8",
+   "xám"
+  ],
+  "Pb": [
+   "#6b6f76",
+   "xám"
+  ],
+  "AgSCN": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Ag2S2O3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "PbS2O3": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Mg3(PO4)2": [
+   "#fafafa",
+   "trắng"
+  ],
+  "Zn3(PO4)2": [
+   "#fafafa",
+   "trắng"
+  ]
+ },
+ "colored": {
+  "Cu2+": {
+   "hex": "#2f7ed8",
+   "cRef": 0.3
+  },
+  "Fe3+": {
+   "hex": "#c9861c",
+   "cRef": 0.15
+  },
+  "Fe2+": {
+   "hex": "#a8d08d",
+   "cRef": 0.6
+  },
+  "MnO4-": {
+   "hex": "#7a1fa2",
+   "cRef": 0.004
+  },
+  "MnO4^2-": {
+   "hex": "#2e7d32",
+   "cRef": 0.02
+  },
+  "Cr2O7^2-": {
+   "hex": "#e4761b",
+   "cRef": 0.04
+  },
+  "CrO4^2-": {
+   "hex": "#f2d01c",
+   "cRef": 0.04
+  },
+  "Ni2+": {
+   "hex": "#4caf50",
+   "cRef": 0.3
+  },
+  "Cr3+": {
+   "hex": "#3f7f3f",
+   "cRef": 0.15
+  },
+  "Mn2+": {
+   "hex": "#f4dce4",
+   "cRef": 2
+  },
+  "Cl2": {
+   "hex": "#c8d96a",
+   "cRef": 0.1
+  },
+  "Br2": {
+   "hex": "#b5651d",
+   "cRef": 0.02
+  },
+  "I2": {
+   "hex": "#8a4b1d",
+   "cRef": 0.004
+  },
+  "Fe(SCN)3": {
+   "hex": "#9b0d0d",
+   "cRef": 0.003
+  }
+ },
+ "species": [
+  {
+   "id": "H2O",
+   "class": "water",
+   "phase": "l",
+   "nameVi": "nước",
+   "nameEn": "water",
+   "hazards": []
+  },
+  {
+   "id": "HCl",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit clohiđric",
+   "nameEn": "hydrochloric acid",
+   "hazards": [
+    "corrosive",
+    "irritant"
+   ],
+   "ions": [
+    "H+",
+    "Cl-"
+   ],
+   "strength": "strong",
+   "defaultConc": 1,
+   "concentratedAboveM": 6
+  },
+  {
+   "id": "H2SO4",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit sunfuric",
+   "nameEn": "sulfuric acid",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "H+",
+    "SO4^2-"
+   ],
+   "strength": "strong",
+   "defaultConc": 1,
+   "concentratedAboveM": 10,
+   "tags": [
+    "oxidizing_when_conc"
+   ]
+  },
+  {
+   "id": "HNO3",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit nitric",
+   "nameEn": "nitric acid",
+   "hazards": [
+    "corrosive",
+    "oxidizer"
+   ],
+   "ions": [
+    "H+",
+    "NO3-"
+   ],
+   "strength": "strong",
+   "defaultConc": 1,
+   "concentratedAboveM": 8,
+   "tags": [
+    "oxidizing_acid"
+   ]
+  },
+  {
+   "id": "HBr",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit bromhiđric",
+   "nameEn": "hydrobromic acid",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "H+",
+    "Br-"
+   ],
+   "strength": "strong",
+   "defaultConc": 1
+  },
+  {
+   "id": "HI",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit iothiđric",
+   "nameEn": "hydroiodic acid",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "H+",
+    "I-"
+   ],
+   "strength": "strong",
+   "defaultConc": 1
+  },
+  {
+   "id": "HF",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit flohiđric",
+   "nameEn": "hydrofluoric acid",
+   "hazards": [
+    "toxic",
+    "corrosive"
+   ],
+   "ions": [
+    "H+",
+    "F-"
+   ],
+   "strength": "weak",
+   "defaultConc": 1
+  },
+  {
+   "id": "CH3COOH",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit axetic",
+   "nameEn": "acetic acid",
+   "hazards": [
+    "irritant"
+   ],
+   "ions": [
+    "H+",
+    "CH3COO-"
+   ],
+   "strength": "weak",
+   "defaultConc": 1
+  },
+  {
+   "id": "H3PO4",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit photphoric",
+   "nameEn": "phosphoric acid",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "H+",
+    "PO4^3-"
+   ],
+   "strength": "weak",
+   "defaultConc": 1
+  },
+  {
+   "id": "HClO",
+   "class": "acid",
+   "phase": "aq",
+   "nameVi": "axit hipoclorơ",
+   "nameEn": "hypochlorous acid",
+   "hazards": [
+    "irritant"
+   ],
+   "ions": [
+    "H+",
+    "ClO-"
+   ],
+   "strength": "weak",
+   "tags": [
+    "bleach"
+   ]
+  },
+  {
+   "id": "NaOH",
+   "class": "base",
+   "phase": "aq",
+   "nameVi": "natri hiđroxit",
+   "nameEn": "sodium hydroxide",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "Na+",
+    "OH-"
+   ],
+   "strength": "strong",
+   "defaultConc": 1
+  },
+  {
+   "id": "KOH",
+   "class": "base",
+   "phase": "aq",
+   "nameVi": "kali hiđroxit",
+   "nameEn": "potassium hydroxide",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "K+",
+    "OH-"
+   ],
+   "strength": "strong",
+   "defaultConc": 1
+  },
+  {
+   "id": "Ba(OH)2",
+   "class": "base",
+   "phase": "aq",
+   "nameVi": "bari hiđroxit",
+   "nameEn": "barium hydroxide",
+   "hazards": [
+    "corrosive",
+    "toxic"
+   ],
+   "ions": [
+    "Ba2+",
+    "OH-"
+   ],
+   "strength": "strong",
+   "defaultConc": 0.1
+  },
+  {
+   "id": "Ca(OH)2",
+   "class": "base",
+   "phase": "aq",
+   "nameVi": "canxi hiđroxit (nước vôi trong)",
+   "nameEn": "calcium hydroxide (limewater)",
+   "hazards": [
+    "irritant"
+   ],
+   "ions": [
+    "Ca2+",
+    "OH-"
+   ],
+   "strength": "strong",
+   "defaultConc": 0.02
+  },
+  {
+   "id": "NH3",
+   "class": "base",
+   "phase": "aq",
+   "nameVi": "amoniac",
+   "nameEn": "ammonia",
+   "hazards": [
+    "irritant",
+    "toxic"
+   ],
+   "strength": "weak",
+   "defaultConc": 1,
+   "tags": [
+    "weak_base"
+   ],
+   "color": {
+    "gas": null
+   }
+  },
+  {
+   "id": "AgNO3",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "bạc nitrat",
+   "nameEn": "silver nitrate",
+   "hazards": [
+    "corrosive",
+    "oxidizer",
+    "environment"
+   ],
+   "ions": [
+    "Ag+",
+    "NO3-"
+   ],
+   "defaultConc": 0.1
+  },
+  {
+   "id": "KMnO4",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "kali pemanganat",
+   "nameEn": "potassium permanganate",
+   "hazards": [
+    "oxidizer",
+    "harmful"
+   ],
+   "ions": [
+    "K+",
+    "MnO4-"
+   ],
+   "defaultConc": 0.02,
+   "tags": [
+    "oxidizer"
+   ]
+  },
+  {
+   "id": "K2Cr2O7",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "kali đicromat",
+   "nameEn": "potassium dichromate",
+   "hazards": [
+    "oxidizer",
+    "toxic",
+    "environment"
+   ],
+   "ions": [
+    "K+",
+    "Cr2O7^2-"
+   ],
+   "defaultConc": 0.05,
+   "tags": [
+    "oxidizer"
+   ]
+  },
+  {
+   "id": "KClO3",
+   "class": "salt",
+   "phase": "s",
+   "nameVi": "kali clorat",
+   "nameEn": "potassium chlorate",
+   "hazards": [
+    "oxidizer",
+    "harmful"
+   ],
+   "ions": [
+    "K+",
+    "ClO3-"
+   ],
+   "tags": [
+    "oxidizer"
+   ]
+  },
+  {
+   "id": "Na2S2O3",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "natri thiosunfat",
+   "nameEn": "sodium thiosulfate",
+   "hazards": [],
+   "ions": [
+    "Na+",
+    "S2O3^2-"
+   ],
+   "defaultConc": 0.1
+  },
+  {
+   "id": "BaCl2",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "bari clorua",
+   "nameEn": "barium chloride",
+   "hazards": [
+    "toxic"
+   ],
+   "ions": [
+    "Ba2+",
+    "Cl-"
+   ],
+   "defaultConc": 0.1
+  },
+  {
+   "id": "Pb(NO3)2",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "chì(II) nitrat",
+   "nameEn": "lead(II) nitrate",
+   "hazards": [
+    "toxic",
+    "environment"
+   ],
+   "ions": [
+    "Pb2+",
+    "NO3-"
+   ],
+   "defaultConc": 0.1
+  },
+  {
+   "id": "NaClO",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "natri hipoclorit (nước Javel)",
+   "nameEn": "sodium hypochlorite (bleach)",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "Na+",
+    "ClO-"
+   ],
+   "tags": [
+    "bleach"
+   ]
+  },
+  {
+   "id": "NaAlO2",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "natri aluminat",
+   "nameEn": "sodium aluminate",
+   "hazards": [],
+   "ions": [
+    "Na+",
+    "AlO2-"
+   ]
+  },
+  {
+   "id": "Fe(SCN)3",
+   "class": "salt",
+   "phase": "aq",
+   "nameVi": "sắt(III) thioxianat",
+   "nameEn": "iron(III) thiocyanate",
+   "hazards": [],
+   "ions": [
+    "Fe3+",
+    "SCN-"
+   ],
+   "tags": [
+    "complex"
+   ]
+  },
+  {
+   "id": "Na",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "natri",
+   "nameEn": "sodium",
+   "hazards": [
+    "flammable",
+    "corrosive"
+   ],
+   "element": "Na"
+  },
+  {
+   "id": "K",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "kali",
+   "nameEn": "potassium",
+   "hazards": [
+    "flammable",
+    "corrosive"
+   ],
+   "element": "K"
+  },
+  {
+   "id": "Ca",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "canxi",
+   "nameEn": "calcium",
+   "hazards": [
+    "flammable"
+   ],
+   "element": "Ca"
+  },
+  {
+   "id": "Mg",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "magie",
+   "nameEn": "magnesium",
+   "hazards": [
+    "flammable"
+   ],
+   "element": "Mg"
+  },
+  {
+   "id": "Al",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "nhôm",
+   "nameEn": "aluminium",
+   "hazards": [],
+   "element": "Al"
+  },
+  {
+   "id": "Zn",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "kẽm",
+   "nameEn": "zinc",
+   "hazards": [],
+   "element": "Zn"
+  },
+  {
+   "id": "Fe",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "sắt",
+   "nameEn": "iron",
+   "hazards": [],
+   "element": "Fe"
+  },
+  {
+   "id": "Ni",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "niken",
+   "nameEn": "nickel",
+   "hazards": [],
+   "element": "Ni"
+  },
+  {
+   "id": "Sn",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "thiếc",
+   "nameEn": "tin",
+   "hazards": [],
+   "element": "Sn"
+  },
+  {
+   "id": "Pb",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "chì",
+   "nameEn": "lead",
+   "hazards": [
+    "toxic"
+   ],
+   "element": "Pb"
+  },
+  {
+   "id": "Cu",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "đồng",
+   "nameEn": "copper",
+   "hazards": [],
+   "element": "Cu"
+  },
+  {
+   "id": "Ag",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "bạc",
+   "nameEn": "silver",
+   "hazards": [],
+   "element": "Ag"
+  },
+  {
+   "id": "Au",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "vàng",
+   "nameEn": "gold",
+   "hazards": [],
+   "element": "Au"
+  },
+  {
+   "id": "Pt",
+   "class": "metal",
+   "phase": "s",
+   "nameVi": "platin",
+   "nameEn": "platinum",
+   "hazards": [],
+   "element": "Pt"
+  },
+  {
+   "id": "Na2O",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "natri oxit",
+   "nameEn": "sodium oxide",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "Na+",
+    "O^2-"
+   ]
+  },
+  {
+   "id": "K2O",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "kali oxit",
+   "nameEn": "potassium oxide",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "K+",
+    "O^2-"
+   ]
+  },
+  {
+   "id": "CaO",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "canxi oxit (vôi sống)",
+   "nameEn": "calcium oxide (quicklime)",
+   "hazards": [
+    "corrosive"
+   ],
+   "ions": [
+    "Ca2+",
+    "O^2-"
+   ]
+  },
+  {
+   "id": "BaO",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "bari oxit",
+   "nameEn": "barium oxide",
+   "hazards": [
+    "toxic"
+   ],
+   "ions": [
+    "Ba2+",
+    "O^2-"
+   ]
+  },
+  {
+   "id": "MgO",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "magie oxit",
+   "nameEn": "magnesium oxide",
+   "hazards": [],
+   "ions": [
+    "Mg2+",
+    "O^2-"
+   ]
+  },
+  {
+   "id": "CuO",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "đồng(II) oxit",
+   "nameEn": "copper(II) oxide",
+   "hazards": [],
+   "ions": [
+    "Cu2+",
+    "O^2-"
+   ],
+   "color": {
+    "solid": "#1c1c1c"
+   }
+  },
+  {
+   "id": "FeO",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "sắt(II) oxit",
+   "nameEn": "iron(II) oxide",
+   "hazards": [],
+   "ions": [
+    "Fe2+",
+    "O^2-"
+   ],
+   "color": {
+    "solid": "#222"
+   }
+  },
+  {
+   "id": "Fe2O3",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "sắt(III) oxit",
+   "nameEn": "iron(III) oxide",
+   "hazards": [],
+   "ions": [
+    "Fe3+",
+    "O^2-"
+   ],
+   "color": {
+    "solid": "#8b2f1e"
+   }
+  },
+  {
+   "id": "ZnO",
+   "class": "oxide_amphoteric",
+   "phase": "s",
+   "nameVi": "kẽm oxit",
+   "nameEn": "zinc oxide",
+   "hazards": [],
+   "ions": [
+    "Zn2+",
+    "O^2-"
+   ]
+  },
+  {
+   "id": "Al2O3",
+   "class": "oxide_amphoteric",
+   "phase": "s",
+   "nameVi": "nhôm oxit",
+   "nameEn": "aluminium oxide",
+   "hazards": [],
+   "ions": [
+    "Al3+",
+    "O^2-"
+   ]
+  },
+  {
+   "id": "Ag2O",
+   "class": "oxide_basic",
+   "phase": "s",
+   "nameVi": "bạc oxit",
+   "nameEn": "silver oxide",
+   "hazards": [],
+   "ions": [
+    "Ag+",
+    "O^2-"
+   ],
+   "color": {
+    "solid": "#4a3426"
+   }
+  },
+  {
+   "id": "MnO2",
+   "class": "other",
+   "phase": "s",
+   "nameVi": "mangan đioxit",
+   "nameEn": "manganese dioxide",
+   "hazards": [
+    "harmful"
+   ],
+   "color": {
+    "solid": "#2b2b2b"
+   },
+   "tags": [
+    "catalyst"
+   ]
+  },
+  {
+   "id": "CO2",
+   "class": "oxide_acidic",
+   "phase": "g",
+   "nameVi": "cacbon đioxit",
+   "nameEn": "carbon dioxide",
+   "hazards": [],
+   "tags": [
+    "acid_anion:CO3^2-"
+   ]
+  },
+  {
+   "id": "SO2",
+   "class": "oxide_acidic",
+   "phase": "g",
+   "nameVi": "lưu huỳnh đioxit",
+   "nameEn": "sulfur dioxide",
+   "hazards": [
+    "toxic"
+   ],
+   "tags": [
+    "acid_anion:SO3^2-"
+   ]
+  },
+  {
+   "id": "SO3",
+   "class": "oxide_acidic",
+   "phase": "g",
+   "nameVi": "lưu huỳnh trioxit",
+   "nameEn": "sulfur trioxide",
+   "hazards": [
+    "corrosive"
+   ],
+   "tags": [
+    "acid_anion:SO4^2-"
+   ]
+  },
+  {
+   "id": "P2O5",
+   "class": "oxide_acidic",
+   "phase": "s",
+   "nameVi": "điphotpho pentaoxit",
+   "nameEn": "phosphorus pentoxide",
+   "hazards": [
+    "corrosive"
+   ],
+   "tags": [
+    "acid_anion:PO4^3-"
+   ]
+  },
+  {
+   "id": "NO",
+   "class": "oxide_neutral",
+   "phase": "g",
+   "nameVi": "nitơ monoxit",
+   "nameEn": "nitrogen monoxide",
+   "hazards": [
+    "toxic"
+   ]
+  },
+  {
+   "id": "NO2",
+   "class": "oxide_acidic",
+   "phase": "g",
+   "nameVi": "nitơ đioxit",
+   "nameEn": "nitrogen dioxide",
+   "hazards": [
+    "toxic"
+   ],
+   "color": {
+    "gas": "#8b3a1e"
+   }
+  },
+  {
+   "id": "Cl2",
+   "class": "halogen",
+   "phase": "aq",
+   "nameVi": "clo (nước clo)",
+   "nameEn": "chlorine (chlorine water)",
+   "hazards": [
+    "toxic",
+    "oxidizer"
+   ],
+   "color": {
+    "gas": "#c8d96a"
+   },
+   "defaultConc": 0.05
+  },
+  {
+   "id": "Br2",
+   "class": "halogen",
+   "phase": "aq",
+   "nameVi": "brom (nước brom)",
+   "nameEn": "bromine (bromine water)",
+   "hazards": [
+    "toxic",
+    "corrosive"
+   ],
+   "color": {
+    "gas": "#b5651d"
+   },
+   "defaultConc": 0.02
+  },
+  {
+   "id": "I2",
+   "class": "halogen",
+   "phase": "aq",
+   "nameVi": "iot (dung dịch iot)",
+   "nameEn": "iodine (iodine solution)",
+   "hazards": [
+    "harmful"
+   ],
+   "defaultConc": 0.01
+  },
+  {
+   "id": "S",
+   "class": "nonmetal",
+   "phase": "s",
+   "nameVi": "lưu huỳnh",
+   "nameEn": "sulfur",
+   "hazards": [
+    "flammable"
+   ],
+   "color": {
+    "solid": "#efe3a0"
+   }
+  },
+  {
+   "id": "C",
+   "class": "nonmetal",
+   "phase": "s",
+   "nameVi": "cacbon (than)",
+   "nameEn": "carbon (charcoal)",
+   "hazards": [
+    "flammable"
+   ]
+  },
+  {
+   "id": "H2",
+   "class": "gas",
+   "phase": "g",
+   "nameVi": "khí hiđro",
+   "nameEn": "hydrogen",
+   "hazards": [
+    "flammable"
+   ]
+  },
+  {
+   "id": "O2",
+   "class": "gas",
+   "phase": "g",
+   "nameVi": "khí oxi",
+   "nameEn": "oxygen",
+   "hazards": [
+    "oxidizer"
+   ]
+  },
+  {
+   "id": "H2S",
+   "class": "gas",
+   "phase": "g",
+   "nameVi": "khí hiđro sunfua",
+   "nameEn": "hydrogen sulfide",
+   "hazards": [
+    "toxic",
+    "flammable"
+   ],
+   "tags": [
+    "smell:trứng thối"
+   ]
+  },
+  {
+   "id": "H2O2",
+   "class": "peroxide",
+   "phase": "aq",
+   "nameVi": "hiđro peoxit (nước oxi già)",
+   "nameEn": "hydrogen peroxide",
+   "hazards": [
+    "oxidizer",
+    "irritant"
+   ],
+   "defaultConc": 0.9
+  }
+ ],
+ "activity": [
+  "K",
+  "Na",
+  "Ba",
+  "Ca",
+  "Mg",
+  "Al",
+  "Zn",
+  "Fe",
+  "Ni",
+  "Sn",
+  "Pb",
+  "H",
+  "Cu",
+  "Ag",
+  "Pt",
+  "Au"
+ ],
+ "reactsWithWater": [
+  "K",
+  "Na",
+  "Ba",
+  "Ca"
+ ],
+ "inert": [
+  "Au",
+  "Pt"
+ ],
+ "passivated": [
+  "Al",
+  "Fe",
+  "Cr"
+ ],
+ "metalCations": {
+  "Li": [
+   "Li+"
+  ],
+  "Na": [
+   "Na+"
+  ],
+  "K": [
+   "K+"
+  ],
+  "Ba": [
+   "Ba2+"
+  ],
+  "Ca": [
+   "Ca2+"
+  ],
+  "Mg": [
+   "Mg2+"
+  ],
+  "Al": [
+   "Al3+"
+  ],
+  "Zn": [
+   "Zn2+"
+  ],
+  "Fe": [
+   "Fe2+",
+   "Fe3+"
+  ],
+  "Ni": [
+   "Ni2+"
+  ],
+  "Sn": [
+   "Sn2+"
+  ],
+  "Pb": [
+   "Pb2+"
+  ],
+  "Cu": [
+   "Cu2+"
+  ],
+  "Ag": [
+   "Ag+"
+  ],
+  "Mn": [
+   "Mn2+"
+  ],
+  "Cr": [
+   "Cr3+"
+  ]
+ },
+ "halogenOrder": [
+  "F",
+  "Cl",
+  "Br",
+  "I"
+ ],
+ "gasInfo": {
+  "H2": {
+   "toxic": false
+  },
+  "O2": {
+   "toxic": false
+  },
+  "CO2": {
+   "toxic": false
+  },
+  "SO2": {
+   "toxic": true,
+   "smellVi": "mùi hắc"
+  },
+  "NO": {
+   "toxic": true,
+   "noteKey": "note.noBrown"
+  },
+  "NO2": {
+   "toxic": true,
+   "colorHex": "#8b3a1e",
+   "colorVi": "nâu đỏ"
+  },
+  "NH3": {
+   "toxic": true,
+   "smellVi": "mùi khai"
+  },
+  "Cl2": {
+   "toxic": true,
+   "colorHex": "#c8d96a",
+   "colorVi": "vàng lục",
+   "smellVi": "mùi xốc"
+  },
+  "HCl": {
+   "toxic": true,
+   "noteKey": "note.hclFume"
+  },
+  "H2S": {
+   "toxic": true,
+   "smellVi": "mùi trứng thối"
+  },
+  "Br2": {
+   "toxic": true,
+   "colorHex": "#b5651d",
+   "colorVi": "nâu đỏ"
+  }
+ },
+ "indicators": {
+  "litmus": [
+   {
+    "below": 5,
+    "hex": "#d62828",
+    "name": "red"
+   },
+   {
+    "below": 8,
+    "hex": "#7b3fa0",
+    "name": "purple"
+   },
+   {
+    "below": 99,
+    "hex": "#2b59c3",
+    "name": "blue"
+   }
+  ],
+  "phenolphthalein": [
+   {
+    "below": 8.2,
+    "hex": "#ffffff",
+    "name": "colorless",
+    "clear": true
+   },
+   {
+    "below": 99,
+    "hex": "#e6007e",
+    "name": "pink"
+   }
+  ],
+  "methyl_orange": [
+   {
+    "below": 3.1,
+    "hex": "#d62828",
+    "name": "red"
+   },
+   {
+    "below": 4.4,
+    "hex": "#f08c00",
+    "name": "orange"
+   },
+   {
+    "below": 99,
+    "hex": "#f2d01c",
+    "name": "yellow"
+   }
+  ],
+  "universal": [
+   {
+    "below": 1,
+    "hex": "#ee1c25",
+    "name": "pH0"
+   },
+   {
+    "below": 2,
+    "hex": "#ef4123",
+    "name": "pH1"
+   },
+   {
+    "below": 3,
+    "hex": "#f26722",
+    "name": "pH2"
+   },
+   {
+    "below": 4,
+    "hex": "#f58220",
+    "name": "pH3"
+   },
+   {
+    "below": 5,
+    "hex": "#fcb315",
+    "name": "pH4"
+   },
+   {
+    "below": 6,
+    "hex": "#feef0f",
+    "name": "pH5"
+   },
+   {
+    "below": 7,
+    "hex": "#b2d235",
+    "name": "pH6"
+   },
+   {
+    "below": 8,
+    "hex": "#4db848",
+    "name": "pH7"
+   },
+   {
+    "below": 9,
+    "hex": "#00a651",
+    "name": "pH8"
+   },
+   {
+    "below": 10,
+    "hex": "#00b2b8",
+    "name": "pH9"
+   },
+   {
+    "below": 11,
+    "hex": "#2b78bd",
+    "name": "pH10"
+   },
+   {
+    "below": 12,
+    "hex": "#3f51a3",
+    "name": "pH11"
+   },
+   {
+    "below": 13,
+    "hex": "#5d3f97",
+    "name": "pH12"
+   },
+   {
+    "below": 14,
+    "hex": "#6b2d8f",
+    "name": "pH13"
+   },
+   {
+    "below": 15,
+    "hex": "#4b1c6e",
+    "name": "pH14"
+   }
+  ],
+  "starch": [
+   {
+    "needs": "I2",
+    "hex": "#1b1464",
+    "name": "blue-violet"
+   }
+  ]
+ },
+ "thermo": {
+  "neutralization": -57.1,
+  "dissolve": {
+   "NaOH": -44.5,
+   "KOH": -57.6,
+   "NH4Cl": 14.8,
+   "CaCl2": -82.8,
+   "NH4NO3": 25.7
+  },
+  "reaction": {
+   "Zn+HCl": -153.9,
+   "Zn+H2SO4": -153.9,
+   "Mg+HCl": -462,
+   "Mg+H2SO4": -462,
+   "Fe+HCl": -89,
+   "Fe+H2SO4": -89,
+   "Al+HCl": -531,
+   "Al+H2SO4": -531,
+   "Zn+CuSO4": -217,
+   "Fe+CuSO4": -153,
+   "CaO+H2O": -65,
+   "Na+H2O": -184,
+   "K+H2O": -196,
+   "Ca+H2O": -414,
+   "H2O2": -98,
+   "CaCO3+HCl": -15
+  },
+  "specificHeat": 4.18
+ },
+ "kinetics": {
+  "metalAcid": {
+   "Zn": 5e-05,
+   "Mg": 0.001,
+   "Fe": 1.5e-05,
+   "Al": 2.5e-05,
+   "Ni": 5e-06,
+   "Sn": 3e-06,
+   "Pb": 1e-06
+  },
+  "carbonateAcid": {
+   "CaCO3": 0.0002,
+   "MgCO3": 0.0001,
+   "BaCO3": 0.0002,
+   "ZnCO3": 0.0001
+  },
+  "thiosulfate": {
+   "k": 0.0081,
+   "crossHiddenM": 0.004
+  },
+  "peroxide": {
+   "halfLifeS": 100000,
+   "catalyzedHalfLifeS": 20,
+   "catalyst": "MnO2"
+  },
+  "q10": 2,
+  "gasIntensityRef": 0.0001
+ },
+ "redoxReactions": [
+  {
+   "id": "KMnO4+FeSO4",
+   "reactants": [
+    "KMnO4",
+    "FeSO4",
+    "H2SO4"
+   ],
+   "products": [
+    [
+     "K2SO4",
+     "aq"
+    ],
+    [
+     "MnSO4",
+     "aq"
+    ],
+    [
+     "Fe2(SO4)3",
+     "aq"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ],
+   "needsAcid": "H2SO4"
+  },
+  {
+   "id": "K2Cr2O7+FeSO4",
+   "reactants": [
+    "K2Cr2O7",
+    "FeSO4",
+    "H2SO4"
+   ],
+   "products": [
+    [
+     "K2SO4",
+     "aq"
+    ],
+    [
+     "Cr2(SO4)3",
+     "aq"
+    ],
+    [
+     "Fe2(SO4)3",
+     "aq"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ],
+   "needsAcid": "H2SO4"
+  },
+  {
+   "id": "KMnO4+HCl",
+   "reactants": [
+    "KMnO4",
+    "HCl"
+   ],
+   "products": [
+    [
+     "KCl",
+     "aq"
+    ],
+    [
+     "MnCl2",
+     "aq"
+    ],
+    [
+     "Cl2",
+     "g"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ],
+   "requires": {
+    "concentrated": "HCl"
+   }
+  },
+  {
+   "id": "KMnO4+H2O2",
+   "reactants": [
+    "KMnO4",
+    "H2O2",
+    "H2SO4"
+   ],
+   "coefs": [
+    2,
+    5,
+    3
+   ],
+   "products": [
+    [
+     "K2SO4",
+     "aq"
+    ],
+    [
+     "MnSO4",
+     "aq"
+    ],
+    [
+     "O2",
+     "g"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ],
+   "productCoefs": [
+    1,
+    2,
+    5,
+    8
+   ],
+   "needsAcid": "H2SO4"
+  },
+  {
+   "id": "H2O2+KI",
+   "reactants": [
+    "H2O2",
+    "KI",
+    "H2SO4"
+   ],
+   "products": [
+    [
+     "I2",
+     "aq"
+    ],
+    [
+     "K2SO4",
+     "aq"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ],
+   "needsAcid": "H2SO4"
+  },
+  {
+   "id": "FeCl3+Cu",
+   "reactants": [
+    "FeCl3",
+    "Cu"
+   ],
+   "products": [
+    [
+     "FeCl2",
+     "aq"
+    ],
+    [
+     "CuCl2",
+     "aq"
+    ]
+   ]
+  },
+  {
+   "id": "FeCl3+Fe",
+   "reactants": [
+    "FeCl3",
+    "Fe"
+   ],
+   "products": [
+    [
+     "FeCl2",
+     "aq"
+    ]
+   ]
+  },
+  {
+   "id": "FeCl3+KI",
+   "reactants": [
+    "FeCl3",
+    "KI"
+   ],
+   "products": [
+    [
+     "FeCl2",
+     "aq"
+    ],
+    [
+     "KCl",
+     "aq"
+    ],
+    [
+     "I2",
+     "aq"
+    ]
+   ]
+  },
+  {
+   "id": "Cl2+FeCl2",
+   "reactants": [
+    "Cl2",
+    "FeCl2"
+   ],
+   "products": [
+    [
+     "FeCl3",
+     "aq"
+    ]
+   ]
+  },
+  {
+   "id": "Cl2+NaOH",
+   "reactants": [
+    "Cl2",
+    "NaOH"
+   ],
+   "products": [
+    [
+     "NaCl",
+     "aq"
+    ],
+    [
+     "NaClO",
+     "aq"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ]
+  },
+  {
+   "id": "Cl2+KOH",
+   "reactants": [
+    "Cl2",
+    "KOH"
+   ],
+   "products": [
+    [
+     "KCl",
+     "aq"
+    ],
+    [
+     "KClO",
+     "aq"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ]
+  },
+  {
+   "id": "SO2+Br2",
+   "reactants": [
+    "SO2",
+    "Br2",
+    "H2O"
+   ],
+   "products": [
+    [
+     "H2SO4",
+     "aq"
+    ],
+    [
+     "HBr",
+     "aq"
+    ]
+   ]
+  },
+  {
+   "id": "Al+NaOH",
+   "reactants": [
+    "Al",
+    "NaOH",
+    "H2O"
+   ],
+   "products": [
+    [
+     "NaAlO2",
+     "aq"
+    ],
+    [
+     "H2",
+     "g"
+    ]
+   ]
+  },
+  {
+   "id": "NaCl+H2SO4",
+   "reactants": [
+    "NaCl",
+    "H2SO4"
+   ],
+   "products": [
+    [
+     "Na2SO4",
+     "aq"
+    ],
+    [
+     "HCl",
+     "g"
+    ]
+   ],
+   "requires": {
+    "concentrated": "H2SO4",
+    "heated": true,
+    "solid": "NaCl"
+   }
+  },
+  {
+   "id": "FeCl3+KSCN",
+   "reactants": [
+    "FeCl3",
+    "KSCN"
+   ],
+   "products": [
+    [
+     "Fe(SCN)3",
+     "aq"
+    ],
+    [
+     "KCl",
+     "aq"
+    ]
+   ]
+  }
+ ],
+ "decompositions": [
+  {
+   "id": "KClO3",
+   "reactant": "KClO3",
+   "products": [
+    [
+     "KCl",
+     "s"
+    ],
+    [
+     "O2",
+     "g"
+    ]
+   ],
+   "catalyst": "MnO2",
+   "thresholdC": 250,
+   "uncatalyzedC": 600
+  },
+  {
+   "id": "KMnO4",
+   "reactant": "KMnO4",
+   "products": [
+    [
+     "K2MnO4",
+     "s"
+    ],
+    [
+     "MnO2",
+     "s"
+    ],
+    [
+     "O2",
+     "g"
+    ]
+   ],
+   "thresholdC": 240,
+   "coefs": [
+    2
+   ],
+   "productCoefs": [
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "id": "CaCO3",
+   "reactant": "CaCO3",
+   "products": [
+    [
+     "CaO",
+     "s"
+    ],
+    [
+     "CO2",
+     "g"
+    ]
+   ],
+   "thresholdC": 825
+  },
+  {
+   "id": "Cu(OH)2",
+   "reactant": "Cu(OH)2",
+   "products": [
+    [
+     "CuO",
+     "s"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ],
+   "thresholdC": 80
+  },
+  {
+   "id": "Fe(OH)3",
+   "reactant": "Fe(OH)3",
+   "products": [
+    [
+     "Fe2O3",
+     "s"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ],
+   "thresholdC": 150
+  },
+  {
+   "id": "NaHCO3",
+   "reactant": "NaHCO3",
+   "products": [
+    [
+     "Na2CO3",
+     "s"
+    ],
+    [
+     "CO2",
+     "g"
+    ],
+    [
+     "H2O",
+     "l"
+    ]
+   ],
+   "thresholdC": 100
+  },
+  {
+   "id": "NH4Cl",
+   "reactant": "NH4Cl",
+   "products": [
+    [
+     "NH3",
+     "g"
+    ],
+    [
+     "HCl",
+     "g"
+    ]
+   ],
+   "thresholdC": 340
+  },
+  {
+   "id": "Ag2O",
+   "reactant": "Ag2O",
+   "products": [
+    [
+     "Ag",
+     "s"
+    ],
+    [
+     "O2",
+     "g"
+    ]
+   ],
+   "thresholdC": 300
+  }
+ ],
+ "potentials": {
+  "Li+/Li": -3.04,
+  "K+/K": -2.93,
+  "Ca2+/Ca": -2.87,
+  "Na+/Na": -2.71,
+  "Mg2+/Mg": -2.37,
+  "Al3+/Al": -1.66,
+  "Zn2+/Zn": -0.76,
+  "Fe2+/Fe": -0.44,
+  "Ni2+/Ni": -0.26,
+  "Sn2+/Sn": -0.14,
+  "Pb2+/Pb": -0.13,
+  "2H+/H2": 0,
+  "Cu2+/Cu": 0.34,
+  "I2/2I-": 0.54,
+  "Fe3+/Fe2+": 0.77,
+  "Ag+/Ag": 0.8,
+  "NO3-/NO": 0.96,
+  "Br2/2Br-": 1.07,
+  "O2/H2O": 1.23,
+  "Cr2O7^2-/Cr3+": 1.33,
+  "Cl2/2Cl-": 1.36,
+  "MnO4-/Mn2+": 1.51,
+  "H2O2/H2O": 1.78,
+  "F2/2F-": 2.87
+ }
+}

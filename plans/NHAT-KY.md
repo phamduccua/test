@@ -27,3 +27,18 @@
 | vite / tailwindcss | 6.4.5 / 4.3.5 |
 | vitest / typescript | 5.1.0 / 5.8.x |
 | Bundle build | JS 1,1 MB (gzip 358 kB), CSS 45 kB – tối ưu tách chunk ở chặng 8 |
+
+## Chặng 1 — Bộ máy hóa học (xong 2026-11-08)
+
+- `src/chem` + `content/chem.json` (66 chất khai báo, 19 cation × 23 anion ghép tự động) + `content/chem-text.json`.
+- `npm test`: **146 test xanh** = 106 ca vàng + 40 test đơn vị. Mọi `ReasonCode` có ít nhất một ca. Bộ test bắt được lỗi gài thử (2/2).
+- Số liệu kiểm: dấu X Na₂S₂O₃ 25 °C 64 s, 35 °C 32 s; Zn 1 g/HCl 1 M còn 0,048 g sau 600 s; H₂ 2 M/1 M = 2,00; trung hòa ΔT 6,83 °C; O₂ có/không MnO₂ gấp ~5300 lần.
+- Đầu ra CLI 8 lệnh mẫu: `docs/screens/chang-1/cli.txt`.
+- **Lệch kế hoạch (có chủ đích):**
+  - Mô hình mức phân tử thay vì mức ion: phương trình phân tử đúng SGK, luật vẫn tổng quát (tính tan, dãy hoạt động, pKa, halogen).
+  - Hệ số tự cân bằng bằng đại số tuyến tính, nên bảng `redoxReactions` chỉ cần chất, không cần hệ số (trừ KMnO₄ + H₂O₂).
+  - Bỏ `NEEDS_LIGHT`, `ALREADY_AT_EQUILIBRIUM`: không dùng trong phạm vi Hóa 10.
+  - FeSCN chưa mô phỏng hằng số cân bằng (ghi ở README, "Giới hạn").
+  - `chemText` dùng khóa đọc được (`reason.SAME_CLASS_ACIDS`), không dùng khóa SHA-1.
+  - Thêm `@types/node` (devDependency, chỉ kiểu) cho CLI và test.
+- Chưa có: giáo viên duyệt `species` và bảng ca vàng.

@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-08).** Kết quả, số liệu và các lệch kế hoạch ghi trong `plans/NHAT-KY.md` mục Chặng 1; API ở `src/chem/README.md`. Phần dưới giữ để tham khảo.
+
 # Chặng 1 — Bộ máy hóa học `src/chem` (thuần logic, test vitest)
 
 Đọc trước: `plans/00-tong-quan.md`. Chặng 0 đã xong. Chặng này không dùng kit.
