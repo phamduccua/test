@@ -1,0 +1,8 @@
+@import "tailwindcss" source("../..");
+@source "../../../index.html";
+
+@theme {
+  --font-sans: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html, body { height: 100%; margin: 0; }
