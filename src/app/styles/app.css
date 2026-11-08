@@ -1,8 +1,19 @@
 @import "tailwindcss" source("../..");
 @source "../../../index.html";
 
+/* CSS của kit lab3d mà khung SimHost (React, đã bỏ) từng nạp; các file .ts của kit tự import CSS của chúng. */
+@import "../../vendor/lab3d/ui/tokens.css";
+@import "../../vendor/lab3d/ui/chip.css";
+@import "../../vendor/lab3d/sim/SimHost.css";
+@import "../../vendor/lab3d/sim/SimGui.css";
+@import "../../vendor/lab3d/sim/SimTheme.css";
+@import "../../vendor/lab3d/sim/SimOverlay.css";
+@import "../../vendor/lab3d/sim/Hud.css";
+@import "../../vendor/lab3d/sim/SimWarning.css";
+
 @theme {
   --font-sans: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-html, body { height: 100%; margin: 0; }
+:root { --font-sans: system-ui, "Segoe UI", Roboto, Arial, sans-serif; }
+html, body { height: 100%; margin: 0; overflow: hidden; }

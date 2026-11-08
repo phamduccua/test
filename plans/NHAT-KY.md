@@ -9,3 +9,21 @@
 - File bị vá trong vendor: `assets.ts`, `index.ts` (bỏ export SimHost), 3 dòng re-export trong `audio/index.ts`, `audio/voice/index.ts`, `ui/index.ts`.
 - Adapter ngoài vendor: `src/data/contentApi.ts` (`apiAssetUrl` trả nguyên đường dẫn, vì `clips.ts` cần).
 - `sync-kit` chạy hai lần cho cùng kết quả (so SHA-1). Typecheck 0 lỗi, build xanh.
+- zustand 5 (`create`) import mặc định `React` → shim có thêm default export (`useSyncExternalStore`, `useCallback`, `useDebugValue`).
+
+### Bước 0.4–0.5 — Host + cảnh thử (nghiệm thu)
+- `src/app/host.ts` thay SimHost (React): `Engine` + `createSimSession` + `create(ctx)` + `attach` + `engine.setStage`; đồng bộ chạy/dừng/tốc độ từ `useSim`; `reset()`, `view()`.
+- `src/app/caption.ts`: dải caption + cảnh báo tạm (Tailwind), chặng 6 thay.
+- CSS kit nạp trong `app.css`: tokens, chip, SimHost, SimGui, SimTheme, SimOverlay, Hud, SimWarning.
+- Kiểm bằng Chromium headless (SwiftShader, chất lượng tự hạ `low`): cốc 250 mL của kit + chất lỏng + vạch chia, viền sáng khi rê, tooltip "Bấm để nghe tiếng", bảng "Tham số" (lil-gui, thanh trượt thể tích), caption đổi khi bấm; không lỗi console; bấm cốc tải `manifest.json` và `lab/glass-put.webm` (200). 36 draw calls, 68 nghìn tam giác. Ảnh `docs/screens/chang-0/dev-scene*.png`.
+- Chưa kiểm: nghe âm thật và chất lượng `medium/high` trên GPU thật (cần mở trên máy có màn hình).
+
+| Mục | Giá trị |
+|---|---|
+| three | 0.186.1 |
+| postprocessing | 6.39.6 |
+| lil-gui | 0.21.x |
+| zustand | 5.1.0 |
+| vite / tailwindcss | 6.4.5 / 4.3.5 |
+| vitest / typescript | 5.1.0 / 5.8.x |
+| Bundle build | JS 1,1 MB (gzip 358 kB), CSS 45 kB – tối ưu tách chunk ở chặng 8 |
