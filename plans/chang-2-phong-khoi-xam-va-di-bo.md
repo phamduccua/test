@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-09).** Toạ độ Z của bàn và ghế đã đổi so với bảng dưới (bảng cũ làm kín lối đi) – xem `src/lab/layout.ts` và `plans/NHAT-KY.md` mục Chặng 2. Phần dưới giữ để tham khảo.
+
 # Chặng 2 — Phòng khối xám đúng tỉ lệ (dm) + đi lại góc nhìn thứ nhất
 
 Đọc trước: `plans/00-tong-quan.md`. Chặng 0 đã xong (`host.ts` chạy `SimModule`).

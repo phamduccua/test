@@ -42,3 +42,17 @@
   - `chemText` dùng khóa đọc được (`reason.SAME_CLASS_ACIDS`), không dùng khóa SHA-1.
   - Thêm `@types/node` (devDependency, chỉ kiểu) cho CLI và test.
 - Chưa có: giáo viên duyệt `species` và bảng ca vàng.
+
+## Chặng 2 — Phòng khối xám + đi bộ (xong 2026-11-09)
+
+- `src/lab/layout.ts` (nguồn sự thật bố cục), `collision.ts`, `blockout.ts`, `walk.ts`, `debug.ts`, `index.ts` (`freeLabModule`). `src/app/main.ts` mặc định chạy phòng lab; `?scene=dev` mở lại cảnh thử kit; `?mode=debug` bật số liệu + nhãn.
+- Điều khiển: kéo chuột chỗ trống nhìn quanh (OrbitControls tâm quay cách mắt 0,5 dm), W/S đi, A/D bước ngang, ←/→ quay, Shift chạy, nút ▲▼◀▶ cảm ứng; F3 số liệu, F4 bay (Space/C lên xuống), F5 điểm nhìn, F6 nhãn.
+- Kiểm bằng Chromium headless: đi 1,5 s ≈ 28 dm; lao vào bàn đảo dừng đúng mép bàn − bán kính người; chạy dọc lối giữa hai đảo không vướng; không lỗi console. Ảnh 7 điểm nhìn + `top-compare.png` (so ảnh mặt bằng mẫu) trong `docs/screens/chang-2/`.
+- Test: 12 test mới (layout + va chạm), tổng 158 xanh. Có test **tìm đường BFS** trên lưới 0,5 dm: từ cửa đi tới được 11 chỗ đứng quan trọng.
+- **Lệch kế hoạch:**
+  - Bảng layout trong kế hoạch làm hai hàng ghế giữa hai bàn đảo chồng kín lối đi (khe 0,4 dm). Đã dời theo Z: bàn GV z −32,5; đảo 1 z −11,5; đảo 2 z 17,5; ghế sát mép bàn (z −20,5 / −2,5 / 8,5 / 26,5); lối giữa hai hàng ghế 8 dm. Bàn tường cửa sổ rút còn 86,5 dm để ghép chữ L với bàn tường kho (z 20…42). Xe đẩy dời về (−41, −30) cho thoáng cửa. Ghế va chạm 3 × 3 dm.
+  - Bán kính người 2,5 dm (25 cm, vai người lớn) thay 3 dm.
+  - Không màn "Nhấp để vào phòng" vì không khóa con trỏ; thay bằng bảng điều khiển ngắn bấm để ẩn.
+  - Hướng: nhìn +Z thì X− (tường an toàn) nằm bên phải màn hình – quy ước của three.js, bố cục vẫn khớp ảnh mẫu khi xoay.
+- Khác ảnh mẫu, chờ người điều phối quyết: ảnh mẫu đặt tủ hút giữa tường kho; kế hoạch (và hiện tại) đặt ở z −26 gần tường giảng dạy. Sửa một dòng trong `layout.ts` nếu muốn đổi.
+- FPS máy thật chưa đo (headless dùng render phần mềm, ~11 FPS không có ý nghĩa). Draw calls 66–108, tam giác < 3 nghìn.

@@ -6,6 +6,9 @@
 Thay khối xám bằng vật thể thật. **Dụng cụ, lọ, thiết bị lấy từ kit**; tự dựng kiến trúc, bàn đảo, tủ, trạm an toàn và vài món kit thiếu. Chế độ trưng bày `?mode=showroom&batch=` để duyệt từng lô. Vật liệu kit mặc định (`labMaterials`), chưa tinh chỉnh.
 Bàn giao: showroom từng lô; `?mode=play` phòng lắp đủ theo `population.ts`; tam giác ≤ 900 000.
 
+## Ảnh tham chiếu bổ sung
+`reference/images/vatly1-VL1-11.png` (kiểu bàn: mặt sáng, tủ ngăn kéo xanh xám tay nắm tối; sổ ghi chép) và `vatly1-VL1-19.png` (giá đỡ). Chỉ lấy vật dụng phòng lab Hóa dùng tới.
+
 ## Bối cảnh cần đọc (trong `src/vendor/lab3d`)
 `lab/index.ts` (grep trước khi tự viết), `lab/units.ts`, `lab/materials/{kit,palette}.ts`, `lab/room/bench.ts` (`createBench({ width, depth, height = 9, top, cabinetColor })`, mặt bàn ở y 0 của group, sàn ở −height), `lab/glassware/*`, `lab/equipment/*`, `lab/microbio/burner.ts`, `lab/solids/*`, `lab/containers/*`, `lab/desk/*`, `lab/microscopy/smearTools.ts` (`createWashBottle`), `lab/catalog/{equipment,gallery}.ts` (mẫu trưng bày), `interact/dropZones.ts` (kiểu `DropZone`), `engine/dispose.ts`.
 
