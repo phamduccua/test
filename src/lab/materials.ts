@@ -64,9 +64,9 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
     case 'yellowPaint': mat = phys({ color: 0xf2c21b, roughness: 0.45, clearcoat: 0.3 }); break
     case 'safetyRed': mat = phys({ color: 0xd32f2f, roughness: 0.4, clearcoat: 0.4 }); break
     case 'safetyGreen': mat = phys({ color: 0x1f9d55, roughness: 0.5 }); break
-    case 'wall': mat = std({ color: 0xeceeea, roughness: 0.9 }); break
+    case 'wall': mat = std({ color: 0xf1f2ee, roughness: 0.9, }); break
     case 'floor': {
-      const t = tileTexture('#c9cdd2', '#b5bac0', 8, 0.035)
+      const t = tileTexture('#b4b9bf', '#9ea4ab', 8, 0.04)
       t.wrapS = t.wrapT = THREE.RepeatWrapping
       t.repeat.set(96 / 12, 84 / 12)
       mat = std({ map: ctx.track(t), roughness: 0.55 })
@@ -75,7 +75,8 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
     case 'ceiling': {
       const t = ctx.track(ceilingTile())
       t.repeat.set(96 / 6, 84 / 6)
-      mat = std({ map: t, roughness: 0.95, side: THREE.DoubleSide })
+      // Trần tự sáng nhẹ: ánh đèn tấm hắt lên (đèn chính chiếu từ trên nên không rọi mặt dưới trần).
+      mat = std({ map: t, roughness: 0.95, side: THREE.DoubleSide, emissive: 0xd8d8d2, emissiveIntensity: 0.28 })
       break
     }
     case 'skirting': mat = std({ color: 0x5d6873, roughness: 0.6 }); break
@@ -83,7 +84,7 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
     case 'frame': mat = std({ color: 0xf4f5f5, roughness: 0.5 }); break
     case 'blind': mat = std({ color: 0xe6e0d4, roughness: 0.95, side: THREE.DoubleSide }); break
     case 'lightPanel': mat = new THREE.MeshBasicMaterial({ color: 0xf4f8ff, toneMapped: false }); break
-    case 'vent': mat = std({ color: 0xd4d7da, roughness: 0.6 }); break
+    case 'vent': mat = std({ color: 0xd4d7da, roughness: 0.6, emissive: 0xd4d7da, emissiveIntensity: 0.4 }); break
     case 'paper': mat = std({ color: 0xf4f1e8, roughness: 0.9 }); break
     case 'cork': mat = std({ color: 0xb98a5a, roughness: 0.95 }); break
     case 'whiteboard': mat = phys({ color: 0xfbfbfb, roughness: 0.25, clearcoat: 0.6 }); break

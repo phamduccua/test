@@ -68,3 +68,23 @@
 - Test: +5 (danh sách bày đồ hợp lệ, chất có trong bộ máy hóa học), tổng 163 xanh.
 - Sửa trong lúc làm: buret 7 dm không vừa tủ kính → bỏ; dây gas lệch 0,5 dm; vòi sen quay ra phòng (`facing: '+x'`); thanh chắn kệ.
 - Chưa làm (thuộc chặng 4): mặt biển báo, poster, bảng tuần hoàn, nội dung bảng trắng, nhãn tủ còn trống; ánh sáng còn tạm (hemisphere + 1 đèn hướng).
+
+## Chặng 4 — Làm đẹp (xong 2026-11-09)
+
+- **Ánh sáng** (`src/lab/lighting.ts`): env phòng sáng của Engine (yếu, 0,32), tone mapping Neutral (đúng màu dung dịch), bán cầu dịu, **đèn trần đặt ngay dưới trần** (bóng mềm dưới ghế/dụng cụ, trần không chắn), **nắng chéo qua lỗ cửa sổ thật** (tường cửa sổ dựng thành mảng có lỗ + trần đổ bóng → mảng nắng và bóng khung cửa trên sàn/bàn), đèn bổ trợ yếu. Bóng tĩnh (`invalidateShadows()` khi đồ dời chỗ): high 2048, medium 1024, low tắt. Kính/dung dịch dùng `setLabMaterialLook` preset bench của kit (gọi trước khi dựng đồ).
+- Không dùng env 'lab-studio' của kit: hợp cảnh cận một bàn nhưng làm kim loại trong phòng lớn phản chiếu màu tối. Không dùng hậu kỳ lịch sử (ACES làm lệch màu dung dịch).
+- **Hậu kỳ** (`src/lab/post.ts`): `createLabPost` của kit (bloom ngưỡng cao, Neutral, tương phản, vignette, SMAA/MSAA); low không hậu kỳ.
+- **Theo góp ý "sáng hơn mẫu"**: hạ bán cầu 1,6 → 0,62, bỏ phát sáng tường, sàn xám đậm hơn, thêm nắng qua cửa sổ; tương phản gần ảnh mẫu hơn (`compare-*.png`).
+- **Nội dung bề mặt** (`src/lab/textures/`): 6 loại biển an toàn (sơ cứu, rửa mắt, vòi sen, chăn, bình chữa cháy, lối ra), 8 biểu tượng GHS vẽ tay, poster "Ký hiệu cảnh báo nguy hiểm", poster "Nội quy an toàn" (8 điều), **bảng tuần hoàn 118 nguyên tố** có chú giải nhóm, bảng trắng "Tính chất hóa học của axit", dải chữ tủ hút, nhãn tủ dễ cháy, mặt hộp sơ cứu/chăn chữa cháy, nhãn bình CO₂. Bảng tuần hoàn dời sang tường giảng dạy cạnh bảng trắng (như ảnh mẫu).
+- **Giảm draw call** (`src/lab/optimize.ts`): gộp mảnh tĩnh theo vật liệu; cánh tủ/ngăn kéo đang đóng gộp một mesh, nút gốc giữ ẩn, `releaseMovable(root, name)` tách đúng cánh cần mở (chặng 5 dùng); vật nhỏ gộp mesh màu đỉnh. LOD 3 mức (< 9 dm nguyên bản kit; 9–25 dm kính + dung dịch gộp RGBA, nhãn giữ; > 25 dm nhãn thành giấy trơn); `refreshLod(obj)` dựng lại bản xa khi dung dịch đổi (chặng 7).
+
+| Góc (nấc low) | Draw call trước → sau | Tam giác |
+|---|---|---|
+| Cửa ra vào | 1.675 → 484 | 486 nghìn |
+| Giữa hai bàn đảo | 1.593 → 560 | 503 nghìn |
+| Bàn giáo viên | 2.224 → 624 | 675 nghìn |
+| Toàn cảnh từ trên (gỡ lỗi) | 2.744 → 912 | 810 nghìn |
+
+- Góc đối chiếu ảnh mẫu: `src/lab/cameraPresets.ts` (F5), ảnh + `compare.md` trong `docs/screens/chang-4/`.
+- Test: +22 (bảng tuần hoàn 20, gộp/tách cánh tủ 2), tổng 185 xanh.
+- Chưa đo: FPS trên GPU thật ở 3 nấc; rò bộ nhớ khi tải lại sim nhiều lần (chưa có nút đổi sim trong trang – để chặng 6 có toolbar).

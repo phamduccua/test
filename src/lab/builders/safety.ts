@@ -39,7 +39,9 @@ function fireExtinguisher(ctx: Tracker) {
   g.add(k.cyl(0.75, 0.75, 4.6, 'safetyRed', 0, 0, 0, 24), k.sphere(0.75, 'safetyRed').translateY(4.6))
   g.add(k.cyl(0.25, 0.3, 0.6, 'blackPlastic', 0, 5.1, 0, 12), k.box(1.2, 0.15, 0.3, 'blackPlastic', 0.3, 5.6, 0))
   g.add(k.tube([new THREE.Vector3(0.2, 5.3, 0), new THREE.Vector3(0.9, 4.5, 0.2), new THREE.Vector3(0.85, 2, 0.6)], 0.1, 'blackPlastic', 16))
-  g.add(k.box(1.2, 1.5, 0.15, 'paper', 0, 2, 0.74))
+  const label = k.box(1.2, 1.5, 0.15, 'paper', 0, 2, 0.74)
+  label.name = 'label'
+  g.add(label)
   return g
 }
 
@@ -60,7 +62,8 @@ function safetySign(ctx: Tracker, p: Record<string, unknown> = {}) {
   const red = ['fireBlanket', 'fireExtinguisher', 'corrosive', 'toxic', 'flammable', 'keepSashLow'].includes(type)
   const g = group('safetySign', { kind: 'safetySign', displayName: 'Biển báo an toàn', category: 'safety', grabbable: false, params: { type } })
   const plate = k.box((p.width as number) ?? 2.5, (p.height as number) ?? 3, 0.08, red ? 'safetyRed' : 'safetyGreen', 0, 0, 0.04)
-  const face = k.box(((p.width as number) ?? 2.5) * 0.8, ((p.height as number) ?? 3) * 0.6, 0.02, 'paper', 0, ((p.height as number) ?? 3) * 0.3, 0.09)
+  // Mặt in phủ gần hết tấm, cùng tỉ lệ với texture biển báo (không méo hình).
+  const face = k.box(((p.width as number) ?? 2.5) * 0.94, ((p.height as number) ?? 3) * 0.94, 0.02, 'paper', 0, ((p.height as number) ?? 3) * 0.03, 0.09)
   face.name = 'signFace'
   g.add(plate, face)
   return g

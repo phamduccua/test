@@ -66,8 +66,8 @@ const items: LayoutItem[] = [
   { id: 'pinboard', kind: 'board', x: 24, y: 11, z: -41.8, w: 12, h: 9, d: 0.4, facing: '+z', label: 'Bảng ghim' },
   { id: 'coat_hooks', kind: 'hooks', x: -26, y: 17, z: -41.6, w: 6, h: 1, d: 0.8, facing: '+z', label: 'Móc áo blouse' },
   { id: 'exit_sign', kind: 'sign', x: -35, y: 22.5, z: -41.9, w: 3, h: 1.5, d: 0.2, facing: '+z', label: 'Lối ra' },
-  // Tường kho, tường cửa sổ
-  { id: 'poster_periodic', kind: 'poster', x: 47.9, y: 13, z: -38, w: 0.2, h: 10, d: 7, facing: '-x', label: 'Bảng tuần hoàn' },
+  // Tường cửa sổ
+  { id: 'poster_periodic', kind: 'poster', x: 38.5, y: 12, z: -41.9, w: 16, h: 10, d: 0.2, facing: '+z', label: 'Bảng tuần hoàn' },
   { id: 'pegboard', kind: 'pegboard', x: 43, y: 13, z: 41.8, w: 8, h: 8, d: 0.4, facing: '-z', label: 'Giá phơi dụng cụ' },
 
   // Trạm an toàn (tường X−)

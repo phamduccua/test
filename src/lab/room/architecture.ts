@@ -21,12 +21,33 @@ export function buildArchitecture(ctx: Tracker, layout: readonly LayoutItem[]): 
   const ceil = k.plane(W, D, 'ceiling')
   ceil.rotation.x = Math.PI / 2
   ceil.position.y = ROOM.height
+  ceil.userData.shadowCaster = true
+  ceil.castShadow = true
   ceiling.add(ceil)
   // Tường (mặt trong) + gờ chân tường.
-  const walls: [number, number, number, number, number][] = [
-    [0, ROOM.minZ - 1, W + 4, 2, 0], [0, ROOM.maxZ + 1, W + 4, 2, 0], [ROOM.minX - 1, 0, 2, D, 0], [ROOM.maxX + 1, 0, 2, D, 0],
-  ]
+  const walls: [number, number, number, number][] = [[0, ROOM.minZ - 1, W + 4, 2], [ROOM.minX - 1, 0, 2, D], [ROOM.maxX + 1, 0, 2, D]]
   for (const [x, z, w, d] of walls) g.add(k.box(w, ROOM.height, d, 'wall', x, 0, z))
+  // Tường cửa sổ có lỗ thật ở các cửa sổ: nắng lọt qua, in mảng sáng và bóng khung cửa xuống sàn/bàn (đổ bóng cho đèn nắng).
+  const wins = layout.filter((i) => i.kind === 'window')
+  const zW = ROOM.maxZ + 1
+  const left = -W / 2 - 2
+  const right = W / 2 + 2
+  const sill = Math.min(...wins.map((w) => w.y ?? 0))
+  const head = Math.max(...wins.map((w) => (w.y ?? 0) + w.h))
+  const seg = (x0: number, x1: number, y0: number, y1: number) => {
+    const m = k.box(x1 - x0, y1 - y0, 2, 'wall', (x0 + x1) / 2, y0, zW)
+    m.userData.shadowCaster = true
+    g.add(m)
+  }
+  seg(left, right, 0, sill)
+  seg(left, right, head, ROOM.height)
+  const xs = wins.map((w) => [w.x - w.w / 2, w.x + w.w / 2] as const).sort((a, b) => a[0] - b[0])
+  let x = left
+  for (const [a, b] of xs) {
+    seg(x, a, sill, head)
+    x = b
+  }
+  seg(x, right, sill, head)
   g.add(k.box(W, 0.8, 0.15, 'skirting', 0, 0, ROOM.minZ + 0.07), k.box(W, 0.8, 0.15, 'skirting', 0, 0, ROOM.maxZ - 0.07))
   g.add(k.box(0.15, 0.8, D, 'skirting', ROOM.minX + 0.07, 0, 0), k.box(0.15, 0.8, D, 'skirting', ROOM.maxX - 0.07, 0, 0))
   // Lưới khung trần 6 dm.

@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-09).** Kết quả, số liệu draw call và các lệch kế hoạch ghi trong `plans/NHAT-KY.md` mục Chặng 4; ảnh đối chiếu trong `docs/screens/chang-4/compare.md`. Phần dưới giữ để tham khảo.
+
 # Chặng 4 — Làm đẹp: ánh sáng, hậu kỳ, vật liệu, texture, nhãn, poster
 
 Đọc trước: `plans/00-tong-quan.md`. Chặng 3 đã xong.

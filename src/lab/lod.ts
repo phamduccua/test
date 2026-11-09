@@ -1,16 +1,21 @@
 import * as THREE from 'three'
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import type { Tracker } from '../vendor/lab3d/lab/types'
+import { mergeVertexColored } from './optimize'
 
 /**
  * Mức chi tiết theo khoảng cách cho đồ trong phòng.
- * Thủy tinh của kit (LatheGeometry 64 lát, đường viền rất mịn) đẹp khi cận cảnh nhưng 20–65 nghìn tam giác mỗi vật;
- * phòng có ~150 vật. Bản xa: đường viền rút còn ≤ 28 điểm, 16 lát; kính khúc xạ (transmission) thay bằng kính trong suốt thường.
- * Bản gần giữ nguyên đối tượng của kit (mọi tham chiếu của kit vẫn đúng).
+ * Thủy tinh của kit (LatheGeometry 64 lát, đường viền rất mịn) đẹp khi cận cảnh nhưng 20–65 nghìn tam giác mỗi vật; phòng có ~150 vật.
+ * - < 9 dm: nguyên bản kit (mọi tham chiếu của kit vẫn đúng).
+ * - 9–25 dm: hình học rút gọn (≤ 28 điểm × 16 lát); kính + dung dịch gộp một mesh trong suốt tô màu đỉnh (RGBA); phần đục gộp một mesh; nhãn giữ.
+ * - > 25 dm: như trên nhưng nhãn thành mảng giấy trơn (gộp vào phần đục).
+ * `refreshLod(obj)` dựng lại hai bản xa (chặng 7 gọi khi dung dịch đổi màu/mực).
  */
-const NEAR = 9 // dm – trong tầm tay và hơn một chút
+const NEAR = 9
+const FAR = 25
 
 const geoCache = new WeakMap<Tracker, Map<string, THREE.BufferGeometry>>()
-const matCache = new WeakMap<Tracker, Map<THREE.Material, THREE.Material>>()
+const shared = new WeakMap<Tracker, { glass: THREE.Material; paper: THREE.Material }>()
 
 function decimate(points: THREE.Vector2[], max: number): THREE.Vector2[] {
   if (points.length <= max) return points
@@ -35,40 +40,100 @@ function lowGeometry(ctx: Tracker, g: THREE.BufferGeometry): THREE.BufferGeometr
   return low
 }
 
-function lowMaterial(ctx: Tracker, mat: THREE.Material): THREE.Material {
-  const phys = mat as THREE.MeshPhysicalMaterial
-  if (!phys.isMeshPhysicalMaterial || !(phys.transmission > 0)) return mat
-  let m = matCache.get(ctx)
-  if (!m) matCache.set(ctx, (m = new Map()))
-  let low = m.get(mat)
-  if (!low) {
-    low = ctx.track(new THREE.MeshStandardMaterial({
-      color: phys.color, roughness: 0.15, metalness: 0, transparent: true, opacity: 0.28, depthWrite: false, side: phys.side,
-    }))
-    m.set(mat, low)
+function sharedMaterials(ctx: Tracker) {
+  let s = shared.get(ctx)
+  if (!s) {
+    s = {
+      glass: ctx.track(new THREE.MeshStandardMaterial({ vertexColors: true, transparent: true, depthWrite: false, roughness: 0.15, side: THREE.DoubleSide })),
+      paper: ctx.track(new THREE.MeshStandardMaterial({ color: 0xf4f1e8, roughness: 0.9 })),
+    }
+    shared.set(ctx, s)
   }
+  return s
+}
+
+const isClear = (m: THREE.Material) => m.transparent || ((m as THREE.MeshPhysicalMaterial).transmission ?? 0) > 0
+
+/** Gộp kính + dung dịch thành một mesh RGBA trong suốt (kính α 0,22; dung dịch α theo độ đậm của nó). */
+function mergeClear(ctx: Tracker, root: THREE.Object3D, meshes: THREE.Mesh[]) {
+  if (!meshes.length) return
+  root.updateMatrixWorld(true)
+  const inv = new THREE.Matrix4().copy(root.matrixWorld).invert()
+  const geos: THREE.BufferGeometry[] = []
+  for (const m of meshes) {
+    const mat = m.material as THREE.MeshPhysicalMaterial
+    const src = m.geometry
+    if (!src.attributes.position || src.attributes.position.count === 0) continue
+    const g = src.index ? src.toNonIndexed() : src.clone()
+    for (const name of Object.keys(g.attributes)) if (!['position', 'normal'].includes(name)) g.deleteAttribute(name)
+    g.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld))
+    const liquid = m.name === 'liquid'
+    // Màu kính hổ phách / dung dịch của kit nằm ở attenuationColor (transmission); kính thường để trắng ở đó.
+    const att = mat.attenuationColor
+    const tinted = att && att.r + att.g + att.b < 2.9
+    const c = (tinted ? att : mat.color) ?? new THREE.Color(0xffffff)
+    const a = liquid ? Math.min(0.85, 0.35 + (mat.opacity ?? 0.5) * 0.5) : tinted ? 0.55 : 0.22
+    const n = g.attributes.position!.count
+    const arr = new Float32Array(n * 4)
+    for (let i = 0; i < n; i++) arr.set([c.r, c.g, c.b, a], i * 4)
+    g.setAttribute('color', new THREE.Float32BufferAttribute(arr, 4))
+    g.groups = []
+    geos.push(g)
+  }
+  const merged = geos.length ? mergeGeometries(geos, false) : null
+  geos.forEach((g) => g.dispose())
+  meshes.forEach((m) => m.removeFromParent())
+  if (!merged) return
+  const mesh = new THREE.Mesh(ctx.track(merged), sharedMaterials(ctx).glass)
+  mesh.name = 'merged:clear'
+  mesh.renderOrder = 1
+  root.add(mesh)
+}
+
+function buildLow(ctx: Tracker, content: THREE.Object3D, keepLabels: boolean): THREE.Object3D {
+  const low = content.clone(true)
+  const clear: THREE.Mesh[] = []
+  const opaque: THREE.Mesh[] = []
+  low.traverse((o) => {
+    const mesh = o as THREE.Mesh
+    if (!mesh.isMesh || !mesh.visible) return
+    mesh.geometry = lowGeometry(ctx, mesh.geometry)
+    mesh.castShadow = false
+    const mat = mesh.material as THREE.MeshStandardMaterial
+    if (Array.isArray(mesh.material)) return
+    if (isClear(mat)) clear.push(mesh)
+    else {
+      if (mat.map && !keepLabels) mesh.material = sharedMaterials(ctx).paper
+      opaque.push(mesh)
+    }
+  })
+  low.updateMatrixWorld(true)
+  mergeClear(ctx, low, clear)
+  mergeVertexColored(ctx, low, opaque)
   return low
 }
 
-/** Bọc `content` (nhóm do kit dựng) trong THREE.LOD: gần = nguyên bản, xa = bản rút gọn dùng chung hình học. */
+/** Bọc `content` (nhóm do kit dựng) trong THREE.LOD 3 mức. Vật nhẹ (< 4000 tam giác) không bọc. */
 export function withLod(ctx: Tracker, content: THREE.Object3D): THREE.LOD | null {
   let heavy = 0
   content.traverse((o) => {
     if ((o as THREE.Mesh).isMesh) heavy += triCount((o as THREE.Mesh).geometry)
   })
   if (heavy < 4000) return null
-  const low = content.clone(true)
-  low.traverse((o) => {
-    const mesh = o as THREE.Mesh
-    if (!mesh.isMesh) return
-    mesh.geometry = lowGeometry(ctx, mesh.geometry)
-    mesh.material = Array.isArray(mesh.material) ? mesh.material.map((x) => lowMaterial(ctx, x)) : lowMaterial(ctx, mesh.material)
-    mesh.castShadow = false
-  })
   const lod = new THREE.LOD()
   lod.name = 'lod'
   lod.addLevel(content, 0)
-  lod.addLevel(low, NEAR)
+  lod.addLevel(buildLow(ctx, content, true), NEAR)
+  lod.addLevel(buildLow(ctx, content, false), FAR)
+  lod.userData.rebuild = () => {
+    for (const i of [2, 1]) {
+      const old = lod.levels[i]!.object
+      lod.remove(old)
+      lod.levels.splice(i, 1)
+    }
+    lod.addLevel(buildLow(ctx, content, true), NEAR)
+    lod.addLevel(buildLow(ctx, content, false), FAR)
+  }
   return lod
 }
 
@@ -81,4 +146,9 @@ export function applyLod(ctx: Tracker, wrapper: THREE.Object3D): void {
     wrapper.remove(child)
     wrapper.add(lod)
   }
+}
+
+/** Dựng lại bản xa của mọi LOD trong `obj` (sau khi dung dịch/màu đổi). */
+export function refreshLod(obj: THREE.Object3D): void {
+  obj.traverse((o) => (o as THREE.LOD).isLOD && (o.userData.rebuild as (() => void) | undefined)?.())
 }

@@ -11,6 +11,8 @@ import { build } from '../builders/registry'
 import { metaOf, type ObjectMeta } from '../builders/types'
 import { getColliders, type Facing, type LayoutItem } from '../layout'
 import { applyLod } from '../lod'
+import { decorateRoom } from '../textures/decorate'
+import { optimizeRoom } from '../optimize'
 import { buildArchitecture } from './architecture'
 import { POPULATION, type Placement } from './population'
 
@@ -90,8 +92,8 @@ export function buildRoom(ctx: Tracker, layout: readonly LayoutItem[], populatio
     applyLod(ctx, obj)
     placed.set(p.id, { id: p.id, group: obj, meta: metaOf(obj)!, parentId: p.on })
   }
-  group.traverse((o) => {
-    if ((o as THREE.Mesh).isMesh && o.castShadow === undefined) o.castShadow = true
-  })
-  return { group, ceiling: arch.ceiling, colliders: getColliders(layout), placed }
+  decorateRoom(ctx, placed)
+  const room = { group, ceiling: arch.ceiling, colliders: getColliders(layout), placed }
+  room.group.userData.drawCallsSaved = optimizeRoom(ctx, room)
+  return room
 }

@@ -5,6 +5,11 @@
 ## Mục tiêu
 Lấy đồ này đồ kia đúng nghĩa: viền sáng + gợi ý khi nhìn; bấm để cầm và mang đi khắp phòng; bấm mặt bàn/kệ/khay/socket để đặt; kéo thả tại chỗ bằng cử chỉ kit; vặn vòi gas, mở cửa tủ, kéo sash, đẩy xe; soi nhãn. Mọi thao tác có âm. Chưa có hóa học.
 
+## Bàn giao từ chặng 3–4 (đọc trước)
+- Cánh tủ, ngăn kéo, sash, cần gạt vòi gas đang ĐÓNG được gộp vào một mesh (`src/lab/optimize.ts`). Trước khi gắn `createHinge`/`createHandle` cho một phần, gọi `releaseMovable(objRoot, nodeName)` để hiện lại đúng nút đó (các phần khác vẫn gộp).
+- Đồ cầm được bọc `THREE.LOD` (`src/lab/lod.ts`): raycast nên nhắm nhóm bọc (`userData.meta`), không nhắm mesh bên trong. Khi đổi chất lỏng gọi `refreshLod(obj)`.
+- Đồ dời chỗ thì gọi `__lighting.invalidateShadows()` (bóng tĩnh).
+
 ## Bối cảnh cần đọc (trong `src/vendor/lab3d/interact`)
 `pointer.ts`, `pointerTypes.ts`, `types.ts` (`pointerHub(ctx)`, `PointerTarget`, `hub.setLayer`, `hub.busy`, toast/tooltip), `hover.ts` (`createHoverFx`), `grab.ts` + `grabTypes.ts` (`createGrabbable`, `carryTo`), `dropZones.ts`, `knob.ts`, `hinge.ts`, `handle.ts`, `slider3D.ts`, `pushButton.ts`, `hint.ts`, `tooltip.ts`, `constraints.ts` (`pushOutXZ`); `lab/interaction/cameraTween.ts`; `audio/index.ts` (`createSimSound`, `soundOnInteract`); mẫu phối hợp: `sach_dien_tu/Frontend/src/features/hoa10/b22/s01-dung-dich-hcl-tac/{interact,tools,sound}.ts` (chỉ đọc).
 

@@ -2,8 +2,11 @@ import * as THREE from 'three'
 import type { SimModule, Simulation } from '../vendor/lab3d/sim/types'
 import { buildBlockout } from './blockout'
 import { buildRoom } from './room/roomBuilder'
+import { createRoomLighting, prepareMaterialLook, tuneShadowCasters } from './lighting'
+import { createRoomPost } from './post'
 import { createShowroom } from './showroom'
 import { createDebugOverlay } from './debug'
+import { COMPARE_VIEWS } from './cameraPresets'
 import { LAYOUT, ROOM, SPAWN, VIEWPOINTS } from './layout'
 import { createFreeWalk } from './walk'
 
@@ -17,21 +20,31 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   camera.near = 0.1
   camera.far = 400
   camera.updateProjectionMatrix()
-  scene.background = new THREE.Color(0xdfe4ea)
-
+  const blockout = opts.mode === 'blockout'
+  if (!blockout) prepareMaterialLook(ctx)
   // ?mode=blockout: khối xám chặng 2; mặc định: phòng dựng đầy đủ.
-  const room = opts.mode === 'blockout' ? { ...buildBlockout(ctx, LAYOUT), placed: null } : { ...buildRoom(ctx, LAYOUT), labels: [] as THREE.Object3D[] }
+  const room = blockout ? { ...buildBlockout(ctx, LAYOUT), placed: null } : { ...buildRoom(ctx, LAYOUT), labels: [] as THREE.Object3D[] }
   scene.add(room.group)
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x8899aa, 1.1)
-  const sun = new THREE.DirectionalLight(0xffffff, 1.4)
-  sun.position.set(30, 60, 40)
-  scene.add(hemi, sun)
+  let lighting: { invalidateShadows(): void } | null = null
+  if (blockout) {
+    scene.background = new THREE.Color(0xdfe4ea)
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x8899aa, 1.1)
+    const sun = new THREE.DirectionalLight(0xffffff, 1.4)
+    sun.position.set(30, 60, 40)
+    scene.add(hemi, sun)
+  } else {
+    tuneShadowCasters(room.group)
+    lighting = createRoomLighting(ctx)
+    createRoomPost(ctx)
+  }
 
   const walk = createFreeWalk(ctx, { colliders: room.colliders, spawn: SPAWN })
   const debug = createDebugOverlay(ctx, walk, opts.mode === 'debug')
   let labelsOn = opts.mode === 'debug'
   const showLabels = () => room.labels.forEach((l) => (l.visible = labelsOn))
   showLabels()
+  // F5: điểm nhìn chung + góc đối chiếu ảnh mẫu.
+  const views = [...VIEWPOINTS, ...COMPARE_VIEWS]
   let view = 0
 
   // Bảng phím ngắn, bấm để ẩn.
@@ -48,17 +61,17 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
       labelsOn = !labelsOn
       showLabels()
     } else if (e.code === 'F5') {
-      view = (view + 1) % VIEWPOINTS.length
+      view = (view + 1) % views.length
       walk.setFly(false)
-      walk.teleport(VIEWPOINTS[view]!.pose)
-      ctx.caption(VIEWPOINTS[view]!.label)
+      walk.teleport(views[view]!.pose)
+      ctx.caption(views[view]!.label)
     } else return
     e.preventDefault()
   }
   window.addEventListener('keydown', onKey)
   ctx.track(() => window.removeEventListener('keydown', onKey))
   ctx.caption('Phòng thí nghiệm Hóa học – đi lại để làm quen')
-  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: VIEWPOINTS, __room: room })
+  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: views, __room: room, __lighting: lighting })
 
   return {
     update() {},
