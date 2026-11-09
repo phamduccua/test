@@ -71,7 +71,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   }
   window.addEventListener('keydown', onKey)
   ctx.track(() => window.removeEventListener('keydown', onKey))
-  ctx.caption('Cầm chai/lọ rồi bấm vào ống nghiệm, cốc để rót · giữ chuột để xem nhãn')
+  ctx.caption('Cầm chai/lọ rồi bấm vào ống nghiệm, cốc để rót · bấm ghế đẩu để ngồi xem gần · con lăn: phóng to')
   labApi.resetView = () => {
     walk.setFly(false)
     walk.teleport(SPAWN)
@@ -81,7 +81,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
     chem?.reset()
   }
   labApi.chem = chem
-  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: views, __room: room, __lighting: lighting, __ix: ix, __labEvents: labEvents, __chem: chem })
+  if (import.meta.env.DEV) Object.assign(window, { __camera: camera, __walk: walk, __viewpoints: views, __room: room, __lighting: lighting, __ix: ix, __labEvents: labEvents, __chem: chem })
 
   return {
     update(dt) {

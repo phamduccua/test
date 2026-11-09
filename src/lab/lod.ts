@@ -71,8 +71,17 @@ function mergeClear(ctx: Tracker, root: THREE.Object3D, meshes: THREE.Mesh[]) {
     // Màu kính hổ phách / dung dịch của kit nằm ở attenuationColor (transmission); kính thường để trắng ở đó.
     const att = mat.attenuationColor
     const tinted = att && att.r + att.g + att.b < 2.9
-    const c = (tinted ? att : mat.color) ?? new THREE.Color(0xffffff)
-    const a = liquid ? Math.min(0.85, 0.35 + (mat.opacity ?? 0.5) * 0.5) : tinted ? 0.55 : 0.22
+    let c = (tinted ? att : mat.color) ?? new THREE.Color(0xffffff)
+    let a = tinted ? 0.55 : 0.14
+    if (liquid) {
+      // Dung dịch trong suốt (transmission) không dùng `opacity` – trước đây đọc opacity = 1 nên mọi dung dịch thành khối trắng đục ở xa.
+      // Ước độ đục từ chính vật liệu: độ đục (transmission giảm), độ bão hòa màu và quãng suy giảm Beer–Lambert.
+      const turb = THREE.MathUtils.clamp((1 - (mat.transmission ?? 1)) / 0.88, 0, 1)
+      const sat = att ? 1 - Math.min(att.r, att.g, att.b) : 0
+      const dens = THREE.MathUtils.clamp(1 - (mat.attenuationDistance ?? 1.65) / 1.65, 0, 1)
+      c = turb > 0.3 ? mat.color : sat > 0.08 && att ? att : new THREE.Color(0xe8f4ff)
+      a = THREE.MathUtils.clamp(0.08 + 0.6 * sat * (0.4 + 0.6 * dens) + 0.75 * turb, 0.08, 0.9)
+    }
     const n = g.attributes.position!.count
     const arr = new Float32Array(n * 4)
     for (let i = 0; i < n; i++) arr.set([c.r, c.g, c.b, a], i * 4)

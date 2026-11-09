@@ -15,14 +15,26 @@ const KEYS: Record<string, string> = {
   ArrowLeft: 'turnL', ArrowRight: 'turnR', Space: 'up', KeyC: 'down', ControlLeft: 'down',
 }
 
+const SEAT_EYE = 13.4 // mắt khi ngồi ghế đẩu cao 6,5 dm (mặt bàn 9 dm → mắt cao hơn mặt bàn ~4,4 dm)
+const LEAN_MAX = 2.6 // cúi người về phía bàn tối đa (dm)
+const FOV_MIN = 22
+const FOV_MAX = 62
+
+/** Ghế để ngồi: tâm mặt ghế và hướng về phía bàn (đã chuẩn hoá trên mặt phẳng XZ). */
+export interface Seat { x: number; z: number; dirX: number; dirZ: number }
+
 export interface FreeWalk {
   readonly position: THREE.Vector3
   readonly fly: boolean
   /** Hướng nhìn (độ, 0 = +Z, quay ngược chiều kim đồng hồ khi nhìn từ trên). */
   readonly yawDeg: number
+  /** Ghế đang ngồi (null = đang đứng). */
+  readonly seated: Seat | null
   setEnabled(on: boolean): void
   setFly(on: boolean): void
   teleport(p: Pose): void
+  /** Ngồi vào ghế (mắt hạ thấp sát bàn, W/S cúi gần/ngả ra) – `null` = đứng dậy. */
+  sit(seat: Seat | null): void
   frame(dt: number): void
 }
 
@@ -40,6 +52,12 @@ export function createFreeWalk(ctx: SimContext, o: { colliders: readonly Box2[];
   let fly = false
   let run = false
   let bobT = 0
+  let seat: Seat | null = null
+  let lean = 0
+  /** Chuyển tư thế ngồi/đứng mượt: mắt đi từ `from` tới vị trí đích trong ~0,6 s. */
+  let blend = 1
+  const from = new THREE.Vector3()
+  let fov = cam.fov
 
   Object.assign(ctl, { enableZoom: false, enablePan: false, minDistance: LOOK, maxDistance: LOOK, minPolarAngle: 0.08, maxPolarAngle: Math.PI - 0.08, rotateSpeed: 0.45 })
 
@@ -57,13 +75,28 @@ export function createFreeWalk(ctx: SimContext, o: { colliders: readonly Box2[];
     if (k) held.delete(k)
   }
   const blur = () => held.clear()
+  const escape = (e: KeyboardEvent) => {
+    if (e.code !== 'Escape' || !seat || typing(e)) return
+    e.preventDefault()
+    sit(null)
+  }
+  // Con lăn: phóng to/thu nhỏ (đổi góc nhìn) để quan sát kỹ hiện tượng – đứng hay ngồi đều dùng được.
+  const canvas = ctx.renderer.domElement
+  const wheel = (e: WheelEvent) => {
+    e.preventDefault()
+    fov = THREE.MathUtils.clamp(fov * Math.exp(e.deltaY * 0.0012), FOV_MIN, FOV_MAX)
+  }
   window.addEventListener('keydown', down)
+  window.addEventListener('keydown', escape)
   window.addEventListener('keyup', up)
   window.addEventListener('blur', blur)
+  canvas.addEventListener('wheel', wheel, { passive: false })
   ctx.track(() => {
     window.removeEventListener('keydown', down)
+    window.removeEventListener('keydown', escape)
     window.removeEventListener('keyup', up)
     window.removeEventListener('blur', blur)
+    canvas.removeEventListener('wheel', wheel)
   })
 
   // Nút cảm ứng (giữ để đi).
@@ -94,12 +127,67 @@ export function createFreeWalk(ctx: SimContext, o: { colliders: readonly Box2[];
   }
   ctx.overlay.appendChild(pad)
 
+  // Nút đứng dậy (hiện khi đang ngồi) + gợi ý.
+  const standBtn = document.createElement('button')
+  standBtn.type = 'button'
+  standBtn.className = 'pointer-events-auto absolute bottom-24 left-1/2 -translate-x-1/2 hidden rounded-lg bg-black/55 px-4 py-2 text-sm text-white shadow backdrop-blur hover:bg-black/70'
+  standBtn.textContent = 'Đứng dậy (Esc)'
+  standBtn.addEventListener('click', () => sit(null))
+  ctx.overlay.appendChild(standBtn)
+
+  const eye = new THREE.Vector3()
   const apply = () => {
-    cam.position.copy(pos)
-    ctl.target.copy(pos).addScaledVector(dir, LOOK)
+    // Mắt: chỗ đứng, hoặc chỗ ngồi; đang chuyển tư thế thì nội suy từ vị trí cũ.
+    if (seat) seatEye(eye)
+    else eye.copy(pos)
+    if (blend < 1) {
+      const e = blend * blend * (3 - 2 * blend)
+      eye.lerpVectors(from, eye, e)
+    }
+    cam.position.copy(eye)
+    ctl.target.copy(eye).addScaledVector(dir, LOOK)
     cam.lookAt(ctl.target)
+    if (Math.abs(cam.fov - fov) > 0.01) {
+      cam.fov += (fov - cam.fov) * 0.25
+      cam.updateProjectionMatrix()
+    }
+  }
+  const seatEye = (out: THREE.Vector3) => {
+    const s = seat!
+    // Ngồi hơi nhô về phía bàn; cúi người thì đầu vừa tiến vừa hạ.
+    const d = 0.4 + lean
+    return out.set(s.x + s.dirX * d, SEAT_EYE - lean * 0.5, s.z + s.dirZ * d)
+  }
+  function sit(s: Seat | null) {
+    if (s === seat) return
+    from.copy(pos)
+    blend = 0
+    held.clear()
+    if (s) {
+      seat = s
+      lean = 0.8
+      fly = false
+      // Nhìn xuống mặt bàn trước mặt.
+      const pitch = THREE.MathUtils.degToRad(-32)
+      dir.set(s.dirX * Math.cos(pitch), Math.sin(pitch), s.dirZ * Math.cos(pitch)).normalize()
+      ctx.caption('Đang ngồi · W/S: cúi sát / ngả ra · con lăn: phóng to · Esc: đứng dậy')
+    } else if (seat) {
+      // Đứng dậy lùi ra sau ghế.
+      const back = seat
+      seat = null
+      pos.set(back.x - back.dirX * 4.2, ROOM.eyeY, back.z - back.dirZ * 4.2)
+      ;[pos.x, pos.z] = resolveCollisions(pos.x, pos.z, BODY_RADIUS, o.colliders)
+      fov = FOV_MAX
+      ctx.caption('Cầm chai/lọ rồi bấm vào ống nghiệm, cốc để rót · bấm ghế đẩu để ngồi xem gần')
+    }
+    standBtn.classList.toggle('hidden', !seat)
   }
   const teleport = (p: Pose) => {
+    if (seat) {
+      seat = null
+      standBtn.classList.add('hidden')
+    }
+    blend = 1
     const yaw = THREE.MathUtils.degToRad(p.yawDeg)
     const pitch = THREE.MathUtils.degToRad(p.pitchDeg ?? 0)
     dir.set(Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch)).normalize()
@@ -122,11 +210,16 @@ export function createFreeWalk(ctx: SimContext, o: { colliders: readonly Box2[];
     get yawDeg() {
       return THREE.MathUtils.radToDeg(Math.atan2(dir.x, dir.z))
     },
+    get seated() {
+      return seat
+    },
+    sit,
     setEnabled(on) {
       enabled = on
       if (!on) held.clear()
     },
     setFly(on) {
+      if (seat) sit(null)
       fly = on
       if (!on) {
         pos.y = ROOM.eyeY
@@ -140,6 +233,18 @@ export function createFreeWalk(ctx: SimContext, o: { colliders: readonly Box2[];
       dir.subVectors(ctl.target, cam.position)
       if (dir.lengthSq() < 1e-10) dir.set(0, 0, 1)
       dir.normalize()
+      if (blend < 1) blend = Math.min(1, blend + dt / 0.6)
+      if (seat) {
+        // Ngồi: không đi; W/S cúi sát / ngả ra, mũi tên quay đầu.
+        if (enabled && held.size) {
+          const turn = (held.has('turnL') ? 1 : 0) - (held.has('turnR') ? 1 : 0)
+          if (turn) dir.applyAxisAngle(THREE.Object3D.DEFAULT_UP, turn * TURN * dt)
+          const l = (held.has('fwd') ? 1 : 0) - (held.has('back') ? 1 : 0)
+          lean = THREE.MathUtils.clamp(lean + l * 2.2 * dt, 0, LEAN_MAX)
+        }
+        apply()
+        return
+      }
       let moving = false
       if (enabled && held.size) {
         const turn = (held.has('turnL') ? 1 : 0) - (held.has('turnR') ? 1 : 0)

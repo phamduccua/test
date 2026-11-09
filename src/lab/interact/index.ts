@@ -28,6 +28,10 @@ export interface Interaction {
   socketOf(id: string): string | undefined
   /** Nghiêng vật đang cầm (rad, quanh trục nhìn) – hoạt cảnh rót. */
   setHeldTilt(rad: number): void
+  /** Đưa vật đang cầm tới `pos` (thế giới, gốc vật) – hoạt cảnh rót/nhỏ giọt trên miệng bình đích; `null` = về tay. */
+  setHeldPose(pos: THREE.Vector3 | null): void
+  /** Hướng vật đang cầm (quay theo camera + nghiêng `tilt`) – để hóa học tính trước vị trí mép rót. */
+  heldQuaternion(tilt: number, out: THREE.Quaternion): THREE.Quaternion
   /** Vật đang cầm "dùng hết" (đinh thả vào ống, kính đã đeo): ẩn đi, tay trống; Làm lại đưa về chỗ cũ. */
   consumeHeld(): void
   /** Gắn vật đang cầm vào `parent` tại `pos` (cục bộ) – vd. ống dẫn khí lắp vào miệng bình. */
@@ -77,6 +81,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
 
   let held: PlacedObject | null = null
   let heldTilt = 0
+  let heldPose: THREE.Vector3 | null = null
   let pushing: PlacedObject | null = null
   const radius = (m: ObjectMeta) => Math.max(0.25, (Math.max(m.footprint?.w ?? 0.6, m.footprint?.d ?? 0.6) / 2) * 0.9)
   const name = (p: PlacedObject) => p.meta.displayName
@@ -175,7 +180,11 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
 
   const returnHome = (it: PlacedObject) => {
     const h = homes.get(it.id)!
-    if (held === it) held = null
+    if (held === it) {
+      held = null
+      heldPose = null
+      heldTilt = 0
+    }
     const key = socketOf.get(it.id)
     if (key) {
       occupied.delete(key)
@@ -395,6 +404,37 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     })
   }
 
+  // ---------- Ghế đẩu: ngồi xuống để xem thí nghiệm gần ----------
+  const benches = room.colliders.filter((b) => b.id?.startsWith('bench_'))
+  for (const p of owners) {
+    if (p.meta.kind !== 'stool') continue
+    const sp = p.group.getWorldPosition(new THREE.Vector3())
+    // Hướng ngồi: về phía điểm gần nhất của mặt bàn gần nhất.
+    let best: { d: number; x: number; z: number } | null = null
+    for (const b of benches) {
+      const x = THREE.MathUtils.clamp(sp.x, b.minX, b.maxX)
+      const z = THREE.MathUtils.clamp(sp.z, b.minZ, b.maxZ)
+      const d = Math.hypot(x - sp.x, z - sp.z)
+      if (!best || d < best.d) best = { d, x, z }
+    }
+    if (!best || best.d > 6) continue
+    const len = Math.max(1e-6, best.d)
+    const seat = { x: sp.x, z: sp.z, dirX: (best.x - sp.x) / len, dirZ: (best.z - sp.z) / len }
+    const hover = createHoverFx(ctx, p.group, {})
+    hub.add({
+      object: p.group,
+      priority: 0,
+      cursor: 'pointer',
+      hint: () => (pushing || walk.seated === seat ? null : 'Bấm để ngồi vào ghế – xem thí nghiệm gần hơn'),
+      enabled: () => !pushing && walk.seated !== seat,
+      onHover: (s) => hover(s),
+      onTap() {
+        walk.sit(seat)
+        audio.sfx('ui/drop', { at: p.group, volume: 0.4 })
+      },
+    })
+  }
+
   // ---------- Phím ----------
   const onKey = (e: KeyboardEvent) => {
     if (e.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return
@@ -420,12 +460,22 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     setHeldTilt(rad) {
       heldTilt = rad
     },
+    setHeldPose(pos) {
+      heldPose = pos ? pos.clone() : null
+    },
+    heldQuaternion(tilt, out) {
+      ctx.camera.getWorldDirection(fwd)
+      out.setFromAxisAngle(up, Math.atan2(fwd.x, fwd.z) + Math.PI)
+      if (tilt) out.multiply(tiltQ.setFromAxisAngle(zAxis, tilt))
+      return out
+    },
     consumeHeld() {
       if (!held) return
       held.group.visible = false
       const it = held
       held = null
       heldTilt = 0
+      heldPose = null
       labEvents.emit({ type: 'return', id: it.id, name: name(it) })
       // Về chỗ cũ nhưng vẫn ẩn – Làm lại hiện lại.
       const h = homes.get(it.id)!
@@ -438,6 +488,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
       const it = held
       held = null
       heldTilt = 0
+      heldPose = null
       parent.add(it.group)
       it.group.position.copy(pos)
       it.group.quaternion.identity()
@@ -451,13 +502,17 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
       if (held) {
         // Cầm trước mặt, lệch phải – vật cao (buret, ống đong) đẩy ra xa hơn cho vừa khung nhìn.
         const h = held.meta.footprint?.h ?? 1
-        want.set(2, -1.9 - h * 0.25, -4.5 - h * 0.9)
-        ctx.camera.localToWorld(want)
+        if (heldPose) want.copy(heldPose)
+        else {
+          want.set(2, -1.9 - h * 0.25, -4.5 - h * 0.9)
+          ctx.camera.localToWorld(want)
+        }
         const yaw = Math.atan2(fwd.x, fwd.z) + Math.PI
         wantQ.setFromAxisAngle(up, yaw)
         // Rót: nghiêng sang trái (miệng bình về phía giữa khung nhìn).
         if (heldTilt) wantQ.multiply(tiltQ.setFromAxisAngle(zAxis, heldTilt))
-        const k = 1 - Math.exp(-dt * 18)
+        // Đưa tới bình đích: chậm hơn để thấy tay mang chai sang; nghiêng/quay vẫn bám nhanh.
+        const k = 1 - Math.exp(-dt * (heldPose ? 9 : 18))
         held.group.position.lerp(want, k)
         held.group.quaternion.slerp(wantQ, k)
       }
@@ -481,6 +536,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
         it.group.visible = true
       }
       heldTilt = 0
+      heldPose = null
       for (const list of ownerMovables.values())
         for (const m of list) if ((movableValue.get(m.key) ?? m.spec.initial) !== m.spec.initial) {
           releaseMovable(m.owner, m.spec.node)
