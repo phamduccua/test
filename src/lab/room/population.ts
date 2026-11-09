@@ -17,6 +17,11 @@ export interface Placement {
 
 const P: Placement[] = []
 const add = (p: Placement) => P.push(p)
+/** Giá ống nghiệm + `n` ống nghiệm RỜI cắm vào các lỗ (học sinh rút được từng ống). */
+const rack = (id: string, on: string, surface: string, at: [number, number], n: number, rot = 0) => {
+  add({ id, kind: 'tubeRack', params: { slots: 6 }, on, surface, at, rot })
+  for (let i = 0; i < n; i++) add({ id: `${id}_tube${i + 1}`, kind: 'testTube', on: id, socket: `slot${i}`, at: [0, 0] })
+}
 const row = (prefix: string, on: string, surface: string, v: number, from: number, to: number, list: Record<string, unknown>[], kind = 'reagentBottle', rot = 0) =>
   list.forEach((params, i) => add({ id: `${prefix}_${i + 1}`, kind, params, on, surface, at: [list.length > 1 ? from + ((to - from) * i) / (list.length - 1) : (from + to) / 2, v], rot }))
 
@@ -49,7 +54,7 @@ row('i2_ind', 'bench_island_2', 'shelf0', 0, 14, 18, [
 
 // Mặt bàn đảo 1: hai chỗ làm thí nghiệm (giá ống nghiệm, cốc, kính, sổ).
 for (const [i, u] of [-12, 8].entries()) {
-  add({ id: `i1_rack_${i}`, kind: 'tubeRack', params: { slots: 6, tubes: 5 }, on: 'bench_island_1', at: [u, -4.5] })
+  rack(`i1_rack_${i}`, 'bench_island_1', 'top', [u, -4.5], 5)
   add({ id: `i1_beaker_${i}`, kind: 'beaker250', on: 'bench_island_1', at: [u + 4, -5] })
   add({ id: `i1_goggles_${i}`, kind: 'goggles', on: 'bench_island_1', at: [u - 3.5, -5.8] })
   add({ id: `i1_wash_${i}`, kind: 'washBottle', on: 'bench_island_1', at: [u + 6.5, -4] })
@@ -63,7 +68,7 @@ add({ id: 'i2_titration', kind: 'titrationSet', on: 'bench_island_2', at: [-10, 
 add({ id: 'i2_funnel', kind: 'funnel', on: 'bench_island_2', at: [-5, -5] })
 add({ id: 'i2_beaker', kind: 'beaker100', on: 'bench_island_2', at: [-3, -4.2] })
 add({ id: 'i2_wash', kind: 'washBottle', on: 'bench_island_2', at: [-1, -5.5] })
-add({ id: 'i2_rack', kind: 'tubeRack', params: { slots: 6, tubes: 4 }, on: 'bench_island_2', at: [8, 4.5] })
+rack('i2_rack', 'bench_island_2', 'top', [8, 4.5], 4)
 add({ id: 'i2_cyl', kind: 'cylinder100', on: 'bench_island_2', at: [13, 4.2] })
 add({ id: 'i2_flask', kind: 'erlenmeyer250', on: 'bench_island_2', at: [15.5, 5] })
 add({ id: 'i2_thermo', kind: 'thermometer', on: 'bench_island_2', at: [4, -5.8] })
@@ -85,7 +90,8 @@ row('wb_solid', 'bench_wall_window', 'top', -1.5, -36, -2, [
   { species: 'Al', grams: 20, style: 'wide' }, { species: 'CaCO3', grams: 100, style: 'wide' }, { species: 'MnO2', grams: 20, style: 'wide' }, { species: 'NaHCO3', grams: 100, style: 'wide' },
   { species: 'CuO', grams: 20, style: 'wide' }, { species: 'CuSO4', grams: 50, style: 'wide', label: 'CuSO4.5H2O' }, { species: 'S', grams: 20, style: 'wide' }, { species: 'KClO3', grams: 20, style: 'wide' },
 ])
-row('wb_rack', 'bench_wall_window', 'top', 0.5, 4, 10, [{ slots: 6, tubes: 6 }, { slots: 6, tubes: 6 }], 'tubeRack')
+rack('wb_rack_1', 'bench_wall_window', 'top', [4, 0.5], 6)
+rack('wb_rack_2', 'bench_wall_window', 'top', [10, 0.5], 6)
 row('wb_beaker', 'bench_wall_window', 'top', 0, 14, 22, [{}, {}, {}], 'beaker250')
 add({ id: 'wb_beaker500', kind: 'beaker500', on: 'bench_wall_window', at: [24.5, 0] })
 row('wb_cyl', 'bench_wall_window', 'top', -1.5, 27, 29, [{}, {}], 'cylinder50')
@@ -118,6 +124,6 @@ row('gc2_top', 'cupboard_glazed_2', 'shelf2', 0, -2.5, 2.5, [{}, {}], 'funnel')
 // Xe đẩy: khay + bình tia + giá ống nghiệm.
 add({ id: 'cart_tray', kind: 'tray', on: 'cart', surface: 'tier1', at: [-1.2, 0] })
 add({ id: 'cart_wash', kind: 'washBottle', on: 'cart', surface: 'tier1', at: [2.6, -1] })
-add({ id: 'cart_rack', kind: 'tubeRack', params: { slots: 6, tubes: 6 }, on: 'cart', surface: 'tier0', at: [0, 0] })
+rack('cart_rack', 'cart', 'tier0', [0, 0], 6)
 
 export const POPULATION: readonly Placement[] = P

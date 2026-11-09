@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-09).** Kết quả và các lệch kế hoạch ghi trong `plans/NHAT-KY.md` mục Chặng 5; ảnh trong `docs/screens/chang-5/`. Phần dưới giữ để tham khảo.
+
 # Chặng 5 — Tương tác: nhìn, cầm mang đi, đặt, kéo thả tại chỗ, vặn, mở, đẩy xe, soi nhãn, âm thao tác
 
 Đọc trước: `plans/00-tong-quan.md`. Chặng 4 đã xong.

@@ -9,6 +9,9 @@ import { createDebugOverlay } from './debug'
 import { COMPARE_VIEWS } from './cameraPresets'
 import { LAYOUT, ROOM, SPAWN, VIEWPOINTS } from './layout'
 import { createFreeWalk } from './walk'
+import { createInteraction, type Interaction } from './interact/index'
+import { labEvents } from './events'
+import { labApi } from './api'
 
 export interface FreeLabOptions { mode?: 'play' | 'debug' | 'blockout' | 'showroom'; batch?: string }
 
@@ -40,19 +43,13 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
 
   const walk = createFreeWalk(ctx, { colliders: room.colliders, spawn: SPAWN })
   const debug = createDebugOverlay(ctx, walk, opts.mode === 'debug')
+  const ix: Interaction | null = room.placed ? createInteraction(ctx, room as Parameters<typeof createInteraction>[1], walk, lighting) : null
   let labelsOn = opts.mode === 'debug'
   const showLabels = () => room.labels.forEach((l) => (l.visible = labelsOn))
   showLabels()
   // F5: điểm nhìn chung + góc đối chiếu ảnh mẫu.
   const views = [...VIEWPOINTS, ...COMPARE_VIEWS]
   let view = 0
-
-  // Bảng phím ngắn, bấm để ẩn.
-  const help = document.createElement('div')
-  help.className = 'pointer-events-auto absolute right-4 top-16 max-w-xs cursor-pointer rounded-xl bg-black/55 px-4 py-3 text-sm leading-6 text-white shadow-lg backdrop-blur'
-  help.innerHTML = '<b>Điều khiển</b><br>W A S D: đi · Shift: chạy<br>Kéo chuột chỗ trống: nhìn quanh<br>← →: quay · F5: điểm nhìn<br>F4: bay · F6: nhãn · F3: số liệu<br><span class="opacity-70">Bấm để ẩn</span>'
-  help.addEventListener('click', () => help.remove())
-  ctx.overlay.appendChild(help)
 
   const onKey = (e: KeyboardEvent) => {
     if (e.code === 'F3') debug.toggle()
@@ -70,17 +67,24 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   }
   window.addEventListener('keydown', onKey)
   ctx.track(() => window.removeEventListener('keydown', onKey))
-  ctx.caption('Phòng thí nghiệm Hóa học – đi lại để làm quen')
-  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: views, __room: room, __lighting: lighting })
+  ctx.caption('Bấm vào chai, cốc, ống nghiệm để cầm lên · giữ chuột để xem nhãn')
+  labApi.resetView = () => {
+    walk.setFly(false)
+    walk.teleport(SPAWN)
+  }
+  labApi.resetAll = () => ix?.resetAll()
+  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: views, __room: room, __lighting: lighting, __ix: ix, __labEvents: labEvents })
 
   return {
     update() {},
     frame(dt) {
       walk.frame(dt)
+      ix?.frame(dt)
       room.ceiling.visible = walk.position.y < ROOM.height - 1
       debug.frame(dt)
     },
     reset() {
+      ix?.resetAll()
       walk.setFly(false)
       walk.teleport(SPAWN)
     },

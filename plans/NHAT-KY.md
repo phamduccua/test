@@ -88,3 +88,28 @@
 - Góc đối chiếu ảnh mẫu: `src/lab/cameraPresets.ts` (F5), ảnh + `compare.md` trong `docs/screens/chang-4/`.
 - Test: +22 (bảng tuần hoàn 20, gộp/tách cánh tủ 2), tổng 185 xanh.
 - Chưa đo: FPS trên GPU thật ở 3 nấc; rò bộ nhớ khi tải lại sim nhiều lần (chưa có nút đổi sim trong trang – để chặng 6 có toolbar).
+
+## Chặng 5 — Tương tác (xong 2026-11-09)
+
+- `src/lab/interact/`: `placement.ts` (hàm thuần, có test: tìm mặt đặt dưới điểm bấm, kẹp trong mép, chống chồng đĩa, tìm chỗ trống gần nhất, hốc gần nhất) và `index.ts` (`createInteraction`).
+- **Cầm/đặt**: bấm đồ vật → cầm theo camera (góc dưới phải); đang cầm bấm mặt bàn/kệ/giá → đặt (ưu tiên cắm vào hốc trống của giá/kiềng/kẹp, không thì tìm chỗ trống trên mặt, xoay nhãn về phía người xem). **Q** trả về chỗ cũ, **E** xem nhãn đồ đang cầm. Giữ chuột ≥ 450 ms → thẻ chất. Kéo đồ → trượt trên mặt bàn (kẹp mép, né đồ khác, hút vào hốc).
+- **Cánh tủ, ngăn kéo, cửa kính tủ hút, cần vòi gas**: bấm để mở/đóng (tween 0,6 s, cần gas 0,25 s) + âm thanh; mở vòi gas có tiếng xì lặp và sự kiện `gas`. Cánh đang đóng nằm trong mesh gộp, chỉ tách ra (`releaseMovable`) khi bấm lần đầu.
+- **Xe đẩy**: bấm để đẩy (xe đi theo người, va chạm với phòng, tiếng bánh xe theo tốc độ), bấm lần nữa để thả.
+- Sự kiện `src/lab/events.ts` (`pick/place/return/movable/gas/inspect/cart`) cho giao diện và hóa học (chặng 7).
+- **Lệch kế hoạch:**
+  - Không dùng `createGrabbable` của kit: đích có `onDown` bắt đầu kéo ngay nên không phân biệt được bấm/giữ/kéo; tự viết đích con trỏ quyết định trong một phiên.
+  - Cánh tủ/ngăn kéo **bấm để bật/tắt** thay vì kéo bản lề: trong góc nhìn người thứ nhất kéo bản lề khó điều khiển và dễ nhầm với xoay camera.
+  - Ống nghiệm trong giá là **đồ riêng cắm trong hốc `slot{i}`** (`rack()` trong `population.ts`) để rút ra/cắm lại được.
+- Kiểm thử headless (Playwright + SwiftShader): cầm ống nghiệm → đặt lên bàn → cầm lại → cắm vào hốc slot5; trượt cốc; giữ chuột lên chai NaCl → thẻ chất; mở cánh tủ bàn đảo; mở vòi gas; đẩy xe (−41,−30) → (−39,5; −38,8) rồi thả. Không lỗi console. Ảnh: `docs/screens/chang-5/`.
+- Test: +5 (placement), tổng 190 xanh.
+
+## Chặng 6 — Giao diện (xong 2026-11-09)
+
+- Không còn React: `src/ui/` dựng DOM + Tailwind, kho trạng thái nhỏ `ui` (`store.ts`) + các store zustand của kit (`useSim`, `useHud`).
+- **Toolbar** (`toolbar.ts`): chạy/dừng, tốc độ 0,5–4×, tắt tiếng, chất lượng hình (lưu + tải lại), về chỗ xuất phát, làm lại từ đầu (hỏi xác nhận, xóa sổ), hướng dẫn.
+- **Màn hình bắt đầu** (`start.ts`): giới thiệu, chọn bài (hiện chỉ "Tự do khám phá"), chất lượng hình, bảng điều khiển; nút "Vào phòng" cũng là cử chỉ mở khóa âm thanh. Bảng hướng dẫn tự mở lần đầu (`localStorage freelab:guide`).
+- **Bảng "Kết quả và kết luận"** (`panels.ts`): nhãn có/không phản ứng, hiện tượng, số liệu, phương trình, kết luận, "phản ứng sẽ xảy ra nếu…", cảnh báo an toàn. **Sổ thí nghiệm**: ghi thao tác/phản ứng/an toàn có giờ, lọc, xuất JSON. **Thẻ chất**: công thức, tên Việt/Anh, loại chất, nồng độ, khối lượng mol, biểu tượng GHS, màu + pH. Ô "đang cầm" + caption chung một cột đáy (đang cầm thì ẩn caption).
+- `?mode=ui`: điền bảng bằng kết quả thật của bộ máy hóa học (HCl + Na₂CO₃…) để xem giao diện.
+- Ảnh: `docs/screens/chang-6/` (màn bắt đầu, hướng dẫn, chế độ ui, thẻ chất, sổ thí nghiệm).
+- Ghi chú dev: listener trả hàm hủy – trong Playwright `page.evaluate("…labEvents.on(cb)")` sẽ gọi luôn hàm hủy; thêm `; 0` cuối biểu thức.
+- Chưa làm (chặng 7): đổ chất từ đồ đang cầm vào vật chứa và gọi bộ máy hóa học → bảng kết quả hiện kết quả thật trong phòng.

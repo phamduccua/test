@@ -27,7 +27,12 @@ describe('danh sách bày đồ', () => {
     for (const p of POPULATION) expect(kinds.has(p.kind), `${p.id}: ${p.kind}`).toBe(true)
   })
   it('vật cha có trong layout và có bề mặt được chọn', () => {
+    const ids = new Set(POPULATION.map((p) => p.id))
     for (const p of POPULATION) {
+      if (p.socket) {
+        expect(ids.has(p.on) || !!SURFACES[p.on], `${p.id}: ${p.on}`).toBe(true)
+        continue
+      }
       expect(SURFACES[p.on], `${p.id}: ${p.on}`).toBeTruthy()
       if (!p.socket) expect(SURFACES[p.on], `${p.id}: ${p.surface ?? 'top'}`).toContain(p.surface ?? 'top')
     }

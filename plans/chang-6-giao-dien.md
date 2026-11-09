@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-09).** Kết quả và các lệch kế hoạch ghi trong `plans/NHAT-KY.md` mục Chặng 6; ảnh trong `docs/screens/chang-6/`. Phần dưới giữ để tham khảo.
+
 # Chặng 6 — Giao diện: toolbar riêng, màn hình bắt đầu, bảng kết quả, sổ thí nghiệm, thẻ chất, HUD, chế độ xem thử
 
 Đọc trước: `plans/00-tong-quan.md`. Chặng 5 đã xong (`state.ts` phát sự kiện).
