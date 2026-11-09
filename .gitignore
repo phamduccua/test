@@ -12,6 +12,7 @@ playwright-report/
 
 # Ảnh chụp màn hình kiểm thử (giữ cục bộ)
 docs/screens/
+reference/images/
 
 # Công cụ cá nhân (skill Claude, cài đặt cục bộ)
 .claude/
@@ -32,3 +33,4 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+plans/
