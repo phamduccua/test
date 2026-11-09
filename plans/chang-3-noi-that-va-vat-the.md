@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-09).** Kết quả, LOD và các lệch kế hoạch ghi trong `plans/NHAT-KY.md` mục Chặng 3. Phần dưới giữ để tham khảo.
+
 # Chặng 3 — Nội thất và vật thể: tái dùng kit + builder riêng + lắp đầy phòng
 
 Đọc trước: `plans/00-tong-quan.md`. Chặng 2 đã xong.

@@ -6,6 +6,12 @@
 Đưa phòng lên gần ảnh mẫu bằng bộ ánh sáng và hậu kỳ của kit, bổ sung texture canvas và nhãn/poster. Nấc chất lượng theo `ctx.quality` (`?q=low|medium|high` của kit).
 Bàn giao: 6 cặp ảnh đối chiếu trong `docs/screens/chang-4/compare.md` được duyệt; FPS high ≥ 60 (GPU rời), medium ≥ 40 (tích hợp), low chạy không hậu kỳ.
 
+## Bàn giao từ chặng 3 (đọc trước)
+- Draw call hiện tới ~2.700 khi nhìn toàn cảnh: ưu tiên gộp hình tĩnh của nội thất (cánh tủ, tay nắm, khung trần) và instancing ghế/đèn ở bước 4.6.
+- LOD đã có (`src/lab/lod.ts`, ngưỡng 9 dm); khi đổi vật liệu kính phải giữ bản xa không dùng transmission.
+- Mặt cần vẽ: `signFace`, `posterFace`, `boardFace`, `label_L/R`, mặt giấy hộp sơ cứu/chăn chữa cháy, `exit` sign; nội dung bảng tuần hoàn treo tường kho.
+- Nhãn 3D của kit ẩn mặc định (hiện khi con trỏ gần; "Hiện mọi nhãn" trong Tham số).
+
 ## Bối cảnh cần đọc (trong `src/vendor/lab3d`)
 `lab/room/labLighting.ts`, `lightingPresets.ts` (`LAB_LOOKS`), `lighting.ts` (`createLightRig(span, levels)`), `lab/room/labPost.ts` (`createLabPost`: bloom, Neutral tone mapping, tương phản, vignette, SMAA/MSAA), `history/post.ts` (`createHistoryPost`: thêm SSAO nhưng ACES làm lệch màu dung dịch), `lab/materials/look.ts` (`setLabMaterialLook`), `lab/materials/textures.ts`, `materials/canvas.ts`, `lab/glassware/wrapLabel.ts`, `charts/periodic/*`, `micro/elements/*`, `engine/quality.ts`, `sim/capture.ts`.
 

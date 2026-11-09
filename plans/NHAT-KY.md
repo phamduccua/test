@@ -56,3 +56,15 @@
   - Hướng: nhìn +Z thì X− (tường an toàn) nằm bên phải màn hình – quy ước của three.js, bố cục vẫn khớp ảnh mẫu khi xoay.
 - Khác ảnh mẫu, chờ người điều phối quyết: ảnh mẫu đặt tủ hút giữa tường kho; kế hoạch (và hiện tại) đặt ở z −26 gần tường giảng dạy. Sửa một dòng trong `layout.ts` nếu muốn đổi.
 - FPS máy thật chưa đo (headless dùng render phần mềm, ~11 FPS không có ý nghĩa). Draw calls 66–108, tam giác < 3 nghìn.
+
+## Chặng 3 — Nội thất và vật thể (xong 2026-11-09)
+
+- Builder riêng (`src/lab/builders/`): bàn đảo hai mặt (mô-đun cánh/ngăn kéo 6 dm có node `door_*`/`drawer_*`, kệ giữa 2 tầng, 3 vòi gas đồng mỗi bên, 2 bồn rửa, ổ cắm), bàn một mặt (bàn GV có bồn + vòi gas; bàn tường), ghế đẩu, xe đẩy 2 tầng, tủ hút (cửa kính trượt `sash`, đèn buồng, ống thoát, `hoodVolume`), tủ chất dễ cháy, tủ kính, bảng trắng, khung poster, bảng ghim, móc + áo blouse, giá phơi, vòi sen + bồn rửa mắt, bình chữa cháy, hộp sơ cứu, chăn chữa cháy, biển báo, thùng rác, thùng mảnh vỡ; buret, lọ thu khí, chén nung, bát sứ, chậu, nút cao su, kính bảo hộ, hộp găng.
+- Từ kit (bọc thêm siêu dữ liệu): cốc 100/250/500, bình tam giác, ống nghiệm, ống đong, bình cầu, bình định mức, phễu, mặt kính, đĩa petri, đũa, ống hút, chai thuốc thử, lọ nhỏ giọt, bình tia, giá ống nghiệm, giá đỡ, kiềng lưới, đèn Bunsen, đèn cồn, nhiệt kế, đồng hồ bấm giờ, que đóm, thìa, ống nhỏ giọt, kẹp, bể ổn nhiệt, cân, cối chày, khay, sổ, bút, giấy dấu X, đinh sắt, đồng hồ treo tường. Bộ lắp sẵn: bộ chuẩn độ, bộ đun (dây gas nối vòi bàn GV).
+- **Chai thuốc thử lấy màu dung dịch từ bộ máy hóa học** (`describe(makeSolution(...))`): CuSO₄ xanh, KMnO₄ tím, FeCl₃ vàng nâu… tự đúng; nhãn ghi công thức + nồng độ, "đặc" khi vượt ngưỡng; nắp màu theo loại chất.
+- Bày 59 chai/lọ hóa chất + dụng cụ (`room/population.ts`, toạ độ cục bộ theo vật cha). Phòng trưng bày `?mode=showroom&batch=furniture|fixtures|safety|glassware|apparatus|reagents|all`. Khối xám cũ: `?mode=blockout`.
+- **LOD (`src/lab/lod.ts`) – lệch kế hoạch, cần thiết:** thủy tinh kit 20–65 nghìn tam giác/vật. Gần (< 9 dm) giữ nguyên kit; xa dùng bản ≤ 28 điểm × 16 lát, kính thường thay kính khúc xạ. Tam giác cao nhất (toàn cảnh) 656 nghìn (< 900 nghìn).
+- Số liệu (headless): draw call 63–2.744 tuỳ góc nhìn – **vượt mục tiêu 600, để chặng 4 gộp/instancing**. Ảnh: `docs/screens/chang-3/showroom-*.png`, `room-*.png`.
+- Test: +5 (danh sách bày đồ hợp lệ, chất có trong bộ máy hóa học), tổng 163 xanh.
+- Sửa trong lúc làm: buret 7 dm không vừa tủ kính → bỏ; dây gas lệch 0,5 dm; vòi sen quay ra phòng (`facing: '+x'`); thanh chắn kệ.
+- Chưa làm (thuộc chặng 4): mặt biển báo, poster, bảng tuần hoàn, nội dung bảng trắng, nhãn tủ còn trống; ánh sáng còn tạm (hemisphere + 1 đèn hướng).

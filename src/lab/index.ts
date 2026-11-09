@@ -1,14 +1,17 @@
 import * as THREE from 'three'
 import type { SimModule, Simulation } from '../vendor/lab3d/sim/types'
 import { buildBlockout } from './blockout'
+import { buildRoom } from './room/roomBuilder'
+import { createShowroom } from './showroom'
 import { createDebugOverlay } from './debug'
 import { LAYOUT, ROOM, SPAWN, VIEWPOINTS } from './layout'
 import { createFreeWalk } from './walk'
 
-export interface FreeLabOptions { mode?: 'play' | 'debug' }
+export interface FreeLabOptions { mode?: 'play' | 'debug' | 'blockout' | 'showroom'; batch?: string }
 
 /** Phòng thí nghiệm đi lại tự do (chặng 2: khối xám đúng tỉ lệ). */
 export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: FreeLabOptions = {}): Simulation {
+  if (opts.mode === 'showroom') return createShowroom(ctx, opts.batch ?? 'glassware')
   const { scene, camera } = ctx
   camera.fov = 62
   camera.near = 0.1
@@ -16,7 +19,8 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   camera.updateProjectionMatrix()
   scene.background = new THREE.Color(0xdfe4ea)
 
-  const room = buildBlockout(ctx, LAYOUT)
+  // ?mode=blockout: khối xám chặng 2; mặc định: phòng dựng đầy đủ.
+  const room = opts.mode === 'blockout' ? { ...buildBlockout(ctx, LAYOUT), placed: null } : { ...buildRoom(ctx, LAYOUT), labels: [] as THREE.Object3D[] }
   scene.add(room.group)
   const hemi = new THREE.HemisphereLight(0xffffff, 0x8899aa, 1.1)
   const sun = new THREE.DirectionalLight(0xffffff, 1.4)
@@ -54,7 +58,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   window.addEventListener('keydown', onKey)
   ctx.track(() => window.removeEventListener('keydown', onKey))
   ctx.caption('Phòng thí nghiệm Hóa học – đi lại để làm quen')
-  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: VIEWPOINTS })
+  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: VIEWPOINTS, __room: room })
 
   return {
     update() {},
@@ -72,5 +76,9 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
 
 export const freeLabModule: SimModule = {
   meta: { id: 'freelab', title: 'Phòng thí nghiệm Hóa học', stage: 'lab' },
-  create: (ctx) => createFreeLab(ctx, { mode: new URLSearchParams(location.search).get('mode') === 'debug' ? 'debug' : 'play' }),
+  create: (ctx) => {
+    const q = new URLSearchParams(location.search)
+    const mode = q.get('mode')
+    return createFreeLab(ctx, { mode: mode === 'debug' || mode === 'blockout' || mode === 'showroom' ? mode : 'play', batch: q.get('batch') ?? undefined })
+  },
 }

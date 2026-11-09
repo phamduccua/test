@@ -71,7 +71,7 @@ const items: LayoutItem[] = [
   { id: 'pegboard', kind: 'pegboard', x: 43, y: 13, z: 41.8, w: 8, h: 8, d: 0.4, facing: '-z', label: 'Giá phơi dụng cụ' },
 
   // Trạm an toàn (tường X−)
-  { id: 'shower_eyewash', kind: 'safety', x: -45, z: -10, w: 2, h: 23, d: 2, collider: true, label: 'Vòi sen khẩn cấp + rửa mắt' },
+  { id: 'shower_eyewash', kind: 'safety', x: -45, z: -10, w: 2, h: 23, d: 2, facing: '+x', collider: true, label: 'Vòi sen khẩn cấp + rửa mắt' },
   { id: 'floor_striping', kind: 'striping', x: -42, y: 0.01, z: -10, w: 12, h: 0.02, d: 12 },
   { id: 'first_aid', kind: 'safety', x: -47.4, y: 15.5, z: -23, w: 1.2, h: 3, d: 3, facing: '+x', label: 'Tủ sơ cứu' },
   { id: 'fire_blanket', kind: 'safety', x: -47.5, y: 14.5, z: -19, w: 1, h: 3, d: 3, facing: '+x', label: 'Chăn chữa cháy' },
