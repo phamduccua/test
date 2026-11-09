@@ -36,10 +36,11 @@ export function mountResultPanel(root: HTMLElement) {
       p.body.append(el('p', 'text-slate-500', 'Chưa có thí nghiệm nào. Đổ một chất vào chất khác để xem hệ thống phán xét.'))
       return
     }
-    const { title, r } = s.result
+    const { title, r, indicatorOnly } = s.result
     const head = el('div', 'flex items-center gap-2')
+    const [badge, tone] = indicatorOnly ? ['Chỉ thị', 'bg-sky-600'] : r.happened ? ['Có phản ứng', 'bg-emerald-600'] : ['Không phản ứng', 'bg-slate-500']
     head.append(
-      el('span', `rounded px-1.5 py-0.5 text-xs font-bold text-white ${r.happened ? 'bg-emerald-600' : 'bg-slate-500'}`, r.happened ? 'Có phản ứng' : 'Không phản ứng'),
+      el('span', `shrink-0 rounded px-1.5 py-0.5 text-xs font-bold text-white ${tone}`, badge),
       el('span', 'font-medium', title),
     )
     p.body.append(head)
@@ -66,8 +67,10 @@ export function mountResultPanel(root: HTMLElement) {
       for (const e of r.equations) p.body.append(el('p', 'rounded bg-slate-100 px-2 py-1 font-mono text-[13px]', e.text))
     }
     p.body.append(sub('Kết luận'))
-    p.body.append(el('p', '', r.explanationVi))
-    if (r.wouldHappenIf) p.body.append(el('p', 'mt-1 rounded bg-sky-50 px-2 py-1 text-sky-900', `💡 ${r.wouldHappenIf.noteVi}`))
+    p.body.append(el('p', '', indicatorOnly
+      ? `Chất chỉ thị đổi màu theo môi trường${a.pH !== undefined ? ` (pH ≈ ${a.pH.toFixed(1).replace('.', ',')})` : ''} – đây là dấu hiệu nhận biết, không phải phản ứng giữa hai chất trong bình.`
+      : r.explanationVi))
+    if (r.wouldHappenIf) p.body.append(el('p', 'mt-1 rounded bg-sky-50 px-2 py-1 text-sky-900', `Gợi ý: ${r.wouldHappenIf.noteVi}`))
     for (const w of r.safety)
       p.body.append(el('p', `mt-1 rounded px-2 py-1 ${w.level === 'danger' ? 'bg-red-50 text-red-800' : w.level === 'warning' ? 'bg-amber-50 text-amber-900' : 'bg-slate-100 text-slate-700'}`, w.messageVi))
     p.open()

@@ -5,7 +5,7 @@ export interface NoteEntry { t: number; kind: 'action' | 'reaction' | 'safety'; 
 export interface UiState {
   notebook: NoteEntry[]
   /** Kết quả phản ứng gần nhất (chặng 7 đặt) + mô tả "đổ gì vào gì". */
-  result: { title: string; r: ReactionResult } | null
+  result: { title: string; r: ReactionResult; indicatorOnly?: boolean } | null
   inspect: ObjectMeta | null
   held: string | null
   started: boolean
@@ -32,9 +32,10 @@ export const ui = {
     const list = [...state.notebook, { t: (performance.now() - t0) / 1000, kind, text, detail }].slice(-200)
     ui.set({ notebook: list })
   },
-  setResult(title: string, r: ReactionResult) {
-    ui.set({ result: { title, r } })
-    ui.note('reaction', `${title}: ${r.happened ? 'có phản ứng' : 'không phản ứng'}`, r.equations.map((e) => e.text).join('; ') || r.explanationVi)
+  setResult(title: string, r: ReactionResult, indicatorOnly = false) {
+    ui.set({ result: { title, r, indicatorOnly } })
+    const verdict = indicatorOnly ? 'chỉ thị đổi màu' : r.happened ? 'có phản ứng' : 'không phản ứng'
+    ui.note('reaction', `${title}: ${verdict}`, r.equations.map((e) => e.text).join('; ') || (indicatorOnly ? undefined : r.explanationVi))
     for (const s of r.safety.filter((x) => x.level === 'danger')) ui.note('safety', s.messageVi)
   },
   clearNotebook() {

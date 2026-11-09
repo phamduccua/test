@@ -59,6 +59,14 @@ for (const [i, u] of [-12, 8].entries()) {
   add({ id: `i1_goggles_${i}`, kind: 'goggles', on: 'bench_island_1', at: [u - 3.5, -5.8] })
   add({ id: `i1_wash_${i}`, kind: 'washBottle', on: 'bench_island_1', at: [u + 6.5, -4] })
 }
+// Hàng sau mỗi chỗ: đinh sắt, ống dẫn khí (chặng 7).
+for (const [i, u] of [-12, 8].entries()) {
+  add({ id: `i1_nail_${i}`, kind: 'nail', on: 'bench_island_1', at: [u - 3, -2.4] })
+  add({ id: `i1_tube_${i}`, kind: 'deliveryTube', on: 'bench_island_1', at: [u + 2.5, -2.4] })
+}
+add({ id: 'i1_lamp', kind: 'alcoholLamp', on: 'bench_island_1', at: [-1.5, -5.2] })
+add({ id: 'i1_splint', kind: 'splint', on: 'bench_island_1', at: [1.5, -5.8] })
+add({ id: 'i1_thermo', kind: 'thermometer', on: 'bench_island_1', at: [2.5, -2.4] })
 add({ id: 'i1_notebook', kind: 'notebook', on: 'bench_island_1', at: [-2, 5], rot: Math.PI })
 add({ id: 'i1_dropper', kind: 'dropper', on: 'bench_island_1', at: [-6, -3.2] })
 add({ id: 'i1_spatula', kind: 'spatula', on: 'bench_island_1', at: [14, -3.2] })
@@ -72,6 +80,7 @@ rack('i2_rack', 'bench_island_2', 'top', [8, 4.5], 4)
 add({ id: 'i2_cyl', kind: 'cylinder100', on: 'bench_island_2', at: [13, 4.2] })
 add({ id: 'i2_flask', kind: 'erlenmeyer250', on: 'bench_island_2', at: [15.5, 5] })
 add({ id: 'i2_thermo', kind: 'thermometer', on: 'bench_island_2', at: [4, -5.8] })
+add({ id: 'i2_cross', kind: 'crossCard', on: 'bench_island_2', at: [1.5, -3.5] })
 
 // Bàn giáo viên (mặt trước quay về phía giáo viên): bộ đun nối vòi gas, giá đỡ + ống nghiệm, đồng hồ bấm giờ, sổ.
 // hoseTo: vòi gas của bàn ở (−8,5; 9,55; −1,95) cục bộ bàn, bộ đun ở (−5; 9; 0,5) → lệch (−3,5; 0,55; −2,45).
@@ -83,6 +92,7 @@ add({ id: 'tb_pen', kind: 'pen', on: 'bench_teacher', at: [12.8, 1.4] })
 add({ id: 'tb_scale', kind: 'digitalScale', on: 'bench_teacher', at: [-11, 1], rot: Math.PI })
 add({ id: 'tb_lamp', kind: 'alcoholLamp', on: 'bench_teacher', at: [0.5, 1.5] })
 add({ id: 'tb_splint', kind: 'splint', on: 'bench_teacher', at: [6, -2] })
+add({ id: 'tb_tube', kind: 'deliveryTube', on: 'bench_teacher', at: [-1.5, -2] })
 
 // Bàn tường cửa sổ (dài 86,5): lọ chất rắn, dụng cụ dùng chung.
 row('wb_solid', 'bench_wall_window', 'top', -1.5, -36, -2, [

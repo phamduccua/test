@@ -18,6 +18,10 @@ function noteFor(e: LabEvent): string | null {
     case 'gas': return e.on ? 'Mở vòi gas' : 'Khóa vòi gas'
     case 'inspect': return `Xem nhãn: ${e.meta.displayName}`
     case 'cart': return e.pushing ? 'Đẩy xe' : 'Dừng xe'
+    case 'measure': return `${e.label}: ${e.value.toFixed(1).replace('.', ',')} ${e.unit}`
+    case 'crossHidden': return `Dấu X khuất sau ${e.seconds.toFixed(1).replace('.', ',')} s`
+    case 'wear': return e.on ? 'Đeo kính bảo hộ' : 'Tháo kính bảo hộ'
+    default: return null
   }
 }
 
@@ -38,6 +42,8 @@ export function mountUi(root: HTMLElement, host: Host, mode: string | null): voi
     if (e.type === 'pick') ui.set({ held: e.name })
     if (e.type === 'place' || e.type === 'return') ui.set({ held: null })
     if (e.type === 'inspect') ui.set({ inspect: e.meta })
+    if (e.type === 'reaction') ui.setResult(e.title, e.result, e.indicatorOnly)
+    if (e.type === 'chemNote') ui.note(e.kind, e.text)
   })
   const firstVisit = (() => {
     try {

@@ -5,7 +5,7 @@ import {
   createJar, createLabNotebook, createMortar, createNail, createPaperSheet, createPen, createPetri, createPipette, createReagentBottle,
   createRetortStand, createRoundFlask, createSpatula, createSplint, createStopwatch, createTestTube, createThermometer, createTray,
   createTripodGauze, createTubeHolder, createTubeRack, createWashBottle, createWatchGlass, createWaterBath, createDigitalScale,
-  drawCrossMark, volumeBelow, toML, mm,
+  drawCrossMark, volumeBelow, toML, mm, createDeliveryTube, createRubberStopper,
 } from '../../vendor/lab3d/lab/index'
 import type { Vessel } from '../../vendor/lab3d/lab/glassware/vessel'
 import type { Tracker } from '../../vendor/lab3d/lab/types'
@@ -151,7 +151,13 @@ register('bunsenBurner', 'apparatus', (ctx, p = {}) => {
 })
 register('alcoholLamp', 'apparatus', (ctx) => {
   const l = createAlcoholLamp(ctx)
-  return wrap('alcoholLamp', 'Đèn cồn', 'apparatus', l.group, { params: { lamp: l } })
+  l.group.updateMatrixWorld(true)
+  const w = l.group.worldToLocal(l.wickTop.getWorldPosition(new THREE.Vector3()))
+  // Ổ "trên ngọn lửa": ống nghiệm (như kẹp bằng kẹp gỗ), chén nung, bát sứ đặt vào đây là được đun.
+  return wrap('alcoholLamp', 'Đèn cồn', 'apparatus', l.group, {
+    sockets: [{ name: 'flame', pos: [w.x, w.y + mm(28), w.z], accepts: ['testTube', 'crucible', 'evaporatingDish'], radius: mm(30) }],
+    params: { lamp: l },
+  })
 })
 register('thermometer', 'apparatus', (ctx) => {
   const t = createThermometer(ctx, { min: -10, max: 110, value: 25 })
@@ -214,7 +220,22 @@ register('notebook', 'apparatus', (ctx) => {
 register('pen', 'apparatus', (ctx) => wrap('pen', 'Bút', 'apparatus', createPen(ctx).group))
 register('crossCard', 'apparatus', (ctx) => {
   const s = createPaperSheet(ctx, { width: 1, depth: 1, draw: (g, W, H) => drawCrossMark(g, W, H) })
-  return wrap('crossCard', 'Tấm giấy đánh dấu X', 'apparatus', s)
+  // Đặt cốc lên tấm giấy: mặt `card` (dấu X ở giữa, nhìn từ trên xuống qua dung dịch).
+  return wrap('crossCard', 'Tấm giấy đánh dấu X', 'apparatus', s, {
+    surfaces: [{ name: 'card', y: mm(0.5), minX: -0.5, maxX: 0.5, minZ: -0.5, maxZ: 0.5, kind: 'tray' }],
+  })
+})
+register('deliveryTube', 'glassware', (ctx) => {
+  // Nút cao su một lỗ + ống thủy tinh uốn: lắp vào bình sinh khí rồi nhúng đầu kia vào bình nhận.
+  const g = new THREE.Group()
+  const stopper = createRubberStopper(ctx, { hole: 6 })
+  const tube = createDeliveryTube(ctx, [
+    new THREE.Vector3(0, mm(5), 0), new THREE.Vector3(0, mm(70), 0), new THREE.Vector3(mm(25), mm(100), 0),
+    new THREE.Vector3(mm(90), mm(100), 0), new THREE.Vector3(mm(115), mm(70), 0), new THREE.Vector3(mm(115), mm(-40), 0),
+  ])
+  g.add(stopper, tube.group)
+  g.position.y = mm(40)
+  return wrap('deliveryTube', 'Ống dẫn khí có nút cao su', 'glassware', g, { params: { tip: tube.tip } })
 })
 register('nail', 'reagent', (ctx) => {
   const n = createNail(ctx)

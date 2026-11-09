@@ -12,6 +12,7 @@ import { createFreeWalk } from './walk'
 import { createInteraction, type Interaction } from './interact/index'
 import { labEvents } from './events'
 import { labApi } from './api'
+import { createChemLab } from './chem/scene'
 
 export interface FreeLabOptions { mode?: 'play' | 'debug' | 'blockout' | 'showroom'; batch?: string }
 
@@ -43,7 +44,10 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
 
   const walk = createFreeWalk(ctx, { colliders: room.colliders, spawn: SPAWN })
   const debug = createDebugOverlay(ctx, walk, opts.mode === 'debug')
-  const ix: Interaction | null = room.placed ? createInteraction(ctx, room as Parameters<typeof createInteraction>[1], walk, lighting) : null
+  const fullRoom = room.placed ? (room as Parameters<typeof createInteraction>[1]) : null
+  const chem = fullRoom ? createChemLab(ctx, fullRoom) : null
+  const ix: Interaction | null = fullRoom ? createInteraction(ctx, fullRoom, walk, lighting, chem!.hooks) : null
+  if (ix) chem!.bind(ix)
   let labelsOn = opts.mode === 'debug'
   const showLabels = () => room.labels.forEach((l) => (l.visible = labelsOn))
   showLabels()
@@ -67,24 +71,32 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   }
   window.addEventListener('keydown', onKey)
   ctx.track(() => window.removeEventListener('keydown', onKey))
-  ctx.caption('Bấm vào chai, cốc, ống nghiệm để cầm lên · giữ chuột để xem nhãn')
+  ctx.caption('Cầm chai/lọ rồi bấm vào ống nghiệm, cốc để rót · giữ chuột để xem nhãn')
   labApi.resetView = () => {
     walk.setFly(false)
     walk.teleport(SPAWN)
   }
-  labApi.resetAll = () => ix?.resetAll()
-  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: views, __room: room, __lighting: lighting, __ix: ix, __labEvents: labEvents })
+  labApi.resetAll = () => {
+    ix?.resetAll()
+    chem?.reset()
+  }
+  labApi.chem = chem
+  if (import.meta.env.DEV) Object.assign(window, { __walk: walk, __viewpoints: views, __room: room, __lighting: lighting, __ix: ix, __labEvents: labEvents, __chem: chem })
 
   return {
-    update() {},
+    update(dt) {
+      chem?.update(dt)
+    },
     frame(dt) {
       walk.frame(dt)
       ix?.frame(dt)
+      chem?.frame(dt)
       room.ceiling.visible = walk.position.y < ROOM.height - 1
       debug.frame(dt)
     },
     reset() {
       ix?.resetAll()
+      chem?.reset()
       walk.setFly(false)
       walk.teleport(SPAWN)
     },

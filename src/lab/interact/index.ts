@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { createHoverFx, movedBeyond, pointerHub } from '../../vendor/lab3d/interact/index'
+import { addPickProxy, createHoverFx, movedBeyond, pointerHub } from '../../vendor/lab3d/interact/index'
 import type { SoundLoop } from '../../vendor/lab3d/audio/types'
 import type { SimContext } from '../../vendor/lab3d/sim/types'
 import type { Movable, ObjectMeta } from '../builders/types'
@@ -24,6 +24,24 @@ export interface Interaction {
   frame(dt: number): void
   /** Đưa mọi đồ về chỗ ban đầu, đóng mọi cánh tủ, tắt gas, thả xe. */
   resetAll(): void
+  /** Ổ đang cắm của vật (`${chủ}:${ổ}`) – hóa học dùng để biết bình có đang trên lửa không. */
+  socketOf(id: string): string | undefined
+  /** Nghiêng vật đang cầm (rad, quanh trục nhìn) – hoạt cảnh rót. */
+  setHeldTilt(rad: number): void
+  /** Vật đang cầm "dùng hết" (đinh thả vào ống, kính đã đeo): ẩn đi, tay trống; Làm lại đưa về chỗ cũ. */
+  consumeHeld(): void
+  /** Gắn vật đang cầm vào `parent` tại `pos` (cục bộ) – vd. ống dẫn khí lắp vào miệng bình. */
+  attachHeld(parent: THREE.Object3D, pos: THREE.Vector3): void
+}
+
+/** Móc để tầng hóa học (chặng 7) gắn thao tác vào tương tác chung. Trả `true` = đã xử lý. */
+export interface InteractionHooks {
+  /** Đang cầm `held`, bấm vào đồ `target` (rót, nhỏ giọt, xúc, thử que đóm, đo nhiệt độ…). */
+  use?(held: PlacedObject, target: PlacedObject): boolean
+  useHint?(held: PlacedObject, target: PlacedObject): string | null
+  /** Tay trống, bấm vào đồ hoặc nội thất có chức năng riêng (đèn cồn, Bunsen, đồng hồ, kính bảo hộ). */
+  activate?(p: PlacedObject, point: THREE.Vector3): boolean
+  activateHint?(p: PlacedObject): string | null
 }
 
 interface Home { parent: THREE.Object3D; pos: THREE.Vector3; quat: THREE.Quaternion; socket?: string }
@@ -32,7 +50,7 @@ interface MovableRef { owner: THREE.Object3D; ownerId: string; spec: Movable; no
 const LONG_PRESS = 450
 const up = new THREE.Vector3(0, 1, 0)
 
-export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, lighting: RoomLighting | null): Interaction {
+export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, lighting: RoomLighting | null, hooks: InteractionHooks = {}): Interaction {
   const hub = pointerHub(ctx)
   const audio = ctx.audio
   audio.setSpatialScale(6)
@@ -56,10 +74,9 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
       socketOf.set(it.id, `${parentId}:${socket.name}`)
     }
   }
-  // Bộ đun lắp sẵn: kiềng đã có cốc của kit.
-  for (const p of placed.values()) if (p.meta.kind === 'heatingSet') occupied.set(`${p.id}:top`, 'internal')
 
   let held: PlacedObject | null = null
+  let heldTilt = 0
   let pushing: PlacedObject | null = null
   const radius = (m: ObjectMeta) => Math.max(0.25, (Math.max(m.footprint?.w ?? 0.6, m.footprint?.d ?? 0.6) / 2) * 0.9)
   const name = (p: PlacedObject) => p.meta.displayName
@@ -211,15 +228,43 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
   }
 
   // ---------- Đồ vật ----------
+  // Đồ mảnh (que đóm, nhiệt kế, ống dẫn khí, ống nhỏ giọt): thêm hộp bắt vô hình ≥ 0,5 dm để bấm trúng.
+  const bb = new THREE.Box3()
+  for (const it of items) {
+    it.group.updateMatrixWorld(true)
+    bb.setFromObject(it.group)
+    const size = bb.getSize(new THREE.Vector3())
+    if (Math.min(size.x, size.y, size.z) >= 0.15) continue
+    const c = it.group.worldToLocal(bb.getCenter(new THREE.Vector3()))
+    const turned = Math.abs(Math.sin(it.group.rotation.y)) > 0.7
+    const [sx, sz] = turned ? [size.z, size.x] : [size.x, size.z]
+    addPickProxy(ctx.track, it.group, new THREE.Vector3(Math.max(sx, 0.5), Math.max(size.y, 0.5), Math.max(sz, 0.5)), c)
+  }
   for (const it of items) {
     const hover = createHoverFx(ctx, it.group, {})
+    const owner = () => placed.get(it.parentId!)!
     hub.add({
       object: it.group,
       priority: 2,
-      hint: () => (held || pushing ? null : `${name(it)} · bấm: cầm · giữ: xem nhãn · kéo: trượt`),
-      enabled: () => !held && !pushing && it.group.parent !== ctx.scene,
+      hint: () =>
+        pushing ? null
+          : held ? hooks.useHint?.(held, it) ?? (it.meta.surfaces || it.meta.sockets ? `Bấm để đặt ${name(held)} vào ${name(it)}` : null)
+            : hooks.activateHint?.(it) ?? `${name(it)} · bấm: cầm · giữ: xem nhãn · kéo: trượt`,
+      enabled: () => !pushing && it.group.parent !== ctx.scene && it.group.visible,
       onHover: (s) => hover(s),
-      onDown() {
+      onDown(h) {
+        if (held) {
+          // Đang cầm: bấm vào đồ = dùng đồ đang cầm lên nó; không dùng được thì đặt xuống (giá, khay, tấm giấy, bàn bên dưới).
+          const point = h.point.clone()
+          return {
+            cursor: 'pointer',
+            end(_q, cancelled) {
+              if (cancelled || !held) return
+              if (hooks.use?.(held, it)) return
+              void placeHeld(it.meta.surfaces ? it : owner(), point)
+            },
+          }
+        }
         const t0 = performance.now()
         let drag: ReturnType<typeof slide> | null | undefined
         return {
@@ -232,7 +277,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
             if (drag) return drag.end(cancelled)
             if (drag === null || cancelled) return
             if (performance.now() - t0 >= LONG_PRESS) labEvents.emit({ type: 'inspect', id: it.id, meta: it.meta })
-            else pick(it)
+            else if (!hooks.activate?.(it, h.point)) pick(it)
           },
         }
       },
@@ -343,6 +388,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
         if (pushing === p) return togglePush(p)
         if (held) return void placeHeld(p, hit.point)
         if (p.meta.kind === 'cart') return togglePush(p)
+        if (hooks.activate?.(p, hit.point)) return
         const m = movableNear(p, hit.point)
         if (m) toggleMovable(m)
       },
@@ -364,9 +410,40 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
   const fwd = new THREE.Vector3()
   const want = new THREE.Vector3()
   const wantQ = new THREE.Quaternion()
+  const tiltQ = new THREE.Quaternion()
+  const zAxis = new THREE.Vector3(0, 0, 1)
   return {
     get held() {
       return held
+    },
+    socketOf: (id) => socketOf.get(id),
+    setHeldTilt(rad) {
+      heldTilt = rad
+    },
+    consumeHeld() {
+      if (!held) return
+      held.group.visible = false
+      const it = held
+      held = null
+      heldTilt = 0
+      labEvents.emit({ type: 'return', id: it.id, name: name(it) })
+      // Về chỗ cũ nhưng vẫn ẩn – Làm lại hiện lại.
+      const h = homes.get(it.id)!
+      h.parent.add(it.group)
+      it.group.position.copy(h.pos)
+      it.group.quaternion.copy(h.quat)
+    },
+    attachHeld(parent, pos) {
+      if (!held) return
+      const it = held
+      held = null
+      heldTilt = 0
+      parent.add(it.group)
+      it.group.position.copy(pos)
+      it.group.quaternion.identity()
+      it.group.traverse((o) => (o as THREE.Mesh).isMesh && (o.castShadow = true))
+      shadows()
+      labEvents.emit({ type: 'place', id: it.id, name: name(it), on: parent.userData.instanceId ?? '', onName: (parent.userData.meta as ObjectMeta | undefined)?.displayName ?? '' })
     },
     frame(dt) {
       ctx.camera.getWorldPosition(camPos)
@@ -378,6 +455,8 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
         ctx.camera.localToWorld(want)
         const yaw = Math.atan2(fwd.x, fwd.z) + Math.PI
         wantQ.setFromAxisAngle(up, yaw)
+        // Rót: nghiêng sang trái (miệng bình về phía giữa khung nhìn).
+        if (heldTilt) wantQ.multiply(tiltQ.setFromAxisAngle(zAxis, heldTilt))
         const k = 1 - Math.exp(-dt * 18)
         held.group.position.lerp(want, k)
         held.group.quaternion.slerp(wantQ, k)
@@ -397,7 +476,11 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     },
     resetAll() {
       if (pushing) togglePush(pushing)
-      for (const it of items) if (it.group.parent !== homes.get(it.id)!.parent || held === it) returnHome(it)
+      for (const it of items) {
+        if (it.group.parent !== homes.get(it.id)!.parent || held === it) returnHome(it)
+        it.group.visible = true
+      }
+      heldTilt = 0
       for (const list of ownerMovables.values())
         for (const m of list) if ((movableValue.get(m.key) ?? m.spec.initial) !== m.spec.initial) {
           releaseMovable(m.owner, m.spec.node)

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { createBeaker, createBunsenBurner, createErlenmeyer, createLiquid, createPaperSheet, createRetortStand, createTripodGauze, mm } from '../../vendor/lab3d/lab/index'
+import { createBunsenBurner, createErlenmeyer, createLiquid, createPaperSheet, createRetortStand, createTripodGauze, mm } from '../../vendor/lab3d/lab/index'
 import type { Tracker } from '../../vendor/lab3d/lab/types'
 import { build, register } from './registry'
 import { group } from './helpers'
@@ -26,14 +26,12 @@ function titrationSet(ctx: Tracker) {
 function heatingSet(ctx: Tracker, p: Record<string, unknown> = {}) {
   const burner = createBunsenBurner(ctx, { lit: false, hoseTo: p.hoseTo as THREE.Vector3 | undefined })
   const tripod = createTripodGauze(ctx)
-  const beaker = createBeaker(ctx, 250)
-  beaker.group.add(createLiquid(ctx, beaker.profile, { volumeML: 120, color: 0xeef6fb, opacity: 0.2 }).mesh)
-  beaker.group.position.y = tripod.topY
+  // Kiềng để trống: học sinh đặt cốc/bình/bát sứ của mình lên ổ `top` để đun (chặng 7).
   return group('heatingSet', {
     kind: 'heatingSet', displayName: 'Bộ đun nóng', category: 'apparatus', grabbable: false, footprint: { w: mm(200), d: mm(200), h: tripod.topY + mm(95) },
-    sockets: [{ name: 'top', pos: [0, tripod.topY, 0], accepts: ['beaker100', 'beaker250', 'beaker500', 'erlenmeyer250'], radius: mm(40) }],
-    params: { burner, tripod, beaker },
-  }, burner.group, tripod.group, beaker.group)
+    sockets: [{ name: 'top', pos: [0, tripod.topY, 0], accepts: ['beaker100', 'beaker250', 'beaker500', 'erlenmeyer250', 'roundFlask', 'evaporatingDish'], radius: mm(40) }],
+    params: { burner, tripod },
+  }, burner.group, tripod.group)
 }
 
 register('titrationSet', 'apparatus', titrationSet)
