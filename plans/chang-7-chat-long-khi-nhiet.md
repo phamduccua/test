@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-09).** Kết quả và các lệch kế hoạch ghi trong `plans/NHAT-KY.md` mục Chặng 7; ảnh trong `docs/screens/chang-7/`. Phần dưới giữ để tham khảo.
+
 # Chặng 7 — Chất lỏng, chất rắn, khí, nhiệt, đo đạc: nối bộ máy hóa học vào 3D
 
 Đọc trước: `plans/00-tong-quan.md`. Chặng 1 (engine) và 6 (store) đã xong.

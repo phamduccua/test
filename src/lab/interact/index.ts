@@ -54,7 +54,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
   const hub = pointerHub(ctx)
   const audio = ctx.audio
   audio.setSpatialScale(6)
-  audio.ambient([{ id: 'lab/lab-ambience', level: 0.35 }], 2)
+  audio.ambient([{ id: 'lab/lab-ambience', level: 0.35 }, { id: 'lab/room-tone', level: 0.15 }], 2)
   const shadows = () => lighting?.invalidateShadows()
 
   const placed = room.placed

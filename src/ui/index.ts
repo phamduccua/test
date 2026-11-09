@@ -54,6 +54,7 @@ export function mountUi(root: HTMLElement, host: Host, mode: string | null): voi
   })()
   if (mode === 'ui') {
     // Xem thử giao diện: ba kết quả thật của bộ máy hóa học + vài ghi chép.
+    ui.noPersist()
     ui.note('action', 'Cầm Cốc thủy tinh 250 mL')
     ui.setResult('HCl 1 M đổ vào H₂SO₄ 1 M', mix(makeSolution('H2SO4', 1, 10), makeSolution('HCl', 1, 10)))
     ui.setResult('Cu vào H₂SO₄ đặc', mix(makeSolid('Cu', 1), makeSolution('H2SO4', 18, 10)))

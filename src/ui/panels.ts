@@ -222,7 +222,7 @@ export function mountStatus(root: HTMLElement) {
   useSim.subscribe(sim)
   ui.subscribe((s) => {
     held.hidden = !s.held
-    held.textContent = s.held ? `Đang cầm: ${s.held} · bấm mặt bàn/giá để đặt · Q trả chỗ cũ · E xem nhãn` : ''
+    held.textContent = s.held ? `Đang cầm: ${s.held} · bấm ống nghiệm, cốc để dùng · bấm mặt bàn/giá để đặt · Q trả chỗ cũ · E xem nhãn` : ''
     sim()
   })
   const renderHud = () => {

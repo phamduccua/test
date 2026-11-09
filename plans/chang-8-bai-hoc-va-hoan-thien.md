@@ -1,3 +1,5 @@
+> **ĐÃ XONG (2026-11-09).** **Phần bài học (JSON, thanh bước, Tự động) đã bỏ theo yêu cầu: phòng là thí nghiệm tự do.** Kết quả và các lệch kế hoạch ghi trong `plans/NHAT-KY.md` mục Chặng 8; ảnh trong `docs/screens/chang-8/`. Phần dưới giữ để tham khảo.
+
 # Chặng 8 — Bài học JSON, tiến độ, âm thanh, hiệu năng, build tĩnh, bàn giao
 
 Đọc trước: `plans/00-tong-quan.md`. Chặng 7 đã xong.

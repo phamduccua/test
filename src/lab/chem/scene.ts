@@ -33,7 +33,7 @@ export interface ChemLab {
   frame(dt: number): void
   reset(): void
   content(id: string): Content | undefined
-  /** Cho bài học chạy Tự động: dùng `from` lên `to` như người bấm (không cần cầm). */
+  /** Dùng `from` lên `to` như người bấm mà không cần cầm (kiểm thử tự động, công cụ gỡ lỗi). */
   autoUse(from: string, to: string, plan?: UsePlan): boolean
 }
 
@@ -53,6 +53,7 @@ interface View {
   gasColor: string | null
   fizz: SoundLoop | null
   lodDirty: number
+  lookAt?: number
 }
 
 const CONTAINER_SKIP = new Set(['funnel', 'deliveryTube', 'gasJar', 'trough'])
@@ -246,7 +247,10 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
     const o = applyUse(src.c, dst.c, plan, condOf(dst), now)
     look(src)
     look(dst)
-    if (plan.type === 'sample') ix?.consumeHeld()
+    if (plan.type === 'sample') {
+      if (ix?.held === src.p) ix.consumeHeld()
+      else src.p.group.visible = false
+    }
     if (o.result) publish(dst, o.title, o.result, 'mix', o.indicatorOnly)
     else labEvents.emit({ type: 'chemNote', vessel: dst.p.id, kind: 'action', text: o.title })
     if (plan.type === 'drop') audio.sfx('lab/drip', { at: dst.p.group })
@@ -439,7 +443,9 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
       } else v.c.heatEvalC = Math.min(v.c.heatEvalC ?? 25, Math.max(25, v.c.mixture.temperatureC - 15))
       const k = kineticTick(v.c, dt, now)
       if (k.gas.length) render(v, k.gas, false)
-      if (k.active || k.gas.length) {
+      // Phản ứng chậm: dựng lại mực/bột tối đa 2 lần mỗi giây (setVolume dựng lại hình học chất lỏng).
+      if ((k.active || k.gas.length) && (v.lookAt ?? 0) <= now) {
+        v.lookAt = now + 0.5
         look(v, 0.3)
         v.lodDirty = 3
       }

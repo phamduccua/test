@@ -1,6 +1,7 @@
 import type { ReactionResult } from '../chem/index'
 import type { ObjectMeta } from '../lab/builders/types'
 
+/** `t`: giờ thực (ms, Date.now) – sổ được lưu lại giữa các lần mở trang. */
 export interface NoteEntry { t: number; kind: 'action' | 'reaction' | 'safety'; text: string; detail?: string }
 export interface UiState {
   notebook: NoteEntry[]
@@ -13,8 +14,25 @@ export interface UiState {
 
 type L = (s: UiState) => void
 const listeners = new Set<L>()
-const state: UiState = { notebook: [], result: null, inspect: null, held: null, started: false }
-const t0 = performance.now()
+const NOTEBOOK_KEY = 'freelab:notebook'
+const loadNotebook = (): NoteEntry[] => {
+  try {
+    const v = JSON.parse(localStorage.getItem(NOTEBOOK_KEY) ?? '[]') as NoteEntry[]
+    return Array.isArray(v) ? v.slice(-200) : []
+  } catch {
+    return []
+  }
+}
+let persist = true
+const saveNotebook = (list: NoteEntry[]) => {
+  if (!persist) return
+  try {
+    localStorage.setItem(NOTEBOOK_KEY, JSON.stringify(list))
+  } catch {
+    /* chế độ riêng tư / đầy bộ nhớ: sổ chỉ còn trong phiên */
+  }
+}
+const state: UiState = { notebook: loadNotebook(), result: null, inspect: null, held: null, started: false }
 
 /** Kho trạng thái giao diện (không React): subscribe/set; mọi bảng vẽ lại theo đây. */
 export const ui = {
@@ -29,8 +47,9 @@ export const ui = {
     for (const cb of listeners) cb(state)
   },
   note(kind: NoteEntry['kind'], text: string, detail?: string) {
-    const list = [...state.notebook, { t: (performance.now() - t0) / 1000, kind, text, detail }].slice(-200)
+    const list = [...state.notebook, { t: Date.now(), kind, text, detail }].slice(-200)
     ui.set({ notebook: list })
+    saveNotebook(list)
   },
   setResult(title: string, r: ReactionResult, indicatorOnly = false) {
     ui.set({ result: { title, r, indicatorOnly } })
@@ -38,14 +57,21 @@ export const ui = {
     ui.note('reaction', `${title}: ${verdict}`, r.equations.map((e) => e.text).join('; ') || (indicatorOnly ? undefined : r.explanationVi))
     for (const s of r.safety.filter((x) => x.level === 'danger')) ui.note('safety', s.messageVi)
   },
+  /** Chế độ xem thử giao diện: không ghi đè sổ đã lưu của học sinh. */
+  noPersist() {
+    persist = false
+    ui.set({ notebook: [] })
+  },
   clearNotebook() {
     ui.set({ notebook: [], result: null })
+    saveNotebook([])
   },
 }
 
+/** Giờ:phút của một mục sổ (Date.now). */
 export const clock = (t: number) => {
-  const s = Math.floor(t)
-  return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+  const d = new Date(t)
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
 
 /** Tạo phần tử với lớp Tailwind. */

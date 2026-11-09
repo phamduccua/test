@@ -8,6 +8,11 @@ export const CONTROLS: [string, string][] = [
   ['Giữ chuột trên đồ vật', 'Xem nhãn, tính chất, cảnh báo nguy hiểm'],
   ['Kéo đồ vật', 'Trượt trên mặt bàn'],
   ['Đang cầm: bấm mặt bàn, kệ, giá', 'Đặt xuống (tự tìm chỗ trống, cắm vào giá/kiềng/kẹp)'],
+  ['Đang cầm chai/lọ: bấm ống nghiệm, cốc', 'Rót dung dịch · nhỏ chỉ thị · xúc 0,5 g chất rắn · thả đinh sắt'],
+  ['Đang cầm que đóm, nhiệt kế', 'Bấm vào bình: thử khí · đo nhiệt độ (hiện ở góc dưới)'],
+  ['Đang cầm ống dẫn khí', 'Bấm bình sinh khí để lắp nút, rồi bấm bình nhận để dẫn khí vào'],
+  ['Bấm đèn cồn, đồng hồ, kính', 'Châm / tắt đèn · chạy / dừng / về 0 · đeo kính bảo hộ'],
+  ['Đặt ống nghiệm lên đèn đang cháy', 'Đun nóng · Bunsen: mở vòi gas bàn giáo viên rồi bấm đèn'],
   ['Q · E', 'Trả đồ đang cầm về chỗ cũ · xem nhãn đồ đang cầm'],
   ['Bấm cánh tủ, ngăn kéo, vòi gas', 'Mở / đóng · bấm xe đẩy để đẩy'],
   ['F5 · F4 · F3', 'Điểm nhìn nhanh · bay tự do · số liệu kỹ thuật'],
@@ -47,12 +52,7 @@ export function mountStart(root: HTMLElement, onEnter: () => void): void {
     el('h1', 'text-2xl font-bold text-slate-900', 'Phòng thí nghiệm Hóa học'),
     el('p', 'mt-2 text-slate-600', 'Đi lại trong phòng, tự lấy hóa chất và dụng cụ trên kệ để làm thí nghiệm. Mọi cặp chất đều được phán xét theo quy luật hóa học: có phản ứng thì thấy hiện tượng và phương trình, không phản ứng thì biết vì sao.'),
   )
-  const mode = el('div', 'mt-4')
-  mode.append(el('div', 'mb-1 text-sm font-semibold', 'Bài học'))
-  const lesson = el('select', 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2')
-  lesson.append(Object.assign(el('option', '', 'Tự do khám phá'), { value: 'free' }))
-  mode.append(lesson, el('p', 'mt-1 text-xs text-slate-500', 'Các bài thực hành có hướng dẫn từng bước sẽ có ở bản sau.'))
-  const q = el('div', 'mt-3')
+  const q = el('div', 'mt-4')
   q.append(el('div', 'mb-1 text-sm font-semibold', 'Chất lượng hình ảnh'))
   const quality = el('select', 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2')
   for (const [v, t] of [['auto', 'Tự động theo máy'], ['low', 'Thấp – máy yếu'], ['medium', 'Vừa – card tích hợp'], ['high', 'Cao – card rời']] as const)
@@ -62,7 +62,7 @@ export function mountStart(root: HTMLElement, onEnter: () => void): void {
   const details = el('details', 'mt-4 rounded-lg bg-slate-50 px-3 py-2')
   details.append(el('summary', 'cursor-pointer text-sm font-semibold', 'Cách điều khiển'), controlsTable())
   const go = el('button', 'mt-5 w-full rounded-xl bg-red-600 px-4 py-3 text-lg font-bold text-white shadow hover:bg-red-700', 'Vào phòng thí nghiệm')
-  card.append(mode, q, details, go)
+  card.append(q, details, go)
   wrap.append(card)
   root.append(wrap)
   go.onclick = () => {

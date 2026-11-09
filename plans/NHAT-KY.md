@@ -113,3 +113,26 @@
 - Ảnh: `docs/screens/chang-6/` (màn bắt đầu, hướng dẫn, chế độ ui, thẻ chất, sổ thí nghiệm).
 - Ghi chú dev: listener trả hàm hủy – trong Playwright `page.evaluate("…labEvents.on(cb)")` sẽ gọi luôn hàm hủy; thêm `; 0` cuối biểu thức.
 - Chưa làm (chặng 7): đổ chất từ đồ đang cầm vào vật chứa và gọi bộ máy hóa học → bảng kết quả hiện kết quả thật trong phòng.
+
+## Chặng 7 — Nối bộ máy hóa học vào phòng 3D (xong 2026-11-09)
+
+- `src/lab/chem/core.ts` (thuần, 17 test): nội dung từng bình (`Content`: chai gốc, lọ rắn, lọ chỉ thị, bình tia, mẫu thả, dụng cụ chứa). "Dùng vật đang cầm lên bình" được quyết định theo loại nguồn: **rót** (ống nghiệm 2 mL, cốc ≤ 150 mL 10 mL, cốc lớn 25 mL; rót từ ống nghiệm thì rót hết), **nhỏ 2 giọt chỉ thị**, **xúc 0,5 g**, **thả mẫu** (đinh sắt). Còn có: đun (`heatStep` + gọi `heat()` ở các mốc 60/100/200… °C), động học (`step()`), dấu X, que đóm (H₂ "pép", O₂ bùng, khí khác tắt), dẫn khí (`takeNewGas` + `bubbleGas`). Không đổ ngược vào chai gốc.
+- `src/lab/chem/scene.ts`: chất lỏng kit trong mọi dụng cụ, đống bột, bọt khí, bọt dày, kết tủa lắng, khí màu, âm sủi theo cường độ; đèn cồn (bấm để châm, ổ `flame` trên ngọn lửa), Bunsen của bộ đun (cần mở vòi gas bàn giáo viên), nhiệt kế (bấm vào bình, HUD theo dõi), đồng hồ bấm giờ (bấm: chạy/dừng/về 0), tấm giấy X (mặt `card`), kính bảo hộ (bấm để đeo; dùng axit đặc khi chưa đeo thì cảnh báo), tủ hút (`inFumeHood` theo tâm bình trong `hoodVolume`). Kết quả → sự kiện `reaction` → bảng "Kết quả và kết luận" + sổ; cảnh báo an toàn → `ctx.warn`.
+- Tương tác thêm `InteractionHooks` (use/activate + gợi ý), nghiêng tay khi rót, `consumeHeld`, `attachHeld`, hộp bắt vô hình cho đồ mảnh (que đóm, nhiệt kế, ống dẫn khí).
+- Đồ mới trong phòng: 2 đinh sắt, 3 ống dẫn khí, đèn cồn + que đóm + nhiệt kế ở bàn đảo 1, tấm giấy X ở bàn đảo 2. Bộ đun bàn giáo viên bỏ cốc dựng sẵn để học sinh đặt bình của mình.
+- **Lệch kế hoạch:**
+  - Rót bằng **bấm** (cầm chai → bấm bình nhận), không kéo-nghiêng `createTiltPour`: trong góc nhìn thứ nhất, kéo vừa xoay camera vừa nghiêng chai rất khó. Hoạt cảnh nghiêng + dòng chảy chỉ để nhìn; hóa học áp dụng ngay khi bấm (máy chậm vẫn đúng thứ tự).
+  - Chưa làm: thu khí bằng đẩy nước, buret chuẩn độ, đồ thị theo thời gian (`setChart`), bể ổn nhiệt.
+  - Xúc chất rắn không cần cầm thìa: cầm lọ rắn bấm vào bình là cho 0,5 g.
+- Kiểm thử trên trình duyệt (bấm thật, headless): NaOH → phenolphtalein (nhãn "Chỉ thị") → HCl (+6,7 °C, NaCl); H₂SO₄ + HCl → `SAME_CLASS_ACIDS`; Zn + HCl sủi H₂, que đóm "pép"; đinh sắt + CuSO₄ → Cu bám; Cu + H₂SO₄ đặc → `NEEDS_HEAT`, đặt lên đèn cồn đang cháy → SO₂ ở 60 °C + cảnh báo khí độc; CaCO₃ + HCl dẫn qua ống vào nước vôi trong → CaCO₃↓. Kết quả trùng `npm run chem`. Ảnh `docs/screens/chang-7/`.
+- Lõi (test): Na₂S₂O₃ + HCl khuất dấu X 57,5 s ở 25 °C, 32,5 s ở 35 °C; trung hòa 50 + 50 mL tăng 6,8 °C; đèn cồn không nung được CaCO₃ (`NEEDS_HEAT`), nhiệt phân được NaHCO₃; H₂O₂ không xúc tác thì que đóm không bùng.
+- Test: tổng 207 xanh.
+
+## Chặng 8 — Hoàn thiện (xong 2026-11-09)
+
+- **Bỏ bài học theo yêu cầu** ("hệ thống này là thí nghiệm tự do"): không có bài JSON, thanh bước hay Tự động; màn hình bắt đầu bỏ ô chọn bài.
+- Sổ thí nghiệm lưu `localStorage['freelab:notebook']` (≤ 200 dòng, giờ thực HH:MM), còn sau khi tải lại; "Làm lại từ đầu" xóa sổ. `?mode=ui` không ghi đè sổ.
+- Âm nền: `lab-ambience` + `room-tone`. Bảng hướng dẫn thêm các thao tác hóa học.
+- Hiệu năng (headless SwiftShader, low): 607 draw call / 634 nghìn tam giác giữa phòng; 260 / 296 nghìn sát bàn. Bộ máy hóa học 0,72 ms/bước khi 6 ống sủi cùng lúc (0,02 ms khi rỗi). Dựng lại mực chất lỏng giới hạn 2 lần/giây cho phản ứng chậm. Chưa đo FPS trên GPU thật và chưa thử điện thoại thật.
+- `npm run build` → `dist/` 11 MB; `npm run preview` chạy không lỗi, âm thanh trả 200. Ảnh `docs/screens/chang-8/`.
+- `README.md` gốc repo: chạy, cờ URL, kiến trúc, cách đồng bộ kit, cách thêm chất, ngân sách, giới hạn, bản quyền âm thanh.
