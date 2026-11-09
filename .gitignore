@@ -1,5 +1,34 @@
+# Phụ thuộc và bản build
 node_modules/
 dist/
+.vite/
+*.tsbuildinfo
+
+# Kiểm thử / đo phủ
+coverage/
+.coverage
+test-results/
+playwright-report/
+
+# Ảnh chụp màn hình kiểm thử (giữ cục bộ)
+docs/screens/
+
+# Công cụ cá nhân (skill Claude, cài đặt cục bộ)
+.claude/
+
+# Môi trường
+.env
+.env.*
+!.env.example
+
+# Python (nếu chạy script phụ)
+__pycache__/
+*.pyc
+
+# Rác hệ thống / editor
 *.log
 .DS_Store
-.vite/
+Thumbs.db
+.idea/
+.vscode/
+*.swp
