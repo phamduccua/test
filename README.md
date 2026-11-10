@@ -20,6 +20,20 @@ npm run sweep      # quét đặt đồ toàn phòng + đinh vào mọi loại b
 npm run shots      # chụp 6 góc đối chiếu ảnh mẫu vào docs/screens/ + đo khung hình (thêm: -- medium 1600 900)
 ```
 
+### Lightmap (ánh sáng nướng sẵn)
+
+Phần tĩnh của phòng (tường, sàn, trần, thân tủ, mặt bàn, kệ) có lightmap nướng bằng Blender Cycles: ánh sáng **gián tiếp** (ánh dội giữa các bề mặt, che khuất mềm ở góc, gầm, khe tủ). Ánh sáng trực tiếp và bóng đổ vẫn tính thời gian thực. Tệp đã nướng nằm trong `public/lightmap/` (atlas 2048 px), tự gắn ở nấc medium/high; `?nolightmap` để so sánh, `?lmgain=0.15` để chỉnh độ mạnh.
+
+**Đổi bố trí hay nội thất phòng thì nướng lại** (mesh không khớp số đỉnh sẽ bị bỏ qua và in cảnh báo trên console):
+
+```bash
+npm run dev                                   # cửa sổ khác
+BLENDER="C:/đường/dẫn/blender.exe" npm run lightmap               # 2048 px, 64 mẫu: ~6–7 phút trên CPU
+BLENDER=... npm run lightmap -- --size 1024 --samples 16          # bản thử nhanh (~1 phút)
+```
+
+Cần Blender 4.x (bản zip chạy ngay, không cần cài). Quy trình: `scripts/lightmap/export.mjs` (trình duyệt xuất mesh tĩnh + vật che + vị trí đèn) → `scripts/lightmap/bake.py` (Blender: mở UV chung một atlas, nướng, khử nhiễu OIDN) → `src/lab/lightmap.ts` gắn lúc chạy.
+
 `dist/` là trang tĩnh, đặt ở gốc tên miền vì âm thanh nạp từ `/api/assets/lab3d/audio/`.
 
 ### Cờ trên URL
@@ -85,7 +99,7 @@ Bộ máy hóa học mỗi bước, 6 ống đang sủi: 0,72 ms.
 ## Giới hạn đã biết
 
 - Mới đo trên một máy (Intel UHD 630); chưa đo card rời và điện thoại thật (có nút ▲▼◀▶ và chạm/giữ cho cảm ứng).
-- Ánh sáng tính thời gian thực (AO màn hình + môi trường chụp một lần), chưa có ánh sáng nướng sẵn (lightmap) như ảnh render mẫu.
+- Lightmap chỉ có ánh sáng gián tiếp cho phần tĩnh; cánh tủ, ngăn kéo, đồ trên bàn không có lightmap (dùng AO màn hình). Lòng cửa gió trên trần hơi sáng hơn thật.
 - Nấc medium/low: từ ≈ 9 dm bình dùng bản LOD xa (thấy màu dung dịch, không thấy bọt/kết tủa đang rơi); nấc high giữ bản chi tiết tới 20 dm.
 - Lượng rót cố định theo bình nhận (ống nghiệm 2 mL, cốc nhỏ 10 mL, cốc lớn 25 mL); rót nhiều lần để thêm.
 - Chưa có thu khí bằng đẩy nước, buret chuẩn độ, đồ thị theo thời gian, bể ổn nhiệt.

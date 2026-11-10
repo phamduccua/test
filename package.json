@@ -12,7 +12,8 @@
     "chem": "tsx scripts/chem-cli.ts",
     "sync-kit": "bash scripts/sync-kit.sh",
     "shots": "node scripts/visual/views.mjs",
-    "sweep": "node scripts/visual/sweep.mjs"
+    "sweep": "node scripts/visual/sweep.mjs",
+    "lightmap": "node scripts/lightmap/run.mjs"
   },
   "dependencies": {
     "lil-gui": "^0.21.0",

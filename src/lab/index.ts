@@ -2,7 +2,8 @@ import * as THREE from 'three'
 import type { SimModule, Simulation } from '../vendor/lab3d/sim/types'
 import { buildBlockout } from './blockout'
 import { setLodDistances } from './lod'
-import { buildRoom } from './room/roomBuilder'
+import { exportForBake, loadLightmap } from './lightmap'
+import { buildRoom, type Room } from './room/roomBuilder'
 import { createRoomLighting, maxAnisotropy, prepareMaterialLook, tuneShadowCasters, type RoomLighting } from './lighting'
 import { createRoomPost } from './post'
 import { createShowroom } from './showroom'
@@ -50,6 +51,15 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
       lit.bakeEnvironment()
       maxAnisotropy(scene, ctx.renderer, ctx.quality)
     })
+    // Lightmap nướng sẵn (npm run lightmap): ánh dội + che khuất mềm cho phần tĩnh. `?nolightmap` để so sánh.
+    const fullRoom0 = room.placed ? (room as unknown as Room) : null
+    if (fullRoom0 && ctx.quality !== 'low' && !new URLSearchParams(location.search).has('nolightmap'))
+      void loadLightmap(ctx, fullRoom0).then((n) => {
+        if (!n) return
+        lit.useLightmap()
+        if (import.meta.env.DEV) console.info(`[lightmap] đã gắn ${n} mesh`)
+      })
+    if (import.meta.env.DEV && fullRoom0) Object.assign(window, { __lightmapExport: () => exportForBake(fullRoom0) })
   }
 
   const walk = createFreeWalk(ctx, { colliders: room.colliders, spawn: SPAWN })

@@ -11,6 +11,8 @@ export interface RoomLighting {
   frame(eye: THREE.Vector3): void
   /** Chụp chính căn phòng làm ánh sáng môi trường (gọi một lần sau khi dựng xong đồ). */
   bakeEnvironment(): void
+  /** Đã gắn lightmap: ánh sáng nền (bán cầu) giảm vì ánh dội đã có trong lightmap. */
+  useLightmap(): void
 }
 
 /** Nửa cạnh vùng bóng nắng quanh người chơi (dm) và bước dời vùng. */
@@ -93,6 +95,10 @@ export function createRoomLighting(ctx: SimContext): RoomLighting {
       sun.position.copy(sun.target.position).add(SUN_OFFSET)
       sun.target.updateMatrixWorld()
       renderer.shadowMap.needsUpdate = true
+    },
+    useLightmap() {
+      hemi.intensity = 0.15
+      if (shadows) renderer.shadowMap.needsUpdate = true
     },
     bakeEnvironment() {
       if (quality === 'low') return

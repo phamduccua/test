@@ -37,3 +37,6 @@ Thumbs.db
 .vscode/
 *.swp
 plans/
+
+# Dữ liệu trung gian khi nướng lightmap (npm run lightmap)
+.lightmap/
