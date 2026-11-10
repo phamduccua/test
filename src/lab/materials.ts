@@ -93,7 +93,7 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
       mat = std({ map: t, roughness: 0.95, side: THREE.DoubleSide, emissive: 0xd8d8d2, emissiveIntensity: 0.28 })
       break
     }
-    case 'skirting': mat = std({ color: 0x5d6873, roughness: 0.6 }); break
+    case 'skirting': mat = std({ color: 0x464c53, roughness: 0.6 }); break
     case 'doorWood': mat = std({ color: 0xcfd3d6, roughness: 0.5 }); break
     case 'frame': mat = std({ color: 0xf4f5f5, roughness: 0.5 }); break
     case 'blind': mat = std({ color: 0xe6e0d4, roughness: 0.95, side: THREE.DoubleSide }); break

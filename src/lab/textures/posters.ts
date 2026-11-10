@@ -198,6 +198,33 @@ export function flammableLabel(): THREE.CanvasTexture {
   })
 }
 
+/** Nhãn vàng "AXIT ĂN MÒN" dán trên cánh tủ dưới tủ hút (như ảnh mẫu). */
+export function corrosiveLabel(): THREE.CanvasTexture {
+  return paint(400, 220, (g, W, H) => {
+    g.fillStyle = '#f2c21b'
+    g.fillRect(0, 0, W, H)
+    g.lineWidth = 8
+    g.strokeStyle = '#111'
+    roundRect(g, 8, 8, W - 16, H - 16, 10)
+    g.stroke()
+    g.beginPath()
+    g.moveTo(85, 45)
+    g.lineTo(140, 165)
+    g.lineTo(30, 165)
+    g.closePath()
+    g.lineWidth = 7
+    g.stroke()
+    // Giọt axit rơi xuống vật (giản lược).
+    g.fillStyle = '#111'
+    g.fillRect(62, 140, 46, 10)
+    g.beginPath()
+    g.arc(85, 112, 9, 0, Math.PI * 2)
+    g.fill()
+    text(g, 'AXIT', 270, 85, 52, '#111', 900)
+    text(g, 'ĂN MÒN', 270, 145, 44, '#111', 800)
+  })
+}
+
 /** Mặt hộp sơ cứu, chăn chữa cháy, nhãn bình chữa cháy. */
 export function boxFace(kind: 'firstAid' | 'fireBlanket' | 'extinguisher'): THREE.CanvasTexture {
   return paint(256, 256, (g, W, H) => {

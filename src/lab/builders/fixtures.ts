@@ -20,6 +20,10 @@ function fumeCupboard(ctx: Tracker, p: Record<string, unknown> = {}) {
   })
   g.add(k.box(L - 0.4, 0.8, D - 1, 'skirting', 0, 0, -0.2))
   g.add(k.box(L, 7.8, D, 'cabinet', 0, 0.8, 0))
+  // Nhãn "axit ăn mòn" trên cánh trái (tủ dưới đựng axit).
+  const acid = k.box(2.4, 1.3, 0.03, 'paper', -L / 4 + 1.2, 5.6, D / 2 + 0.21)
+  acid.name = 'label_acid'
+  g.add(acid)
   for (const x of [-L / 4, L / 4]) {
     g.add(k.box(L / 2 - 0.3, 7.4, 0.2, 'cabinetFront', x, 1, D / 2, 0.05))
     g.add(k.box(0.15, 1.6, 0.25, 'handle', x + (x < 0 ? L / 4 - 1 : -L / 4 + 1), 5, D / 2 + 0.2))
@@ -29,6 +33,10 @@ function fumeCupboard(ctx: Tracker, p: Record<string, unknown> = {}) {
   // Buồng: hai vách bên, vách sau (lòng nhạt), trần buồng có đèn.
   g.add(k.box(1, 10.5, D, 'cabinet', -L / 2 + 0.5, 9, 0), k.box(1, 10.5, D, 'cabinet', L / 2 - 0.5, 9, 0))
   g.add(k.box(L - 2, 10.5, 0.3, 'frame', 0, 9, -D / 2 + 0.15))
+  // Lòng buồng như ảnh mẫu: vách sau inox (vách hướng dòng) với 3 khe hút gió tối, hai vách bên lót inox.
+  g.add(k.box(L - 2.2, 9.8, 0.1, 'sinkSteel', 0, 9.3, -D / 2 + 0.35))
+  for (const y of [10.2, 14.2, 18.2]) g.add(k.box(L - 3.4, 0.25, 0.05, 'blackPlastic', 0, y, -D / 2 + 0.42))
+  for (const x of [-L / 2 + 1.05, L / 2 - 1.05]) g.add(k.box(0.08, 10, D - 1.2, 'sinkSteel', x + (x < 0 ? 0.05 : -0.05), 9.1, -0.3))
   g.add(k.box(L - 2, 0.3, D, 'cabinet', 0, 19.2, 0))
   const lamp = k.box(L - 4, 0.15, 1, 'lightPanel', 0, 19.05, 0)
   lamp.castShadow = false
@@ -45,7 +53,8 @@ function fumeCupboard(ctx: Tracker, p: Record<string, unknown> = {}) {
   sash.add(k.box(L - 2, 0.4, 0.3, 'steel', 0, 9.2, D / 2 - 0.4))
   const glass = k.box(L - 2, 7.5, 0.1, 'hoodGlass', 0, 9.6, D / 2 - 0.4)
   glass.castShadow = false
-  sash.add(glass, k.box(L - 2, 0.3, 0.3, 'steel', 0, 17.1, D / 2 - 0.4))
+  // Tay nắm cửa kính: thanh inox nằm ngang nhô ra trước ray dưới.
+  sash.add(glass, k.box(L - 2, 0.3, 0.3, 'steel', 0, 17.1, D / 2 - 0.4), k.box(L - 4, 0.22, 0.3, 'chrome', 0, 9.0, D / 2 - 0.05))
   g.add(sash)
   for (const x of [-L / 2 + 1.05, L / 2 - 1.05]) g.add(k.box(0.15, 10.4, 0.5, 'steel', x, 9, D / 2 - 0.4))
   // Bảng điều khiển + 2 nút + ống thoát.

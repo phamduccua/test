@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import type { Tracker } from '../../vendor/lab3d/lab/types'
 import type { PlacedObject } from '../room/roomBuilder'
 import { safetySignTexture, type SignType } from './draw'
-import { boxFace, flammableLabel, fumeSign, hazardPoster, periodicTable, rulesPoster, whiteboardContent } from './posters'
+import { boxFace, corrosiveLabel, flammableLabel, fumeSign, hazardPoster, periodicTable, rulesPoster, whiteboardContent } from './posters'
 
 /** Phủ nội dung (vẽ canvas) lên các mặt đã đặt tên của đồ vật: biển báo, poster, bảng tuần hoàn, bảng trắng, nhãn tủ. */
 export function decorateRoom(ctx: Tracker, placed: Map<string, PlacedObject>): void {
@@ -33,7 +33,10 @@ export function decorateRoom(ctx: Tracker, placed: Map<string, PlacedObject>): v
     } else if (kind === 'firstAidBox') setFace(p.group, 'signFace', material('box:firstAid', () => boxFace('firstAid')))
     else if (kind === 'fireBlanketBox') setFace(p.group, 'signFace', material('box:fireBlanket', () => boxFace('fireBlanket')))
     else if (kind === 'fireExtinguisher') setFace(p.group, 'label', material('box:extinguisher', () => boxFace('extinguisher')))
-    else if (kind === 'fumeCupboard') setFace(p.group, 'signFace', material('fumeSign', fumeSign))
+    else if (kind === 'fumeCupboard') {
+      setFace(p.group, 'signFace', material('fumeSign', fumeSign))
+      setFace(p.group, 'label_acid', material('corrosive', corrosiveLabel))
+    }
     else if (kind === 'flammablesCabinet') for (const n of ['label_L', 'label_R']) setFace(p.group, n, material('flammable', flammableLabel))
   }
 }

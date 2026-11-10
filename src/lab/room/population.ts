@@ -95,6 +95,10 @@ add({ id: 'tb_scale', kind: 'digitalScale', on: 'bench_teacher', at: [-11, 1], r
 add({ id: 'tb_lamp', kind: 'alcoholLamp', on: 'bench_teacher', at: [0.5, 1.5] })
 add({ id: 'tb_splint', kind: 'splint', on: 'bench_teacher', at: [6, -2] })
 add({ id: 'tb_tube', kind: 'deliveryTube', on: 'bench_teacher', at: [-1.5, -2] })
+// Như ảnh mẫu: mô hình phân tử và chồng sách trên bàn giáo viên.
+add({ id: 'tb_mol_ch4', kind: 'moleculeModel', params: { molecule: 'CH4' }, on: 'bench_teacher', at: [8.6, -1.6] })
+add({ id: 'tb_mol_h2o', kind: 'moleculeModel', params: { molecule: 'H2O' }, on: 'bench_teacher', at: [10.4, -1.9] })
+add({ id: 'tb_books', kind: 'bookStack', on: 'bench_teacher', at: [12.9, -1.3], rot: 0.3 })
 
 // Bàn tường cửa sổ (dài 86,5): lọ chất rắn, dụng cụ dùng chung.
 row('wb_solid', 'bench_wall_window', 'top', -1.5, -36, -2, [
