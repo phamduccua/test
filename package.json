@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "chem": "tsx scripts/chem-cli.ts",
-    "sync-kit": "bash scripts/sync-kit.sh"
+    "sync-kit": "bash scripts/sync-kit.sh",
+    "shots": "node scripts/visual/views.mjs",
+    "sweep": "node scripts/visual/sweep.mjs"
   },
   "dependencies": {
     "lil-gui": "^0.21.0",
@@ -23,6 +25,7 @@
     "@tailwindcss/vite": "^4.3.5",
     "@types/node": "^22.20.5",
     "@types/three": "^0.186.0",
+    "puppeteer-core": "25.16.0",
     "tailwindcss": "^4.3.5",
     "tsx": "^4.23.15",
     "typescript": "~5.8.0",
