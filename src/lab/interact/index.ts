@@ -98,6 +98,12 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
   let pushing: PlacedObject | null = null
   const radius = (m: ObjectMeta) => Math.max(0.25, (Math.max(m.footprint?.w ?? 0.6, m.footprint?.d ?? 0.6) / 2) * 0.9)
   const name = (p: PlacedObject) => p.meta.displayName
+  /** Vật dài mảnh (dài ≥ 3 lần bề ngang): bán kính theo bề ngang, dùng khi đặt nằm dọc kệ. */
+  const narrowRadius = (m: ObjectMeta) => {
+    const a = m.footprint?.w ?? 0.6
+    const b = m.footprint?.d ?? 0.6
+    return Math.max(a, b) >= 3 * Math.min(a, b) ? Math.max(0.25, Math.min(a, b) / 2 + 0.1) : undefined
+  }
 
   // ---------- Ổ cắm, chỗ trống ----------
   const allSockets = (exclude: PlacedObject | null): SocketLike[] => {
@@ -176,7 +182,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     const lp = owner.group.worldToLocal(point.clone())
     const le = owner.group.worldToLocal(eye.clone())
     return decidePlace({
-      kind: it.meta.kind, r: radius(it.meta), point: point.toArray(), eye: eye.toArray(), sockets: allSockets(it),
+      kind: it.meta.kind, r: radius(it.meta), rNarrow: narrowRadius(it.meta), point: point.toArray(), eye: eye.toArray(), sockets: allSockets(it),
       localPoint: lp.toArray(), localEye: le.toArray(), surfaces: owner.meta.surfaces ?? [], discs: (s) => discsOn(owner.group, s),
     })
   }
@@ -217,7 +223,11 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
       return false
     }
     held = null
-    putInto(it, owner.group, new THREE.Vector3(d.u, d.surface.y, d.v))
+    putInto(it, owner.group, new THREE.Vector3(d.u, d.surface.y, d.v), undefined, !d.along)
+    // Nằm dọc kệ: trục dài của vật (theo footprint) song song trục X của bề mặt.
+    if (d.along) it.group.quaternion.setFromAxisAngle(up, (it.meta.footprint?.w ?? 1) >= (it.meta.footprint?.d ?? 1) ? 0 : Math.PI / 2)
+    narrowPlaced.add(it.id)
+    if (!d.along) narrowPlaced.delete(it.id)
     labEvents.emit({ type: 'place', id: it.id, name: name(it), on: owner.id, onName: name(owner) })
     check(it)
     return true
@@ -239,8 +249,12 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
 
   // ---------- Bất biến (chỉ khi dev): vật vừa đặt phải nhìn thấy được, không chìm, không nằm trong vùng cấm ----------
   const problems: string[] = []
+  /** Vật dài đang nằm dọc kệ: bất biến dùng bán kính bề ngang. */
+  const narrowPlaced = new Set<string>()
   const invariantProblem = (it: PlacedObject): string | null => {
     const g = it.group
+    // Vật trong bình (đinh) được phép ẩn khi tan hết theo phản ứng.
+    if (inside.has(it.id)) return null
     for (let o: THREE.Object3D | null = g; o; o = o.parent) if (!o.visible) return 'bị ẩn'
     if (g.parent === ctx.scene) return null
     if (socketOf.has(it.id) || inside.has(it.id)) return null
@@ -249,7 +263,8 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     const s = meta?.surfaces && surfaceAt(meta.surfaces, g.position.x, g.position.y + 0.05, g.position.z, 0)
     if (!s) return `không nằm trên bề mặt nào của ${meta?.displayName ?? parent.name}`
     if (Math.abs(g.position.y - s.y) > 0.02) return `lệch độ cao bề mặt ${(g.position.y - s.y).toFixed(2)} dm`
-    if (blockedAt(s, g.position.x, g.position.z, radius(it.meta) * 0.9)) return `nằm trong vùng cấm của ${s.name}`
+    const r = narrowPlaced.has(it.id) ? narrowRadius(it.meta) ?? radius(it.meta) : radius(it.meta)
+    if (blockedAt(s, g.position.x, g.position.z, r * 0.9)) return `nằm trong vùng cấm của ${s.name}`
     return null
   }
   const check = (it: PlacedObject) => {
@@ -611,9 +626,11 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
       it.group.position.copy(pos)
       if (quat) it.group.quaternion.copy(quat)
       else it.group.quaternion.identity()
+      inside.add(it.id)
       it.group.traverse((o) => (o as THREE.Mesh).isMesh && (o.castShadow = true))
       shadows()
       labEvents.emit({ type: 'place', id: it.id, name: name(it), on: parent.userData.instanceId ?? '', onName: (parent.userData.meta as ObjectMeta | undefined)?.displayName ?? '' })
+      check(it)
     },
     frame(dt) {
       ctx.camera.getWorldPosition(camPos)
@@ -651,8 +668,8 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     resetAll() {
       if (pushing) togglePush(pushing)
       for (const it of items) {
-        if (it.group.parent !== homes.get(it.id)!.parent || held === it) returnHome(it)
         it.group.visible = true
+        if (it.group.parent !== homes.get(it.id)!.parent || held === it) returnHome(it)
       }
       heldTilt = 0
       heldPose = null

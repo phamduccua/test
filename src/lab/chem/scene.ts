@@ -124,7 +124,8 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
   const hudTimers = new Map<string, number>()
 
   const ownerLamp = (key: string | undefined) => lamps.find((l) => key === `${l.p.id}:flame`)
-  const ownerSet = (key: string | undefined) => sets.find((s) => key === `${s.p.id}:top`)
+  // Ổ trên bộ đun: `top` (trên kiềng) hoặc `flame` (kiềng đã nhấc ra, đặt thẳng trên lửa).
+  const ownerSet = (key: string | undefined) => sets.find((s) => key === `${s.p.id}:top` || key === `${s.p.id}:flame`)
   const heaterOf = (v: View): HeaterKind | null => {
     const key = ix?.socketOf(v.p.id)
     if (ownerLamp(key)?.lamp.lit) return 'lamp'
@@ -132,6 +133,44 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
     return null
   }
   const setLit = new Set<string>()
+  type HeatSet = (typeof sets)[number]
+  const tripodOf = (s: HeatSet) => s.p.meta.params!.tripod as { group: THREE.Group; topY: number }
+  const setSockets = (s: HeatSet) => s.p.meta.params!.sockets as { top: NonNullable<ObjectMeta['sockets']>[number]; flame: NonNullable<ObjectMeta['sockets']>[number] }
+  const tripodAway = new Set<string>()
+  /** Điểm bấm trúng kiềng (vùng lưới, cao hơn thân đèn) ở chỗ kiềng đang đứng. */
+  const tripodHit = (s: HeatSet, point: THREE.Vector3) => {
+    const t = tripodOf(s)
+    const c = t.group.getWorldPosition(new THREE.Vector3())
+    return Math.hypot(c.x - point.x, c.z - point.z) < 1.2 && point.y > c.y + t.topY * 0.55
+  }
+  const slotBusy = (key: string) => [...placed.values()].some((q) => ix?.socketOf(q.id) === key)
+  const toggleTripod = (s: HeatSet, force?: 'back') => {
+    const away = tripodAway.has(s.p.id)
+    if (force === 'back' && !away) return true
+    const t = tripodOf(s)
+    const busyKey = `${s.p.id}:${away ? 'flame' : 'top'}`
+    if (!force && slotBusy(busyKey)) {
+      hub.toast.show(away ? 'Lấy vật đang đun trên lửa ra trước rồi mới đặt kiềng lại' : 'Lấy cốc/bình trên kiềng xuống trước rồi mới nhấc kiềng')
+      audio.sfx('ui/wrong')
+      return true
+    }
+    const aside = s.p.meta.params!.tripodAside as THREE.Vector3
+    if (away) {
+      t.group.position.set(0, 0, 0)
+      tripodAway.delete(s.p.id)
+      s.p.meta.sockets = [setSockets(s).top]
+    } else {
+      t.group.position.copy(aside)
+      tripodAway.add(s.p.id)
+      s.p.meta.sockets = [setSockets(s).flame]
+    }
+    if (!force) {
+      audio.sfx('lab/clamp-snap', { at: s.p.group })
+      hub.toast.show(away ? 'Đặt kiềng lại trên đèn – đun cốc, bình trên lưới' : 'Đã nhấc kiềng ra – đưa ống nghiệm, chén nung vào ngọn lửa')
+      labEvents.emit({ type: 'chemNote', kind: 'action', text: away ? 'Đặt kiềng lại trên đèn Bunsen' : 'Nhấc kiềng khỏi đèn Bunsen' })
+    }
+    return true
+  }
   const updateFlameLoop = () => {
     const any = lamps.some((l) => l.lamp.lit) || setLit.size > 0
     if (any && !flameLoop) flameLoop = audio.loop('lab/flame', { level: 0.25 })
@@ -711,6 +750,11 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
         ctx.hud.set('goggles', 'Kính bảo hộ', 'đang đeo')
         return true
       }
+      // Kiềng của bộ đun: bấm vào lưới/kiềng = nhấc ra cạnh bên (đun ống nghiệm trực tiếp) hoặc đặt lại.
+      for (const s of sets) {
+        if (s.p.parentId !== p.id) continue
+        if (tripodHit(s, point)) return toggleTripod(s)
+      }
       // Bunsen của bộ đun trên bàn (nội thất): cần vòi gas của bàn đang mở.
       for (const s of sets) {
         if (s.p.parentId !== p.id) continue
@@ -945,7 +989,10 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
         look(v, 0)
       }
       for (const l of lamps) l.lamp.setLit(false)
-      for (const s of sets) s.burner.setLit(false)
+      for (const s of sets) {
+        s.burner.setLit(false)
+        toggleTripod(s, 'back')
+      }
       setLit.clear()
       gasOn.clear()
       updateFlameLoop()

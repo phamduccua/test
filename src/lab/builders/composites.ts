@@ -3,6 +3,7 @@ import { createBunsenBurner, createErlenmeyer, createLiquid, createPaperSheet, c
 import type { Tracker } from '../../vendor/lab3d/lab/types'
 import { build, register } from './registry'
 import { group } from './helpers'
+import type { Socket } from './types'
 
 /** Bộ chuẩn độ: giá đỡ cao kẹp buret, bình tam giác trên tấm giấy trắng ngay dưới đầu buret. */
 function titrationSet(ctx: Tracker) {
@@ -26,11 +27,16 @@ function titrationSet(ctx: Tracker) {
 function heatingSet(ctx: Tracker, p: Record<string, unknown> = {}) {
   const burner = createBunsenBurner(ctx, { lit: false, hoseTo: p.hoseTo as THREE.Vector3 | undefined })
   const tripod = createTripodGauze(ctx)
-  // Kiềng để trống: học sinh đặt cốc/bình/bát sứ của mình lên ổ `top` để đun (chặng 7).
+  // Kiềng để trống: học sinh đặt cốc/bình/bát sứ của mình lên ổ `top` để đun.
+  // Nhấc kiềng ra (bấm vào kiềng) thì ngọn lửa thành ổ `flame`: kẹp ống nghiệm, chén nung, bát sứ trực tiếp trên lửa.
+  const top: Socket = { name: 'top', pos: [0, tripod.topY, 0], accepts: ['beaker100', 'beaker250', 'beaker500', 'erlenmeyer250', 'roundFlask', 'evaporatingDish'], radius: mm(40) }
+  burner.group.updateMatrixWorld(true)
+  const hot = burner.hot.getWorldPosition(new THREE.Vector3())
+  const flame: Socket = { name: 'flame', pos: [hot.x, hot.y, hot.z], accepts: ['testTube', 'crucible', 'evaporatingDish'], radius: mm(30) }
   return group('heatingSet', {
     kind: 'heatingSet', displayName: 'Bộ đun nóng', category: 'apparatus', grabbable: false, footprint: { w: mm(200), d: mm(200), h: tripod.topY + mm(95) },
-    sockets: [{ name: 'top', pos: [0, tripod.topY, 0], accepts: ['beaker100', 'beaker250', 'beaker500', 'erlenmeyer250', 'roundFlask', 'evaporatingDish'], radius: mm(40) }],
-    params: { burner, tripod },
+    sockets: [top],
+    params: { burner, tripod, sockets: { top, flame }, tripodAside: new THREE.Vector3(-mm(260), 0, 0) },
   }, burner.group, tripod.group)
 }
 

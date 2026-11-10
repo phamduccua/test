@@ -123,13 +123,16 @@ export type V3T = readonly [number, number, number]
 /** Kết quả "đặt vật đang cầm khi bấm vào đây" – dùng chung cho thao tác và dòng gợi ý, nên gợi ý luôn đúng điều sẽ xảy ra. */
 export type PlaceDecision =
   | { type: 'socket'; socket: SocketLike }
-  | { type: 'surface'; surface: SurfaceLike; u: number; v: number }
+  /** `along` = vật dài đặt nằm dọc trục X của bề mặt (không vừa khi tính theo hình tròn). */
+  | { type: 'surface'; surface: SurfaceLike; u: number; v: number; along?: boolean }
   | { type: 'reject'; reason: 'noSurface' | 'full' }
 
 export interface PlaceInput {
   kind: string
   /** Bán kính chiếm chỗ của vật đang cầm. */
   r: number
+  /** Vật dài, mảnh (nhiệt kế, buret nằm): bán kính theo bề ngang khi đặt dọc kệ – thử khi `r` không vừa. */
+  rNarrow?: number
   /** Điểm bấm và mắt – toạ độ thế giới (cho ổ cắm). */
   point: V3T
   eye: V3T
@@ -155,6 +158,10 @@ export function decidePlace(i: PlaceInput): PlaceDecision {
   if (!s) return { type: 'reject', reason: 'noSurface' }
   const [pu, pv] = pushOutOfBlocked(s, lx, lz, i.r, i.localEye[0], i.localEye[2])
   const spot = freeSpot(s, pu, pv, i.r, i.discs(s))
-  if (!spot) return { type: 'reject', reason: 'full' }
-  return { type: 'surface', surface: s, u: spot[0], v: spot[1] }
+  if (spot) return { type: 'surface', surface: s, u: spot[0], v: spot[1] }
+  if (i.rNarrow && i.rNarrow < i.r) {
+    const narrow = freeSpot(s, pu, pv, i.rNarrow, i.discs(s))
+    if (narrow) return { type: 'surface', surface: s, u: narrow[0], v: narrow[1], along: true }
+  }
+  return { type: 'reject', reason: 'full' }
 }
