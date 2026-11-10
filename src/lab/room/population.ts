@@ -62,11 +62,13 @@ for (const [i, u] of [-12, 8].entries()) {
 // Hàng sau mỗi chỗ: đinh sắt, ống dẫn khí (chặng 7).
 for (const [i, u] of [-12, 8].entries()) {
   add({ id: `i1_nail_${i}`, kind: 'nail', on: 'bench_island_1', at: [u - 3, -2.4] })
-  add({ id: `i1_tube_${i}`, kind: 'deliveryTube', on: 'bench_island_1', at: [u + 2.5, -2.4] })
+  add({ id: `i1_tube_${i}`, kind: 'deliveryTube', on: 'bench_island_1', at: [u + 2.5, -3.0] })
+  // Giá đỡ có kẹp: kẹp ống nghiệm khi làm thí nghiệm (giá ống nghiệm chỉ để cắm/cất).
+  add({ id: `i1_stand_${i}`, kind: 'retortStand', on: 'bench_island_1', at: [u - 7, -4.6] })
 }
 add({ id: 'i1_lamp', kind: 'alcoholLamp', on: 'bench_island_1', at: [-1.5, -5.2] })
 add({ id: 'i1_splint', kind: 'splint', on: 'bench_island_1', at: [1.5, -5.8] })
-add({ id: 'i1_thermo', kind: 'thermometer', on: 'bench_island_1', at: [2.5, -2.4] })
+add({ id: 'i1_thermo', kind: 'thermometer', on: 'bench_island_1', at: [2.5, -3.6] })
 add({ id: 'i1_notebook', kind: 'notebook', on: 'bench_island_1', at: [-2, 5], rot: Math.PI })
 add({ id: 'i1_dropper', kind: 'dropper', on: 'bench_island_1', at: [-6, -3.2] })
 add({ id: 'i1_spatula', kind: 'spatula', on: 'bench_island_1', at: [14, -3.2] })

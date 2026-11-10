@@ -11,8 +11,14 @@ import { mergeVertexColored } from './optimize'
  * - > 25 dm: như trên nhưng nhãn thành mảng giấy trơn (gộp vào phần đục).
  * `refreshLod(obj)` dựng lại hai bản xa (chặng 7 gọi khi dung dịch đổi màu/mực).
  */
-const NEAR = 9
-const FAR = 25
+let NEAR = 9
+let FAR = 25
+
+/** Đổi ngưỡng LOD (gọi trước khi dựng phòng). Nấc chất lượng cao giữ bản kit chi tiết tới 20 dm. */
+export function setLodDistances(near: number, far: number): void {
+  NEAR = near
+  FAR = far
+}
 
 const geoCache = new WeakMap<Tracker, Map<string, THREE.BufferGeometry>>()
 const shared = new WeakMap<Tracker, { glass: THREE.Material; paper: THREE.Material }>()

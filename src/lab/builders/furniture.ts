@@ -142,7 +142,8 @@ function islandBench(ctx: Tracker, p: Record<string, unknown> = {}) {
   // Bồn rửa hai đầu (lệch về hai phía khác nhau).
   g.add(sink(ctx, -L / 2 + 2.3, 3, 1), sink(ctx, L / 2 - 2.3, -3, -1))
   const surfaces: Surface[] = [
-    { name: 'top', y: TOP, minX: -L / 2 + 4.3, maxX: L / 2 - 4.3, minZ: -D / 2 + 0.3, maxZ: D / 2 - 0.3, kind: 'bench' },
+    // Đế kệ giữa (rộng 3, có vòi gas nhô ra hai bên) chiếm dải giữa mặt bàn: đồ không được đặt vào trong đó.
+    { name: 'top', y: TOP, minX: -L / 2 + 4.3, maxX: L / 2 - 4.3, minZ: -D / 2 + 0.3, maxZ: D / 2 - 0.3, kind: 'bench', blocked: [{ minX: -SL / 2 - 0.3, maxX: SL / 2 + 0.3, minZ: -1.9, maxZ: 1.9 }] },
     { name: 'shelf0', y: TOP + 3.7, minX: -SL / 2, maxX: SL / 2, minZ: -1.3, maxZ: 1.3, kind: 'shelf' },
     { name: 'shelf1', y: TOP + 6.7, minX: -SL / 2, maxX: SL / 2, minZ: -1.3, maxZ: 1.3, kind: 'shelf' },
   ]
@@ -168,7 +169,8 @@ function wallBench(ctx: Tracker, p: Record<string, unknown> = {}) {
     g.add(t)
     sockets.push({ name: 'gasTap', pos: [-L / 2 + 6.5, TOP, -D / 2 + 1], accepts: ['gasHose'], radius: 0.4 })
   }
-  const surfaces: Surface[] = [{ name: 'top', y: TOP, minX: -L / 2 + (p.sink ? 5 : 0.3), maxX: L / 2 - 0.3, minZ: -D / 2 + 0.3, maxZ: D / 2 - 0.3, kind: 'bench' }]
+  const blocked = p.gas ? [{ minX: -L / 2 + 5.7, maxX: -L / 2 + 7.3, minZ: -D / 2, maxZ: -D / 2 + 1.9 }] : []
+  const surfaces: Surface[] = [{ name: 'top', y: TOP, minX: -L / 2 + (p.sink ? 5 : 0.3), maxX: L / 2 - 0.3, minZ: -D / 2 + 0.3, maxZ: D / 2 - 0.3, kind: 'bench', blocked }]
   Object.assign(g.userData.meta, { surfaces, sockets, movables })
   return g
 }

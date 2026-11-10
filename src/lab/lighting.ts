@@ -23,13 +23,13 @@ export function createRoomLighting(ctx: SimContext): RoomLighting {
   const { scene, renderer, quality } = ctx
   // Môi trường phòng sáng mặc định của Engine (RoomEnvironment). Không dùng 'lab-studio' (phòng tối + softbox) của kit:
   // hợp cảnh cận một bàn nhưng làm mọi kim loại trong phòng lớn phản chiếu màu tối.
-  scene.environmentIntensity = 0.32
+  scene.environmentIntensity = 0.45
   scene.background = new THREE.Color(0xdfe5ec)
   renderer.toneMapping = THREE.NeutralToneMapping
-  renderer.toneMappingExposure = 1.0
+  renderer.toneMappingExposure = 0.95
 
   // Ánh sáng nền dịu (trời/sàn) – thấp để còn vùng tối, tương phản như ảnh mẫu.
-  const hemi = new THREE.HemisphereLight(0xeef3ff, 0x9c978e, 0.62)
+  const hemi = new THREE.HemisphereLight(0xeef3ff, 0x9c978e, 0.5)
   // Đèn trần: đặt ngay DƯỚI trần (y 29,5) nên mặt trần không chắn; cho bóng mềm dưới ghế, dụng cụ.
   const ceiling = new THREE.DirectionalLight(0xf2f6ff, 1.05)
   ceiling.position.set(6, 29.5, 10)
@@ -45,15 +45,16 @@ export function createRoomLighting(ctx: SimContext): RoomLighting {
   const shadows = quality !== 'low'
   renderer.shadowMap.enabled = shadows
   if (shadows) {
-    const big = quality === 'high' ? 2048 : 1024
+    const big = quality === 'high' ? 4096 : 1024
     const half = Math.max(ROOM.maxX, ROOM.maxZ) + 8
     const setup = (l: THREE.DirectionalLight, size: number, near: number, far: number, radius: number) => {
       l.castShadow = true
       l.shadow.mapSize.set(size, size)
       Object.assign(l.shadow.camera, { left: -half, right: half, top: half, bottom: -half, near, far })
       l.shadow.camera.updateProjectionMatrix()
-      l.shadow.bias = -0.0004
-      l.shadow.normalBias = 0.04
+      // Nắng chiếu xiên lên tường: bias nhỏ để lại sọc ngang (shadow acne) – normalBias lớn hơn đẩy điểm lấy mẫu ra khỏi mặt.
+      l.shadow.bias = -0.0005
+      l.shadow.normalBias = 0.12
       l.shadow.radius = radius
     }
     setup(sun, big, 40, 300, 2)

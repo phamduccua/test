@@ -6,7 +6,11 @@ export type Category = 'architecture' | 'furniture' | 'fixture' | 'safety' | 'gl
 export type V3 = [number, number, number]
 
 /** Bề mặt đặt được đồ (toạ độ cục bộ của vật). */
-export interface Surface { name: string; y: number; minX: number; maxX: number; minZ: number; maxZ: number; kind: 'bench' | 'shelf' | 'tray' | 'hood' | 'floor' }
+export interface Surface {
+  name: string; y: number; minX: number; maxX: number; minZ: number; maxZ: number; kind: 'bench' | 'shelf' | 'tray' | 'hood' | 'floor'
+  /** Vùng không đặt được đồ trên bề mặt (đế kệ, vòi gas, bồn rửa…), cùng toạ độ cục bộ. */
+  blocked?: { minX: number; maxX: number; minZ: number; maxZ: number }[]
+}
 export interface Socket { name: string; pos: V3; accepts: string[]; radius: number }
 export interface Movable { name: string; node: string; type: 'rotate' | 'translate'; axis: 'x' | 'y' | 'z'; min: number; max: number; initial: number }
 

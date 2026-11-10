@@ -10,7 +10,7 @@ import type { RoomLighting } from '../lighting'
 import { releaseMovable } from '../optimize'
 import type { PlacedObject, Room } from '../room/roomBuilder'
 import type { FreeWalk } from '../walk'
-import { clampInto, freeSpot, nearestSocket, surfaceAt, type Disc, type SocketLike, type SurfaceLike } from './placement'
+import { blockedAt, clampInto, decidePlace, freeSpot, nearestSocket, surfaceAt, type Disc, type PlaceDecision, type SocketLike, type SurfaceLike } from './placement'
 
 /**
  * Tương tác trong phòng (theo cách của kit: một `pointerHub` mỗi sim, viền sáng `createHoverFx`, toast, âm định vị).
@@ -34,8 +34,19 @@ export interface Interaction {
   heldQuaternion(tilt: number, out: THREE.Quaternion): THREE.Quaternion
   /** Vật đang cầm "dùng hết" (đinh thả vào ống, kính đã đeo): ẩn đi, tay trống; Làm lại đưa về chỗ cũ. */
   consumeHeld(): void
-  /** Gắn vật đang cầm vào `parent` tại `pos` (cục bộ) – vd. ống dẫn khí lắp vào miệng bình. */
-  attachHeld(parent: THREE.Object3D, pos: THREE.Vector3): void
+  /** Gắn vật đang cầm vào `parent` tại `pos` (cục bộ) – vd. ống dẫn khí lắp vào miệng bình, đinh thả vào ống. */
+  attachHeld(parent: THREE.Object3D, pos: THREE.Vector3, quat?: THREE.Quaternion): void
+  /** Chỉ khi dev: thao tác không qua chuột (script kiểm thử) + các vi phạm bất biến đã ghi. */
+  debug?: {
+    problems: readonly string[]
+    pick(id: string): boolean
+    /** Như bấm vào `ownerId` tại `point` (thế giới) khi đang cầm; trả quyết định đã thực hiện. */
+    placeAt(ownerId: string, point: THREE.Vector3): PlaceDecision['type'] | 'notHeld'
+    returnHome(id: string): void
+    hintAt(ownerId: string, point: THREE.Vector3): string | null
+  }
+  /** Đánh dấu vật đang nằm TRONG một bình (đinh trong ống): bấm trúng nó được ưu tiên hơn bình bao quanh. */
+  setInside(id: string, inside: boolean): void
 }
 
 /** Móc để tầng hóa học (chặng 7) gắn thao tác vào tương tác chung. Trả `true` = đã xử lý. */
@@ -80,6 +91,8 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
   }
 
   let held: PlacedObject | null = null
+  /** Vật đang nằm trong bình (đinh trong ống nghiệm). */
+  const inside = new Set<string>()
   let heldTilt = 0
   let heldPose: THREE.Vector3 | null = null
   let pushing: PlacedObject | null = null
@@ -114,11 +127,23 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     obj.quaternion.setFromAxisAngle(up, worldYaw - parentYaw)
   }
 
+  /** Tư thế vật trong ổ: ống nghiệm trên ngọn lửa đèn cồn nghiêng ~35° (như kẹp gỗ); trong kẹp giá đỡ thì treo; ổ khác thẳng đứng. */
+  const tiltQ0 = new THREE.Quaternion()
+  const seat = (it: PlacedObject, socketName: string, parent: THREE.Object3D) => {
+    if (socketName === 'flame' && it.meta.kind === 'testTube') {
+      faceCamera(it.group, parent)
+      it.group.quaternion.multiply(tiltQ0.setFromAxisAngle(new THREE.Vector3(0, 0, 1), -0.6))
+    } else it.group.quaternion.identity()
+    // Kẹp giá đỡ giữ phần trên ống (cách miệng ~1/4 chiều dài), ống thõng xuống dưới kẹp.
+    if (socketName === 'clamp' && it.meta.kind === 'testTube') it.group.position.y -= (it.meta.footprint?.h ?? 1.5) * 0.75
+  }
+
   const sfxPlace = (p: PlacedObject) => audio.sfx(p.meta.category === 'glassware' || p.meta.category === 'reagent' ? 'lab/glass-put' : 'ui/drop', { at: p.group, pitchJitter: 0.06 })
 
   // ---------- Cầm, đặt, trả ----------
   const pick = (it: PlacedObject) => {
     if (held || pushing) return
+    inside.delete(it.id)
     const key = socketOf.get(it.id)
     if (key) {
       occupied.delete(key)
@@ -145,37 +170,95 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     shadows()
   }
 
+  /** Đang cầm `it`, bấm vào `owner` tại `point` (thế giới) thì sẽ ra sao. */
+  const planPlace = (it: PlacedObject, owner: PlacedObject, point: THREE.Vector3): PlaceDecision => {
+    const eye = ctx.camera.getWorldPosition(new THREE.Vector3())
+    const lp = owner.group.worldToLocal(point.clone())
+    const le = owner.group.worldToLocal(eye.clone())
+    return decidePlace({
+      kind: it.meta.kind, r: radius(it.meta), point: point.toArray(), eye: eye.toArray(), sockets: allSockets(it),
+      localPoint: lp.toArray(), localEye: le.toArray(), surfaces: owner.meta.surfaces ?? [], discs: (s) => discsOn(owner.group, s),
+    })
+  }
+  const socketOwner = (key: string) => {
+    const [ownerId, sName] = key.split(':') as [string, string]
+    return { o: placed.get(ownerId)!, sName }
+  }
+  /** Dòng gợi ý khớp đúng điều bấm sẽ làm. */
+  const placeHint = (it: PlacedObject, owner: PlacedObject, point: THREE.Vector3 | null): string => {
+    if (!point) return `Bấm để đặt ${name(it)} vào ${name(owner)}`
+    const d = planPlace(it, owner, point)
+    if (d.type === 'socket') {
+      const { o, sName } = socketOwner(d.socket.key)
+      const verb = sName === 'clamp' ? 'kẹp' : sName === 'flame' ? 'đưa lên ngọn lửa' : sName.startsWith('slot') ? 'cắm' : 'đặt'
+      return `Bấm để ${verb} ${name(it)} vào ${name(o)}`
+    }
+    if (d.type === 'surface') return `Bấm để đặt ${name(it)} lên ${name(owner)}`
+    return d.reason === 'full' ? 'Chỗ này đã kín, chọn chỗ khác' : 'Không đặt được ở đây – chọn mặt bàn, kệ, khay, giá hoặc kẹp'
+  }
+
   const placeHeld = (owner: PlacedObject, point: THREE.Vector3): boolean => {
     const it = held
     if (!it) return false
-    const sock = nearestSocket(allSockets(it), it.meta.kind, point.x, point.y, point.z)
-    if (sock) {
-      const [ownerId, sName] = sock.key.split(':') as [string, string]
-      const o = placed.get(ownerId)!
+    const d = planPlace(it, owner, point)
+    if (d.type === 'socket') {
+      const { o, sName } = socketOwner(d.socket.key)
       const s = o.meta.sockets!.find((x) => x.name === sName)!
       held = null
-      putInto(it, o.group, new THREE.Vector3(...s.pos), sock.key, false)
-      it.group.quaternion.identity()
-      labEvents.emit({ type: 'place', id: it.id, name: name(it), on: ownerId, onName: name(o), socket: sName })
+      putInto(it, o.group, new THREE.Vector3(...s.pos), d.socket.key, false)
+      seat(it, sName, o.group)
+      labEvents.emit({ type: 'place', id: it.id, name: name(it), on: o.id, onName: name(o), socket: sName })
+      check(it)
       return true
     }
-    const local = owner.group.worldToLocal(point.clone())
-    const s = surfaceAt(owner.meta.surfaces ?? [], local.x, local.y, local.z)
-    if (!s) {
-      hub.toast.show('Không đặt được ở đây – bấm lên mặt bàn, kệ hoặc khay')
-      audio.sfx('ui/wrong')
-      return false
-    }
-    const spot = freeSpot(s, local.x, local.z, radius(it.meta), discsOn(owner.group, s))
-    if (!spot) {
-      hub.toast.show('Chỗ này đã kín, chọn chỗ khác')
+    if (d.type === 'reject') {
+      hub.toast.show(d.reason === 'full' ? 'Chỗ này đã kín, chọn chỗ khác' : 'Không đặt được ở đây – bấm lên mặt bàn, kệ hoặc khay')
       audio.sfx('ui/wrong')
       return false
     }
     held = null
-    putInto(it, owner.group, new THREE.Vector3(spot[0], s.y, spot[1]))
+    putInto(it, owner.group, new THREE.Vector3(d.u, d.surface.y, d.v))
     labEvents.emit({ type: 'place', id: it.id, name: name(it), on: owner.id, onName: name(owner) })
+    check(it)
     return true
+  }
+
+  // ---------- Con trỏ (cho dòng gợi ý theo đúng điểm đang rê) ----------
+  const ndc = new THREE.Vector2(9, 9)
+  const rc = new THREE.Raycaster()
+  const onMove = (e: PointerEvent) => {
+    const r = ctx.renderer.domElement.getBoundingClientRect()
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1)
+  }
+  window.addEventListener('pointermove', onMove)
+  ctx.track(() => window.removeEventListener('pointermove', onMove))
+  const pointOn = (obj: THREE.Object3D): THREE.Vector3 | null => {
+    rc.setFromCamera(ndc, ctx.camera)
+    return rc.intersectObject(obj, true).find((h) => !h.object.userData.outlineShell)?.point ?? null
+  }
+
+  // ---------- Bất biến (chỉ khi dev): vật vừa đặt phải nhìn thấy được, không chìm, không nằm trong vùng cấm ----------
+  const problems: string[] = []
+  const invariantProblem = (it: PlacedObject): string | null => {
+    const g = it.group
+    for (let o: THREE.Object3D | null = g; o; o = o.parent) if (!o.visible) return 'bị ẩn'
+    if (g.parent === ctx.scene) return null
+    if (socketOf.has(it.id) || inside.has(it.id)) return null
+    const parent = g.parent!
+    const meta = parent.userData.meta as ObjectMeta | undefined
+    const s = meta?.surfaces && surfaceAt(meta.surfaces, g.position.x, g.position.y + 0.05, g.position.z, 0)
+    if (!s) return `không nằm trên bề mặt nào của ${meta?.displayName ?? parent.name}`
+    if (Math.abs(g.position.y - s.y) > 0.02) return `lệch độ cao bề mặt ${(g.position.y - s.y).toFixed(2)} dm`
+    if (blockedAt(s, g.position.x, g.position.z, radius(it.meta) * 0.9)) return `nằm trong vùng cấm của ${s.name}`
+    return null
+  }
+  const check = (it: PlacedObject) => {
+    if (!import.meta.env.DEV) return
+    const why = invariantProblem(it)
+    if (!why) return
+    const msg = `[lab-invariant] ${it.id} (${it.meta.kind}): ${why}`
+    problems.push(msg)
+    console.error(msg)
   }
 
   const returnHome = (it: PlacedObject) => {
@@ -193,7 +276,9 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     const free = !h.socket || !occupied.has(h.socket)
     putInto(it, h.parent, h.pos, free ? h.socket : undefined, false)
     it.group.quaternion.copy(h.quat)
+    inside.delete(it.id)
     labEvents.emit({ type: 'return', id: it.id, name: name(it) })
+    check(it)
   }
 
   // ---------- Trượt tại chỗ ----------
@@ -212,7 +297,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
         if (!ray.intersectPlane(plane, w)) return
         const l = parent.worldToLocal(w)
         const [u, v] = clampInto(s, l.x, l.z, r)
-        g.position.set(u, s.y, v)
+        if (!blockedAt(s, u, v, r)) g.position.set(u, s.y, v)
       },
       end(cancelled: boolean) {
         if (cancelled) return g.position.copy(start)
@@ -222,12 +307,13 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
           const [ownerId, sName] = sock.key.split(':') as [string, string]
           const o = placed.get(ownerId)!
           putInto(it, o.group, new THREE.Vector3(...o.meta.sockets!.find((x) => x.name === sName)!.pos), sock.key, false)
-          it.group.quaternion.identity()
+          seat(it, sName, o.group)
           labEvents.emit({ type: 'place', id: it.id, name: name(it), on: ownerId, onName: name(o), socket: sName })
           return
         }
         const spot = freeSpot(s, g.position.x, g.position.z, r, discsOn(parent, s, g)) ?? [start.x, start.z]
         g.position.set(spot[0], s.y, spot[1])
+        check(it)
         sfxPlace(it)
         shadows()
         const owner = [...placed.values()].find((p) => p.group === parent)
@@ -254,10 +340,13 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
     const owner = () => placed.get(it.parentId!)!
     hub.add({
       object: it.group,
-      priority: 2,
+      // Đinh nằm trong ống: tia trúng cả thành ống (gần hơn) lẫn đinh → đinh thắng để gắp ra được.
+      get priority() {
+        return inside.has(it.id) ? 3 : 2
+      },
       hint: () =>
         pushing ? null
-          : held ? hooks.useHint?.(held, it) ?? (it.meta.surfaces || it.meta.sockets ? `Bấm để đặt ${name(held)} vào ${name(it)}` : null)
+          : held ? hooks.useHint?.(held, it) ?? placeHint(held, it.meta.surfaces ? it : owner(), pointOn(it.group))
             : hooks.activateHint?.(it) ?? `${name(it)} · bấm: cầm · giữ: xem nhãn · kéo: trượt`,
       enabled: () => !pushing && it.group.parent !== ctx.scene && it.group.visible,
       onHover: (s) => hover(s),
@@ -390,7 +479,7 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
       priority: 0,
       cursor: 'pointer',
       hint: () =>
-        held ? `Bấm để đặt ${name(held)} vào ${name(p)}` : pushing ? (pushing === p ? 'Bấm để thả xe' : null)
+        held ? placeHint(held, p, pointOn(p.group)) : pushing ? (pushing === p ? 'Bấm để thả xe' : null)
           : p.meta.kind === 'cart' ? 'Bấm để đẩy xe' : movables.length ? 'Bấm cánh tủ, ngăn kéo, vòi gas để mở/đóng' : null,
       enabled: () => !pushing || pushing === p,
       onTap(hit) {
@@ -452,7 +541,32 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
   const wantQ = new THREE.Quaternion()
   const tiltQ = new THREE.Quaternion()
   const zAxis = new THREE.Vector3(0, 0, 1)
+  const debug: Interaction['debug'] = import.meta.env.DEV
+    ? {
+        problems,
+        pick(id) {
+          const it = placed.get(id)
+          if (!it || held || !it.meta.grabbable) return false
+          pick(it)
+          return held === it
+        },
+        placeAt(ownerId, point) {
+          if (!held) return 'notHeld'
+          const o = placed.get(ownerId)!
+          const d = planPlace(held, o, point)
+          placeHeld(o, point)
+          return d.type
+        },
+        returnHome(id) {
+          returnHome(placed.get(id)!)
+        },
+        hintAt(ownerId, point) {
+          return held ? placeHint(held, placed.get(ownerId)!, point) : null
+        },
+      }
+    : undefined
   return {
+    debug,
     get held() {
       return held
     },
@@ -483,7 +597,11 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
       it.group.position.copy(h.pos)
       it.group.quaternion.copy(h.quat)
     },
-    attachHeld(parent, pos) {
+    setInside(id, on) {
+      if (on) inside.add(id)
+      else inside.delete(id)
+    },
+    attachHeld(parent, pos, quat) {
       if (!held) return
       const it = held
       held = null
@@ -491,7 +609,8 @@ export function createInteraction(ctx: SimContext, room: Room, walk: FreeWalk, l
       heldPose = null
       parent.add(it.group)
       it.group.position.copy(pos)
-      it.group.quaternion.identity()
+      if (quat) it.group.quaternion.copy(quat)
+      else it.group.quaternion.identity()
       it.group.traverse((o) => (o as THREE.Mesh).isMesh && (o.castShadow = true))
       shadows()
       labEvents.emit({ type: 'place', id: it.id, name: name(it), on: parent.userData.instanceId ?? '', onName: (parent.userData.meta as ObjectMeta | undefined)?.displayName ?? '' })

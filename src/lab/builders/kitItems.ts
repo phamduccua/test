@@ -239,7 +239,7 @@ register('deliveryTube', 'glassware', (ctx) => {
 })
 register('nail', 'reagent', (ctx) => {
   const n = createNail(ctx)
-  return wrap('nail', 'Đinh sắt', 'reagent', n.group, { chem: { speciesId: 'Fe', grams: 2 } })
+  return wrap('nail', 'Đinh sắt', 'reagent', n.group, { chem: { speciesId: 'Fe', grams: 2 }, params: { nail: n } })
 })
 register('jar', 'reagent', (ctx, p = {}) => {
   const j = createJar(ctx, { preset: 'yogurt', label: (p.label as string) ?? 'Mẫu', capColor: 'blue' })

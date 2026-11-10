@@ -37,12 +37,41 @@ function ceilingTile(): THREE.CanvasTexture {
     g.fillStyle = `rgba(120,120,110,${0.05 + Math.random() * 0.12})`
     g.fillRect(Math.random() * 256, Math.random() * 256, 1.5, 1.5)
   }
-  g.strokeStyle = '#c9cac6'
-  g.lineWidth = 4
+  g.strokeStyle = '#dcdcd8'
+  g.lineWidth = 2
   g.strokeRect(0, 0, 256, 256)
   const t = canvasTexture(canvas)
   t.wrapS = t.wrapT = THREE.RepeatWrapping
   return t
+}
+
+/**
+ * Vân loang tần số thấp (tường sơn, tủ, mặt bàn phenolic): nền `base` + vài trăm vệt tròn mờ sáng/tối ±`amp`, cộng hạt mịn.
+ * Không phải ảnh thật – chỉ để mặt lớn không còn phẳng lì như nhựa dưới ánh sáng đều.
+ */
+function mottle(base: string, amp: number, grain: number, seed: number): THREE.CanvasTexture {
+  const { canvas, g } = makeCanvas(512, 512)
+  let r = seed
+  const rnd = () => ((r = (r * 16807) % 2147483647) / 2147483647)
+  g.fillStyle = base
+  g.fillRect(0, 0, 512, 512)
+  for (let i = 0; i < 260; i++) {
+    const x = rnd() * 512
+    const y = rnd() * 512
+    const rad = 30 + rnd() * 140
+    const light = rnd() > 0.5
+    const a = amp * (0.3 + rnd() * 0.7)
+    const grd = g.createRadialGradient(x, y, 0, x, y, rad)
+    grd.addColorStop(0, light ? `rgba(255,255,255,${a})` : `rgba(0,0,0,${a})`)
+    grd.addColorStop(1, 'rgba(0,0,0,0)')
+    g.fillStyle = grd
+    g.fillRect(x - rad, y - rad, rad * 2, rad * 2)
+  }
+  for (let i = 0; i < 9000 * grain; i++) {
+    g.fillStyle = rnd() > 0.5 ? `rgba(255,255,255,${0.05 * grain})` : `rgba(0,0,0,${0.06 * grain})`
+    g.fillRect(rnd() * 512, rnd() * 512, 1, 1)
+  }
+  return canvasTexture(canvas)
 }
 
 export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material {
@@ -54,8 +83,8 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
   const phys = (o: THREE.MeshPhysicalMaterialParameters) => new THREE.MeshPhysicalMaterial(o)
   let mat: THREE.Material
   switch (key) {
-    case 'worktop': mat = phys({ color: 0x1d1f22, roughness: 0.42, clearcoat: 0.25, clearcoatRoughness: 0.35 }); break
-    case 'cabinet': mat = std({ color: 0xe9ecee, roughness: 0.55 }); break
+    case 'worktop': mat = phys({ map: ctx.track(mottle('#2e3033', 0.05, 1, 7)), roughness: 0.58, clearcoat: 0.12, clearcoatRoughness: 0.5 }); break
+    case 'cabinet': mat = std({ map: ctx.track(mottle('#eceef0', 0.012, 0.25, 11)), roughness: 0.55 }); break
     case 'cabinetFront': mat = phys({ color: 0xf1f3f4, roughness: 0.4, clearcoat: 0.2 }); break
     case 'handle': mat = std({ color: 0x9aa1a8, metalness: 0.8, roughness: 0.3 }); break
     case 'steel': mat = std({ color: 0xb8bec5, metalness: 0.85, roughness: 0.35 }); break
@@ -64,9 +93,11 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
     case 'yellowPaint': mat = phys({ color: 0xf2c21b, roughness: 0.45, clearcoat: 0.3 }); break
     case 'safetyRed': mat = phys({ color: 0xd32f2f, roughness: 0.4, clearcoat: 0.4 }); break
     case 'safetyGreen': mat = phys({ color: 0x1f9d55, roughness: 0.5 }); break
-    case 'wall': mat = std({ color: 0xf1f2ee, roughness: 0.9, }); break
+    // Tường: không dùng map – UV tường tính theo dm nên texture lặp hàng chục lần và thành sọc. Trắng sáng nhẹ tự phát (ánh hắt).
+    case 'wall': mat = std({ color: 0xf6f7f4, roughness: 0.92, emissive: 0xf4f5f2, emissiveIntensity: 0.06 }); break
     case 'floor': {
-      const t = tileTexture('#b4b9bf', '#9ea4ab', 8, 0.04)
+      // Sàn vinyl xám nhạt liền mặt (ảnh mẫu): ron gần như không thấy.
+      const t = tileTexture('#c2c6ca', '#b9bdc1', 8, 0.015)
       t.wrapS = t.wrapT = THREE.RepeatWrapping
       t.repeat.set(96 / 12, 84 / 12)
       mat = std({ map: ctx.track(t), roughness: 0.55 })
@@ -83,7 +114,7 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
     case 'doorWood': mat = std({ color: 0xcfd3d6, roughness: 0.5 }); break
     case 'frame': mat = std({ color: 0xf4f5f5, roughness: 0.5 }); break
     case 'blind': mat = std({ color: 0xe6e0d4, roughness: 0.95, side: THREE.DoubleSide }); break
-    case 'lightPanel': mat = new THREE.MeshBasicMaterial({ color: 0xf4f8ff, toneMapped: false }); break
+    case 'lightPanel': mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xf4f8ff).multiplyScalar(2.2), toneMapped: false }); break
     case 'vent': mat = std({ color: 0xd4d7da, roughness: 0.6, emissive: 0xd4d7da, emissiveIntensity: 0.4 }); break
     case 'paper': mat = std({ color: 0xf4f1e8, roughness: 0.9 }); break
     case 'cork': mat = std({ color: 0xb98a5a, roughness: 0.95 }); break
@@ -99,7 +130,7 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
       mat = std({ map: t, roughness: 0.7 })
       break
     }
-    case 'glassPane': mat = phys({ color: 0xdfeaf2, roughness: 0.05, transmission: 0.9, thickness: 0.05, transparent: true, opacity: 0.35 }); break
+    case 'glassPane': mat = std({ color: 0xdfeaf2, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.18, depthWrite: false }); break
     case 'hoodGlass': mat = phys({ color: 0xe8f0f4, roughness: 0.05, transparent: true, opacity: 0.25, depthWrite: false }); break
   }
   ctx.track(mat)

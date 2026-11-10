@@ -6,7 +6,7 @@ import {
   createBubbles, createFoam, createLevelClip, createLiquid, createParticles, createPowderHeap, createPrecipitate, createProfileGas,
   dropperBulb, mm, radiusAt,
   type AlcoholLamp, type Bubbles, type Burner, type Foam, type LevelClip, type Liquid, type Particles, type PowderHeap, type Precipitate,
-  type ProfileGas, type ReagentBottle, type Splint, type StopwatchView, type Thermometer,
+  type Nail, type ProfileGas, type ReagentBottle, type Splint, type StopwatchView, type Thermometer,
 } from '../../vendor/lab3d/lab/index'
 import { createPourFx, G } from './pourFx'
 import type { Vessel } from '../../vendor/lab3d/lab/glassware/vessel'
@@ -64,6 +64,8 @@ interface View {
   /** Khuấy trộn do dòng rót (bọt khí cuốn theo), 0…1. */
   stir: number
   steam?: Particles
+  /** Mẫu rắn (đinh) đang nằm trong bình này. */
+  sample?: View | null
 }
 
 const CONTAINER_SKIP = new Set(['funnel', 'deliveryTube', 'gasJar', 'trough'])
@@ -177,7 +179,8 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
       v.liquid.setTurbidity(d.turbidity, dur, d.precipitateColorHex)
     }
     if (v.vessel && v.c.kind === 'container') {
-      const solids = Object.entries(m.solids).filter(([, mol]) => mol > 1e-9)
+      // Có đinh trong bình: sắt của đinh và kim loại bám lên đinh (Cu…) vẽ trên chính cây đinh, không vẽ thành đống bột.
+      const solids = Object.entries(m.solids).filter(([id, mol]) => mol > 1e-9 && !(v.sample && getSpecies(id).class === 'metal'))
       const ml = solids.reduce((a, [id, mol]) => a + (mol * getSpecies(id).molarMass) / SOLID_DENSITY, 0)
       if (ml > 0.005 && !v.heap) {
         v.heap = createPowderHeap(ctx, v.vessel.profile, { color: solidColor(solids[0]![0]) })
@@ -188,7 +191,52 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
         if (solids[0]) (v.heap.mesh.material as THREE.MeshStandardMaterial).color.set(solidColor(solids[0][0]))
       }
     }
+    if (v.sample) coatSample(v, v.sample)
     v.lodDirty = 1.2
+  }
+
+  /** Đinh trong bình: kim loại mới sinh (khác kim loại của đinh) phủ lên đinh theo lượng; đinh mòn theo lượng sắt còn lại. */
+  const coatSample = (host: View, smp: View) => {
+    const nail = smp.p.meta.params?.nail as Nail | undefined
+    const own = smp.p.meta.chem?.speciesId ?? 'Fe'
+    const solids = host.c.mixture.solids
+    if (nail) {
+      const dep = Object.entries(solids).find(([id, mol]) => id !== own && mol > 1e-9 && getSpecies(id).class === 'metal')
+      if (dep) nail.plating.setCoatColor(solidColor(dep[0]))
+      nail.plating.setCoverage(dep ? Math.min(1, dep[1] / 0.0015) : 0)
+      nail.plating.setThickness(dep ? Math.min(1, dep[1] / 0.004) : 0)
+      if (host.liquid && host.vessel) {
+        host.vessel.group.updateMatrixWorld(true)
+        nail.captureWaterline(host.vessel.group.localToWorld(new THREE.Vector3(0, host.liquid.level, 0)).y)
+      }
+    }
+    const init = smp.initial.solids[own] ?? 0
+    const left = solids[own] ?? 0
+    const k = init > 0 ? THREE.MathUtils.clamp(left / init, 0, 1) : 1
+    smp.p.group.scale.setScalar(0.35 + 0.65 * Math.cbrt(k))
+    smp.p.group.visible = left > init * 0.01
+  }
+
+  /** Thả đinh xuống đáy bình, nghiêng tựa vào thành. */
+  const dropSampleInto = (smp: View, host: View) => {
+    if (!host.vessel || !ix) return false
+    const prof = host.vessel.profile
+    const L = (smp.p.meta.params?.nail as Nail | undefined)?.length ?? 0.6
+    const y = prof.innerBottom + 0.01
+    const r = radiusAt(prof.inner, y + L * 0.5) * 0.8
+    // Chân đinh ở sát thành +x; quay quanh z (+) đưa đầu đinh về phía −x, tựa vào thành đối diện (không xuyên thành).
+    const lean = Math.min(1.2, Math.asin(Math.min(1, (r * 1.5) / L)))
+    const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), lean)
+    const pos = new THREE.Vector3(r * 0.7, y, 0)
+    if (ix.held === smp.p) ix.attachHeld(host.vessel.group, pos, q)
+    else {
+      host.vessel.group.add(smp.p.group)
+      smp.p.group.position.copy(pos)
+      smp.p.group.quaternion.copy(q)
+    }
+    ix.setInside(smp.p.id, true)
+    host.sample = smp
+    return true
   }
 
   const ensureBubbles = (v: View) => {
@@ -267,12 +315,12 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
       labEvents.emit({ type: 'chemNote', kind: 'safety', text: 'Dùng axit đặc khi chưa đeo kính bảo hộ' })
     }
     const o = applyUse(src.c, dst.c, plan, condOf(dst), now)
-    look(src, colorDur)
-    look(dst, colorDur)
-    if (plan.type === 'sample') {
+    if (plan.type === 'sample' && !dropSampleInto(src, dst)) {
       if (ix?.held === src.p) ix.consumeHeld()
       else src.p.group.visible = false
     }
+    look(src, colorDur)
+    look(dst, colorDur)
     if (o.result) publish(dst, o.title, o.result, 'mix', o.indicatorOnly)
     else labEvents.emit({ type: 'chemNote', vessel: dst.p.id, kind: 'action', text: o.title })
     if (quiet) return
@@ -607,15 +655,19 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
     return false
   }
 
+  /** Bình đang chứa vật `p` (đinh trong ống), nếu có. */
+  const hostOf = (p: PlacedObject): View | undefined => [...views.values()].find((v) => v.sample?.p === p)
+
   const hooks: InteractionHooks = {
     use(held, target) {
-      const v = views.get(target.id)
+      const v = hostOf(target) ?? views.get(target.id)
       if (!v) return false
       const src = views.get(held.id)
       if (src) return start(src, v)
       return useTool(held, v)
     },
     useHint(held, target) {
+      target = hostOf(target)?.p ?? target
       const v = views.get(target.id)
       if (!v) return null
       const src = views.get(held.id)
@@ -702,6 +754,20 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
             labEvents.emit({ type: 'chemNote', kind: 'action', text: 'Khóa gas – đèn Bunsen tắt' })
           }
         updateFlameLoop()
+      }
+    }
+    if (e.type === 'pick') {
+      const host = [...views.values()].find((v) => v.sample?.p.id === e.id)
+      if (host) {
+        // Gắp đinh ra: sắt còn lại theo đinh, kim loại đã bám vẫn hiện trên đinh.
+        const smp = host.sample!
+        host.sample = null
+        const own = smp.p.meta.chem?.speciesId ?? 'Fe'
+        const mol = host.c.mixture.solids[own] ?? 0
+        delete host.c.mixture.solids[own]
+        smp.c.mixture.solids = { [own]: mol }
+        look(host)
+        labEvents.emit({ type: 'chemNote', vessel: host.p.id, kind: 'action', text: `Gắp ${smp.p.meta.displayName} ra khỏi ${host.p.meta.displayName}` })
       }
     }
     if (e.type === 'pick' && tube && tube.p.id === e.id && tube.target) {
@@ -868,6 +934,14 @@ export function createChemLab(ctx: SimContext, room: Room): ChemLab {
         v.foam?.setHeight(0, true)
         v.fizz?.stop(0.2)
         v.fizz = null
+        v.sample = null
+        const nail = v.p.meta.params?.nail as Nail | undefined
+        if (nail) {
+          nail.plating.setCoverage(0)
+          nail.plating.setThickness(0)
+          v.p.group.scale.setScalar(1)
+          v.p.group.visible = true
+        }
         look(v, 0)
       }
       for (const l of lamps) l.lamp.setLit(false)

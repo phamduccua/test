@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { SimModule, Simulation } from '../vendor/lab3d/sim/types'
 import { buildBlockout } from './blockout'
+import { setLodDistances } from './lod'
 import { buildRoom } from './room/roomBuilder'
 import { createRoomLighting, prepareMaterialLook, tuneShadowCasters } from './lighting'
 import { createRoomPost } from './post'
@@ -25,11 +26,14 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   camera.far = 400
   camera.updateProjectionMatrix()
   const blockout = opts.mode === 'blockout'
+  if (ctx.quality === 'high') setLodDistances(20, 45)
+  else setLodDistances(9, 25)
   if (!blockout) prepareMaterialLook(ctx)
   // ?mode=blockout: khối xám chặng 2; mặc định: phòng dựng đầy đủ.
   const room = blockout ? { ...buildBlockout(ctx, LAYOUT), placed: null } : { ...buildRoom(ctx, LAYOUT), labels: [] as THREE.Object3D[] }
   scene.add(room.group)
   let lighting: { invalidateShadows(): void } | null = null
+  let post: ReturnType<typeof createRoomPost> = null
   if (blockout) {
     scene.background = new THREE.Color(0xdfe4ea)
     const hemi = new THREE.HemisphereLight(0xffffff, 0x8899aa, 1.1)
@@ -39,7 +43,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   } else {
     tuneShadowCasters(room.group)
     lighting = createRoomLighting(ctx)
-    createRoomPost(ctx)
+    post = createRoomPost(ctx)
   }
 
   const walk = createFreeWalk(ctx, { colliders: room.colliders, spawn: SPAWN })
@@ -81,7 +85,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
     chem?.reset()
   }
   labApi.chem = chem
-  if (import.meta.env.DEV) Object.assign(window, { __camera: camera, __walk: walk, __viewpoints: views, __room: room, __lighting: lighting, __ix: ix, __labEvents: labEvents, __chem: chem })
+  if (import.meta.env.DEV) Object.assign(window, { __renderer: ctx.renderer, __camera: camera, __walk: walk, __viewpoints: views, __room: room, __lighting: lighting, __ix: ix, __labEvents: labEvents, __chem: chem })
 
   return {
     update(dt) {
@@ -93,6 +97,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
       chem?.frame(dt)
       room.ceiling.visible = walk.position.y < ROOM.height - 1
       debug.frame(dt)
+      post?.frame(dt)
     },
     reset() {
       ix?.resetAll()
