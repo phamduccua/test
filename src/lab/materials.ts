@@ -71,13 +71,8 @@ export function roomMaterial(ctx: Tracker, key: RoomMaterialKey): THREE.Material
     case 'yellowPaint': mat = phys({ color: 0xf2c21b, roughness: 0.45, clearcoat: 0.3 }); break
     case 'safetyRed': mat = phys({ color: 0xd32f2f, roughness: 0.4, clearcoat: 0.4 }); break
     case 'safetyGreen': mat = phys({ color: 0x1f9d55, roughness: 0.5 }); break
-    // Tường sơn: loang rất nhẹ (ô 40 dm); tự sáng nhẹ thay cho ánh hắt. (Bump hạt sơn không thấy ở tầm nhìn, chỉ lộ mối ô.)
-    case 'wall':
-      mat = std({
-        map: ctx.track(mottleTexture('#f6f7f4', 0.018, 0, 40, 3)),
-        roughness: 0.92, emissive: 0xf4f5f2, emissiveIntensity: 0.06,
-      })
-      break
+    // Tường sơn trắng phẳng, tự sáng nhẹ thay cho ánh hắt. (Vân loang/hạt trên tường lớn chỉ lộ thành lưới ô, không thấy vân.)
+    case 'wall': mat = std({ color: 0xf6f7f4, roughness: 0.92, emissive: 0xf4f5f2, emissiveIntensity: 0.06 }); break
     case 'floor': {
       // Sàn vinyl xám nhạt liền mặt (ảnh mẫu): ron gần như không thấy.
       const t = tileTexture('#c2c6ca', '#b9bdc1', 8, 0.015)

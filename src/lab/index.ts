@@ -3,7 +3,7 @@ import type { SimModule, Simulation } from '../vendor/lab3d/sim/types'
 import { buildBlockout } from './blockout'
 import { setLodDistances } from './lod'
 import { buildRoom } from './room/roomBuilder'
-import { createRoomLighting, prepareMaterialLook, tuneShadowCasters } from './lighting'
+import { createRoomLighting, maxAnisotropy, prepareMaterialLook, tuneShadowCasters, type RoomLighting } from './lighting'
 import { createRoomPost } from './post'
 import { createShowroom } from './showroom'
 import { createDebugOverlay } from './debug'
@@ -32,7 +32,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   // ?mode=blockout: khối xám chặng 2; mặc định: phòng dựng đầy đủ.
   const room = blockout ? { ...buildBlockout(ctx, LAYOUT), placed: null } : { ...buildRoom(ctx, LAYOUT), labels: [] as THREE.Object3D[] }
   scene.add(room.group)
-  let lighting: { invalidateShadows(): void } | null = null
+  let lighting: RoomLighting | null = null
   let post: ReturnType<typeof createRoomPost> = null
   if (blockout) {
     scene.background = new THREE.Color(0xdfe4ea)
@@ -42,8 +42,14 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
     scene.add(hemi, sun)
   } else {
     tuneShadowCasters(room.group)
-    lighting = createRoomLighting(ctx)
+    const lit = createRoomLighting(ctx)
+    lighting = lit
     post = createRoomPost(ctx)
+    // Sau khung đầu (texture canvas đã lên GPU): chụp phòng làm môi trường, nâng lọc bất đẳng hướng cho mọi texture.
+    requestAnimationFrame(() => {
+      lit.bakeEnvironment()
+      maxAnisotropy(scene, ctx.renderer, ctx.quality)
+    })
   }
 
   const walk = createFreeWalk(ctx, { colliders: room.colliders, spawn: SPAWN })
@@ -57,6 +63,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
   showLabels()
   // F5: điểm nhìn chung + góc đối chiếu ảnh mẫu.
   const views = [...VIEWPOINTS, ...COMPARE_VIEWS]
+  const eye = new THREE.Vector3()
   let view = 0
 
   const onKey = (e: KeyboardEvent) => {
@@ -93,6 +100,7 @@ export function createFreeLab(ctx: Parameters<SimModule['create']>[0], opts: Fre
     },
     frame(dt) {
       walk.frame(dt)
+      lighting?.frame(camera.getWorldPosition(eye))
       ix?.frame(dt)
       chem?.frame(dt)
       room.ceiling.visible = walk.position.y < ROOM.height - 1

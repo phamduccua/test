@@ -17,7 +17,7 @@ export function cachedGeometry(ctx: Tracker, key: string, make: () => THREE.Buff
 }
 
 /** Vật liệu có texture lát lặp theo dm (materials.ts). */
-const METRIC_UV = new Set<string>(['worktop', 'cabinet', 'cabinetFront', 'wall', 'steel', 'sinkSteel', 'wood'])
+const METRIC_UV = new Set<string>(['worktop', 'cabinet', 'cabinetFront', 'steel', 'sinkSteel', 'wood'])
 
 /** Vát tự động: 4 mm cho hộp dày ≥ 0,3 dm và không phải mảng kiến trúc lớn (tường, sàn – cạnh không nhìn thấy). */
 export function autoBevel(w: number, h: number, d: number): number {
