@@ -16,6 +16,33 @@ export function cachedGeometry(ctx: Tracker, key: string, make: () => THREE.Buff
   return g
 }
 
+/** Vật liệu có texture lát lặp theo dm (materials.ts). */
+const METRIC_UV = new Set<string>(['worktop', 'cabinet', 'cabinetFront', 'wall', 'steel', 'sinkSteel', 'wood'])
+
+/** Vát tự động: 4 mm cho hộp dày ≥ 0,3 dm và không phải mảng kiến trúc lớn (tường, sàn – cạnh không nhìn thấy). */
+export function autoBevel(w: number, h: number, d: number): number {
+  return Math.min(w, h, d) >= 0.3 && Math.max(w, h, d) < 40 ? 0.04 : 0
+}
+
+/**
+ * UV theo mét-hệ của phòng (1 đơn vị UV = 1 dm), chiếu theo trục chính của pháp tuyến từng đỉnh:
+ * mặt ±X lấy (z, y), mặt ±Y lấy (x, z), mặt ±Z lấy (x, y). Texture đặt `repeat = 1 / cỡ ô (dm)`.
+ */
+export function metricUV(geo: THREE.BufferGeometry): void {
+  const p = geo.attributes.position!
+  const n = geo.attributes.normal!
+  const uv = new Float32Array(p.count * 2)
+  for (let i = 0; i < p.count; i++) {
+    const ax = Math.abs(n.getX(i))
+    const ay = Math.abs(n.getY(i))
+    const az = Math.abs(n.getZ(i))
+    const [u, v] = ax >= ay && ax >= az ? [p.getZ(i), p.getY(i)] : ay >= az ? [p.getX(i), p.getZ(i)] : [p.getX(i), p.getY(i)]
+    uv[i * 2] = u
+    uv[i * 2 + 1] = v
+  }
+  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
+}
+
 export function makeKit(ctx: Tracker) {
   const mat = (k: Mat) => (typeof k === 'string' ? roomMaterial(ctx, k) : k)
   const mesh = (g: THREE.BufferGeometry, m: Mat, shadow = true) => {
@@ -27,11 +54,17 @@ export function makeKit(ctx: Tracker) {
   return {
     mat,
     mesh,
-    /** Hộp, gốc ở tâm đáy. */
-    box(w: number, h: number, d: number, m: Mat, x = 0, y = 0, z = 0, r = 0) {
-      const key = `box:${w}:${h}:${d}:${r}`
+    /**
+     * Hộp, gốc ở tâm đáy. Cạnh vát (`r`, mặc định tự vát 0,04 dm = 4 mm cho hộp không quá mỏng/quá lớn): mép bắt sáng như đồ thật.
+     * UV tính theo dm (xem `metricUV`) nên texture có tỉ lệ thật, không kéo giãn theo kích thước hộp.
+     */
+    box(w: number, h: number, d: number, m: Mat, x = 0, y = 0, z = 0, r = autoBevel(w, h, d)) {
+      // Chỉ vật liệu lát lặp mới dùng UV theo dm; biển, nhãn, poster (texture vẽ riêng, gán sau) giữ UV 0..1 mỗi mặt.
+      const metric = typeof m === 'string' && METRIC_UV.has(m)
+      const key = `box:${w}:${h}:${d}:${r}:${metric ? 'm' : ''}`
       const g = cachedGeometry(ctx, key, () => {
         const geo = r > 0 ? new RoundedBoxGeometry(w, h, d, 2, Math.min(r, w / 2, h / 2, d / 2)) : new THREE.BoxGeometry(w, h, d)
+        if (metric) metricUV(geo)
         geo.translate(0, h / 2, 0)
         return geo
       })
